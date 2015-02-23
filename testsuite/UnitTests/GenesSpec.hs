@@ -1,10 +1,9 @@
-module UnitTests.GenesSpec (spec) where
+module UnitTests.GenesSpec (spec, DnaStringOfLen10(DnaStringOfLen10), arbitraryDna) where
 
 import Test.Hspec
 import Test.QuickCheck
 import Data.Functor
 import Data.List
-import Control.Monad
 
 import Genes
 
@@ -12,12 +11,13 @@ instance Arbitrary Basis where
   arbitrary = do 
   	 elements [G, A, T, C]
 
-
 newtype DnaStringOfLen10  = DnaStringOfLen10 DnaString deriving Show
 
-instance Arbitrary DnaStringOfLen10  where
- 	arbitrary = do
+arbitraryDna = do
  		DnaStringOfLen10 <$> vector 10
+
+instance Arbitrary DnaStringOfLen10  where
+ 	arbitrary = arbitraryDna
 
 
 newtype PointInString = PointInString Int deriving Show
