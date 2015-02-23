@@ -22,8 +22,17 @@ spec :: Spec
 spec = parallel $ do
 	describe "Genes" $ do
 
-		it  "sum of two vectors is computed field by field" $ do 
-			1 `shouldBe` 1
+		it "length of crosovered dna is the same as the mother dnas" $ 
+			property ( \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
+				(length dna1) == (length $ crossover 4 dna1 dna2)
+			)
 
-		it "dna string equals itself just to test the testing framework" $ 
-			property ( \(DnaStringOfLen10 x) -> \(DnaStringOfLen10 y)  -> x == x)		
+		it "beginning of crosovered DNA is from the first mother string" $ 
+			property ( \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
+				(take 4 dna1) == (take 4 $ crossover 4 dna1 dna2)
+			)
+
+		it "end of crosovered DNA is from the second mother string" $ 
+			property ( \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
+				(drop 4 dna2) == (drop 4 $ crossover 4 dna1 dna2)
+			)
