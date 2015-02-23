@@ -7,7 +7,6 @@ import Control.Monad
 
 import Genes
 
-
 instance Arbitrary Basis where
   arbitrary = elements [G, A, T, C]
 
@@ -17,6 +16,15 @@ instance Arbitrary DnaStringOfLen10  where
  	arbitrary = do 
  		DnaStringOfLen10 <$> vector 10
 
+newtype PointInString = PointInString Int deriving Show
+instance Arbitrary PointInString  where
+ 	arbitrary = do
+ 		PointInString <$> elements [0..11]
+
+newtype PointInsideString = PointInsideString Int deriving Show
+instance Arbitrary PointInsideString  where
+ 	arbitrary = do
+ 		PointInsideString <$> elements [1..10] 		
 
 spec :: Spec
 spec = parallel $ do
@@ -28,11 +36,11 @@ spec = parallel $ do
 			)
 
 		it "beginning of crosovered DNA is from the first mother string" $ 
-			property ( \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
-				(take 4 dna1) == (take 4 $ crossover 4 dna1 dna2)
+			property ( \(PointInString n) -> \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
+				(take n dna1) == (take n $ crossover n dna1 dna2)
 			)
 
 		it "end of crosovered DNA is from the second mother string" $ 
-			property ( \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
-				(drop 4 dna2) == (drop 4 $ crossover 4 dna1 dna2)
+			property ( \(PointInString n) -> \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
+				(drop n dna2) == (drop n $ crossover n dna1 dna2)
 			)
