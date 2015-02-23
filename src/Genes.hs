@@ -10,4 +10,5 @@ crossover crossoverPoint dna1 dna2 = (take crossoverPoint dna1) ++ (drop crossov
 
 mutate :: Int -> Basis -> DnaString -> DnaString
 mutate mutationPoint newBasis dna = 
-	zipWith (\oldBasis -> \i -> if (i == mutationPoint) then newBasis else oldBasis) dna [0..]
+	zipWithIndex (\oldBasis -> \i -> if (i == mutationPoint) then newBasis else oldBasis) dna
+	where zipWithIndex f l = zipWith f l [0..]
