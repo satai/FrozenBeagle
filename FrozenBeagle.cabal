@@ -82,9 +82,8 @@ executable FrozenBeagleSimulation
 test-suite tests
   ghc-options:         -Wall
   type:                exitcode-stdio-1.0
-  main-is:             Tests.hs
+  main-is:             Spec.hs
   hs-source-dirs:      testsuite
-  build-depends:       base,
-                       FrozenBeagle,
-                       hspec >= 2.0 && < 2.1
+  build-depends:       ghc, base, array, containers, QuickCheck, hspec == 2.1.*,
+                       FrozenBeagle
   default-language:    Haskell2010 
