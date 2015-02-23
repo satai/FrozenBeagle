@@ -9,13 +9,12 @@ import Control.Monad
 import Genes
 import Population
 
-import UnitTests.GenesSpec(DnaStringOfLen10(DnaStringOfLen10))
-import UnitTests.GenesSpec(arbitraryDna)
+import UnitTests.GenesSpec(ArbitraryDna(ArbitraryDna))
 
 instance Arbitrary Individual where
 	arbitrary = do
-		DnaStringOfLen10 d1 <- arbitrary
-		DnaStringOfLen10 d2 <- arbitrary
+		ArbitraryDna d1 <- arbitrary
+		ArbitraryDna d2 <- arbitrary
 		return $ Individual(d1, d2)
   	
 spec :: Spec
