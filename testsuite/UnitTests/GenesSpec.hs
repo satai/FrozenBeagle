@@ -3,28 +3,32 @@ module UnitTests.GenesSpec (spec) where
 import Test.Hspec
 import Test.QuickCheck
 import Data.Functor
+import Data.List
 import Control.Monad
 
 import Genes
 
 instance Arbitrary Basis where
-  arbitrary = elements [G, A, T, C]
+  arbitrary = do 
+  	 elements [G, A, T, C]
+
 
 newtype DnaStringOfLen10  = DnaStringOfLen10 DnaString deriving Show
 
 instance Arbitrary DnaStringOfLen10  where
- 	arbitrary = do 
+ 	arbitrary = do
  		DnaStringOfLen10 <$> vector 10
+
 
 newtype PointInString = PointInString Int deriving Show
 instance Arbitrary PointInString  where
  	arbitrary = do
  		PointInString <$> elements [0..11]
 
-newtype PointInsideString = PointInsideString Int deriving Show
-instance Arbitrary PointInsideString  where
+newtype IndexInString = IndexInString Int deriving Show
+instance Arbitrary IndexInString  where
  	arbitrary = do
- 		PointInsideString <$> elements [1..10] 		
+ 		IndexInString <$> elements [0..9] 		
 
 spec :: Spec
 spec = parallel $ do
@@ -44,3 +48,19 @@ spec = parallel $ do
 			property ( \(PointInString n) -> \(DnaStringOfLen10 dna1) -> \(DnaStringOfLen10 dna2)  -> 
 				(drop n dna2) == (drop n $ crossover n dna1 dna2)
 			)
+
+		it "mutated dna has same length as dna before mutation" $ 
+			property ( \(IndexInString n) -> \b -> \(DnaStringOfLen10 dna)  -> 
+				(length dna) == (length $ mutate n b dna)
+			)
+
+		it "mutated dna has new basis at point of mutation" $ 
+			property ( \(IndexInString n) -> \b -> \(DnaStringOfLen10 dna)  -> 
+				b == mutate n b dna !! n
+			)
+
+		it "mutated dna doesn't differ from original one with exception of point of mutation" $ 
+			property ( \(IndexInString n) -> \b -> \(DnaStringOfLen10 dna)  -> 
+				 1 >= (length $ elemIndices True $ zipWith (/=) dna (mutate n b dna) )
+			)
+
