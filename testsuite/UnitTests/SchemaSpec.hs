@@ -25,7 +25,7 @@ spec = parallel $ do
         it "show schema string looks like {GT*T*}" $ 
             (show (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` "{GT*T*}" )
 
-        it "order of schema" $ 
+        it "order of schema is count of specified positions" $ 
             order (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` 3
 
         it "schema matches dna if they have same content" $
@@ -36,3 +36,6 @@ spec = parallel $ do
 
         it "schema doesn't match dna with different content" $
             (not $ matches (Schema [Just T, Just T]) (DnaString [T, A]))
+
+        it "schema does match dna with different same same content on specified places" $
+            (matches (Schema [Just T, Nothing]) (DnaString [T, A]))
