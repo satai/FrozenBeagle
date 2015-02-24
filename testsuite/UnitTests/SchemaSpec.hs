@@ -27,3 +27,12 @@ spec = parallel $ do
 
 		it "order of schema" $ 
 			order (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` 3
+
+		it "schema matches dna if they have same content" $
+			property (
+				\(DnaString elems) ->
+					matches (Schema $ map Just elems) (DnaString elems)
+			)
+
+		it "schema doesn't match dna with different content" $
+			(not $ matches (Schema [Just T, Just T]) (DnaString [T, A]))
