@@ -66,3 +66,4 @@ spec = parallel $ do
                  1 >= (length $ elemIndices True $ zipWith (/=) dna (genes $ mutate n b (DnaString dna)) )
             )
 
+

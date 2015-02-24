@@ -2,11 +2,7 @@ module UnitTests.PopulationSpec (spec) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
-import Data.List
-import Control.Monad
 
-import Genes
 import Population
 
 import UnitTests.GenesSpec(DnaString)
