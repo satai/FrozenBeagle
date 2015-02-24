@@ -8,7 +8,7 @@ instance Show Schema where
     show (Schema elems) = "{" ++ (map shortRepr elems) ++ "}"
         where 
             shortRepr :: Maybe Basis -> Char
-            shortRepr Nothing = head "*"
+            shortRepr Nothing = '*'
             shortRepr (Just b) = head $ show b
 
 order :: Schema -> Int
