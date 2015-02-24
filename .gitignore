@@ -11,3 +11,4 @@ cabal.sandbox.config
 cabal.config
 frozen-beagle.sublime-project
 frozen-beagle.sublime-workspace
+.tags
