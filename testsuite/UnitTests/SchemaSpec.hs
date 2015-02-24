@@ -17,15 +17,15 @@ spec :: Spec
 spec = parallel $ do
     describe "Schema" $ do
 
-        it "show schema string has the same length as schema + 2" $ 
-            property  ( \(Schema elems) -> 
+        it "show schema string has the same length as schema + 2" $
+            property  ( \(Schema elems) ->
                 ((length elems) + 2) == (length $ show $ Schema elems)
             )
 
-        it "show schema string looks like {GT*T*}" $ 
+        it "show schema string looks like {GT*T*}" $
             (show (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` "{GT*T*}" )
 
-        it "order of schema is count of specified positions" $ 
+        it "order of schema is count of specified positions" $
             order (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` 3
 
         it "schema matches dna if they have same content" $

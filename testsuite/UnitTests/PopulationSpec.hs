@@ -21,7 +21,7 @@ spec :: Spec
 spec = parallel $ do
     describe "Population" $ do
 
-        it "individual has two different dna strings" $ 
-            property ( \(Individual(dna1, dna2)) -> 
+        it "individual has two different dna strings" $
+            property ( \(Individual(dna1, dna2)) ->
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )

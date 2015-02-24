@@ -22,47 +22,47 @@ instance Arbitrary PointInString  where
 newtype IndexInString = IndexInString Int deriving Show
 instance Arbitrary IndexInString  where
      arbitrary = do
-         IndexInString <$> elements [0..9]         
+         IndexInString <$> elements [0..9]
 
 spec :: Spec
 spec = parallel $ do
     describe "Genes" $ do
 
-        it "show DNA string looks like '[GATTACA]'" $ 
+        it "show DNA string looks like '[GATTACA]'" $
             (show (DnaString [G, A, T, T, A, C, A]) `shouldBe` "[GATTACA]" )
 
-        it "length of crosovered dna is the same as the mother dnas" $ 
-            property ( \(DnaString dna1) -> \(DnaString dna2)  -> 
+        it "length of crosovered dna is the same as the mother dnas" $
+            property ( \(DnaString dna1) -> \(DnaString dna2)  ->
                 (length $ dna1) == 
                     (length $ genes $ crossover 4 (DnaString dna1) (DnaString dna2))
             )
 
-        it "beginning of crosovered DNA is from the first mother string" $ 
-            property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  -> 
-                (take n dna1) == 
+        it "beginning of crosovered DNA is from the first mother string" $
+            property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  ->
+                (take n dna1) ==
                     (take n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
             )
 
         it "end of crosovered DNA is from the second mother string" $ 
-            property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  -> 
+            property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  ->
                 (drop n dna2) == 
                     (drop n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
             )
 
-        it "mutated dna has same length as dna before mutation" $ 
-            property ( \(IndexInString n) -> \b -> \(DnaString dna) -> 
+        it "mutated dna has same length as dna before mutation" $
+            property ( \(IndexInString n) -> \b -> \(DnaString dna) ->
                 (length dna) == 
                     (length $ genes $ mutate n b (DnaString dna))
             )
 
-        it "mutated dna has new basis at point of mutation" $ 
-            property ( \(IndexInString n) -> \b -> \(DnaString dna ) -> 
+        it "mutated dna has new basis at point of mutation" $
+            property ( \(IndexInString n) -> \b -> \(DnaString dna ) ->
                 b == 
                     (genes $ mutate n b (DnaString dna)) !! n
             )
 
-        it "mutated dna doesn't differ from original one with exception of point of mutation" $ 
-            property ( \(IndexInString n) -> \b -> \(DnaString dna ) -> 
+        it "mutated dna doesn't differ from original one with exception of point of mutation" $
+            property ( \(IndexInString n) -> \b -> \(DnaString dna ) ->
                  1 >= (length $ elemIndices True $ zipWith (/=) dna (genes $ mutate n b (DnaString dna)) )
             )
 
