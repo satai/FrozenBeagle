@@ -1,4 +1,4 @@
-module UnitTests.GenesSpec (spec, ArbitraryDna(ArbitraryDna)) where
+module UnitTests.GenesSpec (spec, DnaString, Basis) where
 
 import Test.Hspec
 import Test.QuickCheck
@@ -11,10 +11,8 @@ instance Arbitrary Basis where
   arbitrary = do 
   	 elements [G, A, T, C]
 
-data ArbitraryDna = ArbitraryDna DnaString deriving Show
-
-instance Arbitrary ArbitraryDna where
- 	arbitrary = ArbitraryDna <$> vector 10
+instance Arbitrary DnaString where
+ 	arbitrary = DnaString <$> vector 10
 
 newtype PointInString = PointInString Int deriving Show
 instance Arbitrary PointInString  where
@@ -30,33 +28,41 @@ spec :: Spec
 spec = parallel $ do
 	describe "Genes" $ do
 
+		it "show DNA string looks like '[GATTACA]'" $ 
+			(show (DnaString [G, A, T, T, A, C, A]) `shouldBe` "[GATTACA]" )
+
 		it "length of crosovered dna is the same as the mother dnas" $ 
-			property ( \(ArbitraryDna dna1) -> \(ArbitraryDna dna2)  -> 
-				(length dna1) == (length $ crossover 4 dna1 dna2)
+			property ( \(DnaString dna1) -> \(DnaString dna2)  -> 
+				(length $ dna1) == 
+					(length $ genes $ crossover 4 (DnaString dna1) (DnaString dna2))
 			)
 
 		it "beginning of crosovered DNA is from the first mother string" $ 
-			property ( \(PointInString n) -> \(ArbitraryDna dna1) -> \(ArbitraryDna dna2)  -> 
-				(take n dna1) == (take n $ crossover n dna1 dna2)
+			property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  -> 
+				(take n dna1) == 
+					(take n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
 			)
 
 		it "end of crosovered DNA is from the second mother string" $ 
-			property ( \(PointInString n) -> \(ArbitraryDna dna1) -> \(ArbitraryDna dna2)  -> 
-				(drop n dna2) == (drop n $ crossover n dna1 dna2)
+			property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  -> 
+				(drop n dna2) == 
+					(drop n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
 			)
 
 		it "mutated dna has same length as dna before mutation" $ 
-			property ( \(IndexInString n) -> \b -> \(ArbitraryDna dna) -> 
-				(length dna) == (length $ mutate n b dna)
+			property ( \(IndexInString n) -> \b -> \(DnaString dna) -> 
+				(length dna) == 
+					(length $ genes $ mutate n b (DnaString dna))
 			)
 
 		it "mutated dna has new basis at point of mutation" $ 
-			property ( \(IndexInString n) -> \b -> \(ArbitraryDna dna ) -> 
-				b == mutate n b dna !! n
+			property ( \(IndexInString n) -> \b -> \(DnaString dna ) -> 
+				b == 
+					(genes $ mutate n b (DnaString dna)) !! n
 			)
 
 		it "mutated dna doesn't differ from original one with exception of point of mutation" $ 
-			property ( \(IndexInString n) -> \b -> \(ArbitraryDna dna ) -> 
-				 1 >= (length $ elemIndices True $ zipWith (/=) dna (mutate n b dna) )
+			property ( \(IndexInString n) -> \b -> \(DnaString dna ) -> 
+				 1 >= (length $ elemIndices True $ zipWith (/=) dna (genes $ mutate n b (DnaString dna)) )
 			)
 
