@@ -21,6 +21,6 @@ spec = parallel $ do
             property (
                 \p -> 0.0 == distance p p
             )
-            
+
         it "Distance is symetric" $
             property (\p1 p2 -> (distance p1 p2) == (distance p2 p1))

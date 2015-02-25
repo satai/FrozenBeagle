@@ -1,9 +1,12 @@
 module Genes(DnaString(DnaString), genes, Basis(G,A,T,C), crossover, mutate) where
 
 data Basis = G | A | T | C
-    deriving (Eq, Show)
+    deriving (Eq, Show, Ord)
 
 data DnaString = DnaString {genes :: [Basis]} deriving(Eq)
+
+instance Ord DnaString where
+    (DnaString d1) `compare` (DnaString d2) = d1 `compare` d2
 
 instance Show DnaString where
     show (DnaString elems) = "[" ++ (map (head . show) elems) ++ "]"
