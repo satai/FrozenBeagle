@@ -50,8 +50,12 @@ cabal-version:       >=1.10
 
 library
   ghc-options:         -Wall
-  exposed-modules:     FrozenBeagle, Genes, Population, Schema, Phenotype
-  build-depends:       base >= 4.7 && <5, containers
+  exposed-modules:     FrozenBeagle, Genes, Population, Schema, Phenotype,
+                       Simulation
+
+  build-depends:       base >= 4.7 && <5, 
+                       containers,
+                       random-fu, random-extras
   hs-source-dirs:      src
   default-language:    Haskell2010
 
@@ -67,10 +71,11 @@ executable FrozenBeagleSimulation
   
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.7 && <4.8,
+                       random-fu, random-extras, random-source,
                        FrozenBeagle
   
   -- Directories containing source files.
-  hs-source-dirs:      src
+  --hs-source-dirs:      src
 
   -- compiler options
   ghc-options:         -Wall
@@ -84,6 +89,9 @@ test-suite tests
   type:                exitcode-stdio-1.0
   main-is:             Spec.hs
   hs-source-dirs:      testsuite
-  build-depends:       ghc, base, array, containers, QuickCheck > 2.5, hspec == 2.1.*, 
+  build-depends:       ghc, base, 
+                       array, containers,
+                       random-fu, random-extras, random-source, random,
+                       QuickCheck > 2.5, hspec == 2.1.*,
                        FrozenBeagle
   default-language:    Haskell2010 
