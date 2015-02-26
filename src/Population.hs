@@ -1,4 +1,4 @@
-module Population (Population(Population, individuals), Individual(Individual),
+module Population (Population(Population, individuals), Individual(Individual), Selection, Sex(F,M),
                    allSurvive, fittest, extinction, fairChance) where
 
 import Data.List
@@ -7,7 +7,9 @@ import Genes
 import Data.Random.RVar
 import Data.Random.Extras
 
-data Individual = Individual (DnaString, DnaString) deriving (Eq, Show)
+data Sex = M | F deriving (Eq, Show)
+
+data Individual = Individual Sex (DnaString, DnaString) deriving (Eq, Show)
 
 data Population = Population { individuals :: [Individual] } deriving (Eq, Show)
 

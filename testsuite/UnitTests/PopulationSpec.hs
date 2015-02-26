@@ -16,9 +16,10 @@ import UnitTests.GenesSpec(DnaString)
 
 instance Arbitrary Individual where
     arbitrary = do
+        sex <- elements [M, F]
         d1 <- arbitrary
         d2 <- arbitrary
-        return $ Individual(d1, d2)
+        return $ Individual sex (d1, d2)
       
 instance Arbitrary Population where
     arbitrary = Population <$> arbitrary
@@ -28,7 +29,7 @@ spec = parallel $ do
     describe "Population" $ do
 
         it "individual has two different dna strings" $
-            property ( \(Individual(dna1, dna2)) ->
+            property ( \(Individual sex (dna1, dna2)) ->
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )
 
