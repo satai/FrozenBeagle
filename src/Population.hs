@@ -9,9 +9,6 @@ import Data.Random.Extras
 
 data Individual = Individual (DnaString, DnaString) deriving (Eq, Show)
 
-instance Ord Individual where
-    (Individual i1) `compare` (Individual i2) = i1 `compare` i2
-
 data Population = Population { individuals :: [Individual] } deriving (Eq, Show)
 
 type Selection = Population -> RVar Population
