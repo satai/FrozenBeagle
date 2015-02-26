@@ -85,7 +85,7 @@ executable FrozenBeagleSimulation
  
 
 test-suite tests
-  ghc-options:         -Wall
+  ghc-options:         -Wall -fhpc
   type:                exitcode-stdio-1.0
   main-is:             Spec.hs
   hs-source-dirs:      testsuite
