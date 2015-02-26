@@ -90,7 +90,7 @@ test-suite tests
   main-is:             Spec.hs
   hs-source-dirs:      testsuite
   build-depends:       ghc, base, 
-                       array, containers,
+                       array, containers, multiset,
                        random-fu, random-extras, random-source, random,
                        QuickCheck > 2.5, hspec == 2.1.*,
                        FrozenBeagle

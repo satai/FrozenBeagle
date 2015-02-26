@@ -9,6 +9,7 @@ import Data.List
 import Data.Random
 import Data.Random.Extras
 import Data.Random.Source.Std
+import qualified Data.MultiSet as MultiSet
 
 import Population
 
@@ -33,6 +34,22 @@ spec = parallel $ do
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )
 
+        it "consist of males and females" $
+            property ( \p ->
+                (MultiSet.fromList $ individuals p) == (MultiSet.fromList $ (males p) ++ (females p))
+            )
+
+        it "males are all males" $
+            property ( \p ->
+                all (\i -> (sex i) == M) $ males p
+            )
+
+        it "females are all females" $
+            property ( \p ->
+                all (\i -> (sex i) == F) $ females p
+            )
+
+
     describe "allSurvive selection" $ do
         it "doesn't change the population" $
             property ( \p i ->
@@ -40,7 +57,6 @@ spec = parallel $ do
                     in 
                         p == survivors
                 )
-
 
     describe "extinction" $ do
         it "has no surviors" $
