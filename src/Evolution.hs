@@ -2,8 +2,6 @@ module Evolution(step) where
 
 import Data.Random
 
-import Schema(Schema)
-import Genes
 import Population
 
 data Evolution = Evolution {
