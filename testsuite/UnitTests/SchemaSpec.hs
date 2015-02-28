@@ -21,7 +21,7 @@ spec = parallel $ do
             )
 
         it "show schema string looks like {GT*T*}" $
-            (show (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` "{GT*T*}" )
+            (show (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` "{test fail}" )
 
         it "order of schema is count of specified positions" $
             order (Schema [Just G, Just T, Nothing,  Just T, Nothing]) `shouldBe` 3
