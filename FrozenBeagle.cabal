@@ -51,7 +51,7 @@ cabal-version:       >=1.10
 library
   ghc-options:         -Wall
   exposed-modules:     FrozenBeagle, Genes, Population, Schema, Phenotype,
-                       Simulation
+                       Evolution
 
   build-depends:       base >= 4.7 && <5, 
                        containers,
