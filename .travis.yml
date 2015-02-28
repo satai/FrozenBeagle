@@ -1,4 +1,6 @@
 language: haskell
 notifications:
-  email: true
+  email:
+    recipients:
+      - ondra@nekola.cz
 ghc: 7.8
