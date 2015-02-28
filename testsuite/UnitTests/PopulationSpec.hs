@@ -5,10 +5,7 @@ import Test.QuickCheck
 
 import System.Random
 import Data.Functor
-import Data.List
 import Data.Random
-import Data.Random.Extras
-import Data.Random.Source.Std
 import qualified Data.MultiSet as MultiSet
 
 import Population
@@ -17,10 +14,10 @@ import UnitTests.GenesSpec(DnaString)
 
 instance Arbitrary Individual where
     arbitrary = do
-        sex <- elements [M, F]
+        s <- elements [M, F]
         d1 <- arbitrary
         d2 <- arbitrary
-        return $ Individual sex (d1, d2)
+        return $ Individual s (d1, d2)
       
 instance Arbitrary Population where
     arbitrary = Population <$> arbitrary
@@ -30,7 +27,7 @@ spec = parallel $ do
     describe "Population" $ do
 
         it "individual has two different dna strings" $
-            property ( \(Individual sex (dna1, dna2)) ->
+            property ( \(Individual _ (dna1, dna2)) ->
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )
 
@@ -69,7 +66,7 @@ spec = parallel $ do
     describe "fittest" $ do
         it "produces population of limited size" $
             property ( \p i ->
-                let survivingPopulation = fst $ sampleState (individuals <$> fittest 3 (\individual -> 1.0) p) $ mkStdGen i
+                let survivingPopulation = fst $ sampleState (individuals <$> fittest 3 (const 1.0) p) $ mkStdGen i
                 in 
                     3 >= length survivingPopulation
             )

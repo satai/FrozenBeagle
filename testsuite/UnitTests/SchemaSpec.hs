@@ -1,10 +1,8 @@
-module UnitTests.SchemaSpec(spec) where
+module UnitTests.SchemaSpec(spec, Arbitrary) where
 
 import Test.Hspec
 import Test.QuickCheck
 import Data.Functor
-import Data.List
-import Control.Monad
 
 import Genes
 import Schema
