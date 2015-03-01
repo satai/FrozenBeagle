@@ -38,7 +38,7 @@ fittest :: Int -> Fitness-> Selection
 fittest newSize fitness (Population p) = return $ Population survivors
     where
         survivors = take newSize $ sortBy fitnessComparator p
-        fitnessComparator i1 i2 = (fitness i1) `compare` (fitness i2)
+        fitnessComparator i1 i2 = fitness i1 `compare` fitness i2
 
 fairChance :: Int -> Selection
-fairChance newSize p = Population <$> (sample newSize $ individuals p)
+fairChance newSize p = Population <$> sample newSize (individuals p)

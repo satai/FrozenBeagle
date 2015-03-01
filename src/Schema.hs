@@ -5,7 +5,7 @@ import Genes
 data Schema = Schema [Maybe Basis] deriving (Eq)
 
 instance Show Schema where
-    show (Schema elems) = "{" ++ (map shortRepr elems) ++ "}"
+    show (Schema elems) = "{" ++ map shortRepr elems ++ "}"
         where 
             shortRepr :: Maybe Basis -> Char
             shortRepr Nothing = '*'
