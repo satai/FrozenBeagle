@@ -72,13 +72,16 @@ executable FrozenBeagleSimulation
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.7 && <4.8,
                        random-fu, random-extras, random-source,
+                       Chart, Chart-cairo,
+                       gtk3, colour, data-default-class, lens, cairo > 0.13,
                        FrozenBeagle
+                       -- Chart-cairo, Chart-diagrams, 
   
   -- Directories containing source files.
   --hs-source-dirs:      src
 
   -- compiler options
-  ghc-options:         -Wall
+  ghc-options:         -Wall -threaded
   
   -- Base language which the package is written in.
   default-language:    Haskell2010
