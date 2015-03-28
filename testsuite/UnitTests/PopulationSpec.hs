@@ -1,4 +1,4 @@
-module UnitTests.PopulationSpec (spec) where
+module UnitTests.PopulationSpec (spec, Arbitrary) where
 
 import Test.Hspec
 import Test.QuickCheck
