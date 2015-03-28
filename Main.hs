@@ -9,6 +9,7 @@ import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
 import Control.Concurrent
 import System.Environment
+import System.Directory
 
 signal :: [Double] -> [(Double,Double)]
 signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- xs ]
@@ -65,8 +66,6 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
     boxPackStart mainTable runBox PackNatural 3
     boxPackStart mainTable sep1 PackNatural 3
 
-    
-
     _ <- on runButton buttonActivated (runSimulation nameField drawingArea)
     
     boxPackStart mainTable drawingArea  PackGrow 3
@@ -116,15 +115,16 @@ runSimulation nameField drawingArea =
     do
         name <- entryGetText nameField
         _ <- forkIO $ do
-            toFile def ("/tmp/img_" ++ name ++ ".png") $ do
+            let fileName = "/tmp/img_" ++ name ++ ".png"
+            toFile def fileName $ do
                 layout_title .= name
                 layout_all_font_styles . font_size %= (*1.5)
                 plot (line "lines" [signal [0,(0.5)..400]])
                 plot (points "points" (signal [0,7..400]))
 
             postGUIAsync $ do
-                imageSetFromFile drawingArea ("/tmp/img_" ++ name ++ ".png")
-                -- TODO delete
+                imageSetFromFile drawingArea fileName
+                removeFile fileName
                 return ()
 
         return ()

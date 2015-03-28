@@ -74,7 +74,8 @@ executable FrozenBeagleSimulation
                        random-fu, random-extras, random-source,
                        Chart, Chart-cairo,
                        gtk3, colour, data-default-class, lens, cairo > 0.13,
-                       FrozenBeagle
+                       FrozenBeagle,
+                       directory
                        -- Chart-cairo, Chart-diagrams, 
   
   -- Directories containing source files.
