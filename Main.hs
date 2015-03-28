@@ -20,6 +20,14 @@ data AnalysisParameters = AnalysisParameters {
     populationSize :: Integer
     }
 
+disableButtonIfInBroadway :: Button -> IO()
+disableButtonIfInBroadway button = do
+    environment <- getEnvironment
+    widgetSetSensitivity button (not $ runningInBroadway environment)
+    return ()
+    where
+        runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
+
 
 prepareWindow :: Entry -> CheckButton-> CheckButton -> SpinButton -> Image -> IO(Window)
 prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale drawingArea = do
@@ -66,8 +74,6 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
     boxPackStart mainTable runBox PackNatural 3
     boxPackStart mainTable sep1 PackNatural 3
 
-    _ <- on runButton buttonActivated (runSimulation nameField drawingArea)
-    
     boxPackStart mainTable drawingArea  PackGrow 3
 
     sep2 <- hSeparatorNew
@@ -75,20 +81,20 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
 
     quitBox <- hBoxNew False 10
     quitbutton <- buttonNewFromStock stockQuit
-    environment <- getEnvironment
-    widgetSetSensitivity quitbutton (not (("GDK_BACKEND", "broadway") `elem` environment))
+    disableButtonIfInBroadway quitbutton
 
     boxPackEnd quitBox quitbutton PackNatural 10
 
     boxPackStart mainTable quitBox  PackNatural 3
 
-    _ <- on quitbutton buttonActivated mainQuit
-    _ <- on window objectDestroy mainQuit
-
     Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
                                  windowDefaultHeight := 1200,
                                  containerBorderWidth := 10,
                                  containerChild := mainTable ]
+
+    _ <- on runButton buttonActivated (runSimulation nameField drawingArea)
+    _ <- on quitbutton buttonActivated mainQuit
+    _ <- on window objectDestroy mainQuit
 
     return (window)
 
