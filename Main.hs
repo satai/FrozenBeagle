@@ -21,20 +21,16 @@ data AnalysisParameters = AnalysisParameters {
     populationSize :: Integer
     }
 
-main :: IO ()
-main = do
-    _ <- initGUI
 
+prepareWindow :: Entry -> CheckButton-> CheckButton -> SpinButton -> Image -> IO(Window)
+prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale drawingArea = do
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
     settingsBox <- vBoxNew True 10
 
     settingsSwitchesBoxLeft <- vBoxNew False 0
-    nameField <- entryNew
-    separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
-    multipleSimulationsSwitch <- checkButtonNewWithLabel "Multiple Simulations"
-    populationSizeScale <- spinButtonNewWithRange  10 10000 10
+
     nameFieldBox <- hBoxNew False 10
     nameFieldlabel <- labelNew (Just "Description")
     boxPackStart nameFieldBox nameFieldlabel PackNatural 0
@@ -71,7 +67,7 @@ main = do
     boxPackStart mainTable runBox PackNatural 3
     boxPackStart mainTable sep1 PackNatural 3
 
-    drawingArea <- imageNew
+    
 
     _ <- on runButton buttonActivated (runSimulation nameField drawingArea)
     
@@ -92,12 +88,28 @@ main = do
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
 
-    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1024,
-                                 windowDefaultHeight := 768,
+    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
+                                 windowDefaultHeight := 1200,
                                  containerBorderWidth := 10,
                                  containerChild := mainTable ]
 
+    return (window)
+
+
+main :: IO ()
+main = do
+    _ <- initGUI
+
+    nameField <- entryNew
+    separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
+    multipleSimulationsSwitch <- checkButtonNewWithLabel "Multiple Simulations"
+    populationSizeScale <- spinButtonNewWithRange  10 10000 10
+
+    drawingArea <- imageNew
+
+    window <- prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale drawingArea
     widgetShowAll window
+
     mainGUI
 
 
