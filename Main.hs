@@ -14,6 +14,8 @@ import System.Directory
 signal :: [Double] -> [(Double,Double)]
 signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- xs ]
 
+signal2 xs = [ (x,(cos (x*3.14159/45) + 1) / 2 * (cos (x*3.14159/5))) | x <- xs ]
+
 data AnalysisParameters = AnalysisParameters {
     multipleRuns :: Bool,
     separetedGenerations :: Bool,
@@ -29,8 +31,8 @@ disableButtonIfInBroadway button = do
         runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
 
 
-prepareWindow :: Entry -> CheckButton-> CheckButton -> SpinButton -> Image -> IO(Window)
-prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale drawingArea = do
+prepareWindow :: Entry -> CheckButton-> CheckButton -> SpinButton -> Notebook -> IO(Window)
+prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale resultNotebook = do
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
@@ -74,7 +76,8 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
     boxPackStart mainTable runBox PackNatural 3
     boxPackStart mainTable sep1 PackNatural 3
 
-    boxPackStart mainTable drawingArea  PackGrow 3
+    boxPackStart mainTable resultNotebook PackGrow 3
+    Graphics.UI.Gtk.set resultNotebook [notebookScrollable := True, notebookTabPos := PosTop]
 
     sep2 <- hSeparatorNew
     boxPackStart mainTable sep2  PackNatural 3
@@ -92,7 +95,7 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
                                  containerBorderWidth := 10,
                                  containerChild := mainTable ]
 
-    _ <- on runButton buttonActivated (runSimulation nameField drawingArea)
+    _ <- on runButton buttonActivated (runSimulation nameField resultNotebook window)
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
 
@@ -108,29 +111,41 @@ main = do
     multipleSimulationsSwitch <- checkButtonNewWithLabel "Multiple Simulations"
     populationSizeScale <- spinButtonNewWithRange  10 10000 10
 
-    drawingArea <- imageNew
+    resultNotebook <- notebookNew
 
-    window <- prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale drawingArea
+    window <- prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale resultNotebook
     widgetShowAll window
 
     mainGUI
 
 
-runSimulation :: Entry -> Image -> IO()
-runSimulation nameField drawingArea =
+runSimulation :: Entry -> Notebook -> Window -> IO()
+runSimulation nameField resultNotebook window =
     do
         name <- entryGetText nameField
         _ <- forkIO $ do
-            let fileName = "/tmp/img_" ++ name ++ ".png"
-            toFile def fileName $ do
-                layout_title .= name
-                layout_all_font_styles . font_size %= (*1.5)
-                plot (line "lines" [signal [0,(0.5)..400]])
-                plot (points "points" (signal [0,7..400]))
-
+            let simResults = [("t1", signal [0,7..400]), ("t2", signal2 [0,7..400])]
+            putStrLn $ show simResults
+            sequence_ (map (showResult resultNotebook name) simResults)
+            
             postGUIAsync $ do
-                imageSetFromFile drawingArea fileName
-                removeFile fileName
+                widgetShowAll window
                 return ()
-
         return ()
+
+showResult resultNotebook name (resultName, resultValue) = do
+            let fileName = "/tmp/img_" ++ name ++ "_" ++ resultName ++ ".png"
+
+            toFile def fileName $ do
+                layout_title .= (name ++ "/" ++ resultName)
+                layout_all_font_styles . font_size %= (*1.5)
+                plot (points "points" $ resultValue)
+
+            putStrLn $ "Ploted to " ++ fileName
+            postGUIAsync $ do
+                drawingArea <- imageNew
+                imageSetFromFile drawingArea fileName
+                _ <- notebookAppendPage resultNotebook drawingArea (name ++ "/" ++ resultName)
+                removeFile fileName
+
+                return ()
