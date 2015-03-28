@@ -16,6 +16,11 @@ signal :: [Double] -> [(Double,Double)]
 signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- xs ]
 
 data AnalysisParameters = AnalysisParameters {
+    multipleRuns :: Bool,
+    separetedGenerations :: Bool,
+    populationSize :: Integer
+    }
+
 main :: IO ()
 main = do
     _ <- initGUI
