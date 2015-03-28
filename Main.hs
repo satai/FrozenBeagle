@@ -8,10 +8,14 @@ import Graphics.Rendering.Chart
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
 import Control.Concurrent
+import System.Environment
+import Data.List
+import Data.Maybe
 
 signal :: [Double] -> [(Double,Double)]
 signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- xs ]
 
+data AnalysisParameters = AnalysisParameters {
 main :: IO ()
 main = do
     _ <- initGUI
@@ -73,6 +77,9 @@ main = do
 
     quitBox <- hBoxNew False 10
     quitbutton <- buttonNewFromStock stockQuit
+    environment <- getEnvironment
+    widgetSetSensitivity quitbutton (not (("GDK_BACKEND", "broadway") `elem` environment))
+
     boxPackEnd quitBox quitbutton PackNatural 10
 
     boxPackStart mainTable quitBox  PackNatural 3
