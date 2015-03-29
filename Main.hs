@@ -18,8 +18,15 @@ signal2 xs = [ (x,(cos (x*3.14159/45) + 1) / 2 * (cos (x*3.14159/5))) | x <- xs 
 
 data AnalysisParameters = AnalysisParameters {
     multipleRuns :: Bool,
-    separetedGenerations :: Bool,
-    populationSize :: Integer
+    separatedGenerations :: Bool,
+    populationSize :: Int
+    }
+
+
+data AnalysisParametersFields = AnalysisParametersFields {
+    multipleRunsField :: CheckButton,
+    separatedGenerationsField :: CheckButton,
+    populationSizeField :: SpinButton
     }
 
 disableButtonIfInBroadway :: Button -> IO()
@@ -31,8 +38,8 @@ disableButtonIfInBroadway button = do
         runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
 
 
-prepareWindow :: Entry -> CheckButton-> CheckButton -> SpinButton -> Notebook -> IO(Window)
-prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale resultNotebook = do
+prepareWindow :: Entry -> AnalysisParametersFields -> Notebook -> IO(Window)
+prepareWindow nameField parameterFields resultNotebook = do
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
@@ -50,11 +57,11 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
     populationSizeLabel <- labelNew (Just "Population Size")
 
     boxPackStart populationSizeBox populationSizeLabel PackNatural 0
-    boxPackStart populationSizeBox populationSizeScale PackNatural 10
+    boxPackStart populationSizeBox (populationSizeField parameterFields) PackNatural 10
     boxPackStart settingsSwitchesBoxLeft populationSizeBox PackNatural 0
 
-    boxPackStart settingsSwitchesBoxLeft separatedGenerationsSwitch PackNatural 0
-    boxPackStart settingsSwitchesBoxLeft multipleSimulationsSwitch PackNatural 0
+    boxPackStart settingsSwitchesBoxLeft (separatedGenerationsField parameterFields) PackNatural 0
+    boxPackStart settingsSwitchesBoxLeft (multipleRunsField parameterFields) PackNatural 0
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     settingsSwitchesBox <- hBoxNew False 0
@@ -95,7 +102,7 @@ prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch pop
                                  containerBorderWidth := 10,
                                  containerChild := mainTable ]
 
-    _ <- on runButton buttonActivated (runSimulation nameField resultNotebook window)
+    _ <- on runButton buttonActivated (runSimulation nameField parameterFields resultNotebook window)
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
 
@@ -111,17 +118,26 @@ main = do
     multipleSimulationsSwitch <- checkButtonNewWithLabel "Multiple Simulations"
     populationSizeScale <- spinButtonNewWithRange  10 10000 10
 
+    let parameterFields = AnalysisParametersFields separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale
+
     resultNotebook <- notebookNew
 
-    window <- prepareWindow nameField separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale resultNotebook
+    window <- prepareWindow nameField parameterFields resultNotebook
     widgetShowAll window
 
     mainGUI
 
+extractParameters :: AnalysisParametersFields -> IO (AnalysisParameters)
+extractParameters parameterFields = do
+    multipleRuns <- toggleButtonGetMode $ multipleRunsField parameterFields
+    separatedGen <- toggleButtonGetMode $ separatedGenerationsField parameterFields
+    popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
+    return (AnalysisParameters  multipleRuns separatedGen popSize)
 
-runSimulation :: Entry -> Notebook -> Window -> IO()
-runSimulation nameField resultNotebook window =
+runSimulation :: Entry -> AnalysisParametersFields -> Notebook -> Window -> IO()
+runSimulation nameField parameterFields resultNotebook window =
     do
+        parameters <- extractParameters parameterFields
         name <- entryGetText nameField
         _ <- forkIO $ do
             let simResults = [("t1", signal [0,7..400]), ("t2", signal2 [0,7..400])]
@@ -147,5 +163,5 @@ showResult resultNotebook name (resultName, resultValue) = do
                 imageSetFromFile drawingArea fileName
                 _ <- notebookAppendPage resultNotebook drawingArea (name ++ "/" ++ resultName)
                 removeFile fileName
-
+                widgetShowAll resultNotebook
                 return ()
