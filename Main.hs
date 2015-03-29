@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, PackageImports #-}
+    {-# LANGUAGE ScopedTypeVariables, PackageImports #-}
 module Main where
 
 
@@ -11,10 +11,13 @@ import Control.Concurrent
 import System.Environment
 import System.Directory
 
-signal :: [Double] -> [(Double,Double)]
-signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- xs ]
+signal :: [Int] -> [(Int,Double)]
+signal xs = [ (round x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- map fromIntegral xs ]
 
-signal2 xs = [ (x,(cos (x*3.14159/45) + 1) / 2 * (cos (x*3.14159/5))) | x <- xs ]
+signal2 xs = [ (round x,(cos (x*3.14159/45) + 1) / 2 * (cos (x*3.14159/5))) | x <-  map fromIntegral xs ]
+
+computeSimulation :: AnalysisParameters -> [(String, [(Int, Double)])]
+computeSimulation params = [("t1", signal [0,7..400]), ("t2", signal2 [0,7..400])]
 
 data AnalysisParameters = AnalysisParameters {
     multipleRuns :: Bool,
@@ -140,7 +143,7 @@ runSimulation nameField parameterFields resultNotebook window =
         parameters <- extractParameters parameterFields
         name <- entryGetText nameField
         _ <- forkIO $ do
-            let simResults = [("t1", signal [0,7..400]), ("t2", signal2 [0,7..400])]
+            let simResults = computeSimulation parameters
             putStrLn $ show simResults
             sequence_ (map (showResult resultNotebook name) simResults)
             
