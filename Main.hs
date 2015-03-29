@@ -139,7 +139,7 @@ showResult resultNotebook name (resultName, resultValue) = do
             toFile def fileName $ do
                 layout_title .= (name ++ "/" ++ resultName)
                 layout_all_font_styles . font_size %= (*1.5)
-                plot (points "points" $ resultValue)
+                plot (points resultName $ resultValue)
 
             putStrLn $ "Ploted to " ++ fileName
             postGUIAsync $ do
