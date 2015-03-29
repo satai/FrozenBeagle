@@ -4,6 +4,8 @@ import Test.Hspec
 import Test.QuickCheck
 import Data.Functor
 import Data.List
+import Data.Random
+import System.Random
 
 import UnitTests.PopulationSpec(Arbitrary)
 
@@ -13,9 +15,9 @@ spec :: Spec
 spec = parallel $ do
 
     describe "evolution" $ do
-        it "evolution step increases generation number" $
-            property ( \p (NonNegative i) ->
-                (succ i) == (fst $ step i p)
-                )
-
-        
+         it "evolution step returns next generation" $
+             property (\p i ->
+                            let survivingPopulation = fst $ sampleState (step p) (mkStdGen i)
+                            in 
+                                p == survivingPopulation 
+             )
