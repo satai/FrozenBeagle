@@ -2,12 +2,10 @@ module UnitTests.EvolutionSpec(spec) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
-import Data.List
 import Data.Random
 import System.Random
 
-import UnitTests.PopulationSpec(Arbitrary)
+import UnitTests.PopulationSpec()
 
 import Evolution
 
