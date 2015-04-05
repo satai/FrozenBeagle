@@ -6,7 +6,7 @@ import Data.Functor
 
 import Genes
 import Schema
-import UnitTests.GenesSpec(Basis)
+import UnitTests.GenesSpec()
 
 instance Arbitrary Schema where
      arbitrary = Schema <$> vector 10
