@@ -6,7 +6,7 @@ import Data.Functor
 import Phenotype
 
 instance Arbitrary Phenotype where
-     arbitrary = Phenotype <$> vector 10
+     arbitrary = Phenotype <$> vector 4
 
 spec :: Spec
 spec = parallel $ do
