@@ -10,7 +10,7 @@ import qualified Data.MultiSet as MultiSet
 
 import Population
 
-import UnitTests.GenesSpec(DnaString)
+import UnitTests.GenesSpec()
 
 instance Arbitrary Individual where
     arbitrary = do
@@ -70,3 +70,21 @@ spec = parallel $ do
                 in 
                     3 >= length survivingPopulation
             )
+
+    describe "hard selection" $ do
+        it "keeps all members of population, that have fitness greater than treshold" $
+            property ( \p i treshold ->
+                let fitness = const $ treshold + 0.1
+                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness treshold p) $ mkStdGen i
+                in
+                    Population survivingPopulation `shouldBe` p
+            )
+
+        it "kills all members of population, that have fitness smaller than treshold" $
+            property ( \p i treshold ->
+                let fitness = const $ treshold - 0.1
+                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness treshold p) $ mkStdGen i
+                in
+                    survivingPopulation `shouldBe` []
+            )
+

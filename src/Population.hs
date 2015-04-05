@@ -1,6 +1,6 @@
 module Population (Population(Population, individuals), Individual(Individual, sex, chromosomes), Selection, Sex(F,M),
                    males, females,
-                   allSurvive, fittest, extinction, fairChance) where
+                   allSurvive, fittest, extinction, fairChance, hardSelection) where
 
 import Data.List
 import Data.Functor
@@ -30,6 +30,12 @@ allSurvive = return
 
 extinction :: Selection
 extinction _ = return $ Population []
+
+hardSelection :: Fitness -> Double -> Selection
+hardSelection fitness treshold = return . Population . filterSurvivors . individuals
+        where
+            filterSurvivors :: [Individual] -> [Individual]
+            filterSurvivors = filter ((>treshold) . fitness)
 
 type Fitness = Individual -> Double
 
