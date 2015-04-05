@@ -1,4 +1,4 @@
-module UnitTests.SchemaSpec(spec, Arbitrary) where
+module UnitTests.SchemaSpec(spec, Arbitrary, allMatchingSchema) where
 
 import Test.Hspec
 import Test.QuickCheck
@@ -10,6 +10,9 @@ import UnitTests.GenesSpec()
 
 instance Arbitrary Schema where
      arbitrary = Schema <$> vector 10
+
+allMatchingSchema :: Schema
+allMatchingSchema = Schema $ replicate 10 Nothing
       
 spec :: Spec
 spec = parallel $ do
