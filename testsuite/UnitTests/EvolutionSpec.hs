@@ -8,14 +8,31 @@ import System.Random
 import UnitTests.PopulationSpec()
 
 import Evolution
+import Population
 
 spec :: Spec
 spec = parallel $ do
-
     describe "evolution" $ do
-         it "evolution step returns next generation" $
-             property (\p i ->
-                            let survivingPopulation = fst $ sampleState (step p) (mkStdGen i)
-                            in 
-                                p == survivingPopulation 
+        it "evolution step returns the same population when evolutionary operations are identities" $
+            property (\p i ->
+                            let
+                                nothingHappens :: EvolutionRules
+                                nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = return}
+                                generations :: Population -> [(Int, RVar Population)]
+                                generations = evolution nothingHappens
+                                populationAfter2Generations = fst $ sampleState (snd $ (generations p) !! 2) (mkStdGen i)
+                            in
+                                populationAfter2Generations `shouldBe` p
              )
+
+        it "evolution step returns empty population when extinction happens" $
+            property (\p i ->
+                            let
+                                nothingHappens :: EvolutionRules
+                                nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = extinction}
+                                generations :: Population -> [(Int, RVar Population)]
+                                generations = evolution nothingHappens
+                                populationAfter2Generations = fst $ sampleState (snd $ (generations p) !! 2) (mkStdGen i)
+                            in
+                                populationAfter2Generations `shouldBe` Population []
+            )

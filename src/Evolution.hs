@@ -1,24 +1,28 @@
-module Evolution(step) where
+module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection), evolution) where
 
 import Data.Random
 import Data.Functor
 
 import Population
 
-data Evolution = Evolution {
-    selection :: Int -> Selection
+data EvolutionRules = EvolutionRules {
+    mutation :: Mutation,
+    breeding :: Breeding,
+    selection :: Selection
 }
 
-step :: Population -> RVar Population
-step p = allSurvive p
+step :: [PopulationChange] -> RVar Population -> RVar Population
+step [] p = p
+step (s:ss) p = do
+    p' <- step ss p
+    s p'
 
-step' :: RVar Population -> RVar Population
-step' p = do
-    p' <- p 
-    step p'
-
-evolution :: Population -> [(Int, RVar Population)]
-evolution population = evolve  (0, return population)
+evolution :: EvolutionRules -> Population -> [(Int, RVar Population)]
+evolution spec population = evolve  (0, return population)
      where
+        mutationForGeneration = mutation spec
+        breedingForGeneration = breeding spec
+        selectionForGeneration = selection spec
+        stepAlgo = [selectionForGeneration, breedingForGeneration, mutationForGeneration]
         evolve :: (Int, RVar Population) -> [(Int, RVar Population)]
-        evolve (gen, pop) = ((gen, pop) : evolve (gen + 1, step' pop))
+        evolve (gen, pop) = ((gen, pop) : evolve (gen + 1, step stepAlgo pop))

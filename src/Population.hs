@@ -1,4 +1,6 @@
-module Population (Population(Population, individuals), Individual(Individual, sex, chromosomes), Selection, Sex(F,M),
+module Population (Population(Population, individuals),
+                   PopulationChange, Selection, Breeding, Mutation,
+                   Individual(Individual, sex, chromosomes), Sex(F,M),
                    males, females,
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
 
@@ -23,7 +25,13 @@ males = filter ( (== M) . sex) . individuals
 females :: Population -> [Individual]
 females = filter ( (== F) . sex) . individuals
 
-type Selection = Population -> RVar Population
+type PopulationChange = Population -> RVar Population
+
+type Mutation = PopulationChange
+
+type Breeding = PopulationChange
+
+type Selection = PopulationChange
 
 allSurvive :: Selection
 allSurvive = return
