@@ -29,7 +29,7 @@ allSurvive :: Selection
 allSurvive = return
 
 extinction :: Selection
-extinction _ = return $ Population []
+extinction = return . (const $ Population [])
 
 hardSelection :: Fitness -> Double -> Selection
 hardSelection fitness treshold = return . Population . filterSurvivors . individuals
