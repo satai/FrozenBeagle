@@ -1,4 +1,4 @@
-module Population (Population(Population, individuals), Individual(Individual, sex), Selection, Sex(F,M),
+module Population (Population(Population, individuals), Individual(Individual, sex, chromosomes), Selection, Sex(F,M),
                    males, females,
                    allSurvive, fittest, extinction, fairChance) where
 
