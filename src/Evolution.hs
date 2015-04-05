@@ -12,10 +12,7 @@ data EvolutionRules = EvolutionRules {
 }
 
 step :: [PopulationChange] -> RVar Population -> RVar Population
-step [] p = p
-step (s:ss) p = do
-    p' <- step ss p
-    s p'
+step ss p = foldl (>>=) p ss
 
 evolution :: EvolutionRules -> Population -> [(Int, RVar Population)]
 evolution spec population = evolve  (0, return population)
