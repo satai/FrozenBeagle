@@ -20,7 +20,6 @@ data Population = Population { individuals :: [Individual] } deriving (Eq, Show)
 males :: Population -> [Individual]
 males = filter ( (== M) . sex) . individuals
 
-
 females :: Population -> [Individual]
 females = filter ( (== F) . sex) . individuals
 
