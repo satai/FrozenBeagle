@@ -88,3 +88,14 @@ spec = parallel $ do
                     survivingPopulation `shouldBe` []
             )
 
+        it "can keep only part of the population" $
+            property ( \populationPart1 populationPart2 i macho1 macho2 ->
+                let fitness individual
+                        | macho1 == individual = 100.0
+                        | macho2 == individual = 111.0
+                        | otherwise           =   0.1
+                    populationWithMacho = Population $ [macho1] ++ populationPart1 ++ [macho2] ++ populationPart2
+                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
+                in
+                    survivingPopulation `shouldBe` [macho1, macho2]
+            )
