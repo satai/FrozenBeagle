@@ -12,10 +12,9 @@ data Evolution = Evolution {
 step :: Population -> RVar Population
 step p = allSurvive p
 
-
 step' :: RVar Population -> RVar Population
 step' p = do
-    p' <- p
+    p' <- p 
     step p'
 
 evolution :: Population -> [(Int, RVar Population)]
