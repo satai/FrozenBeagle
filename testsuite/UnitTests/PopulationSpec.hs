@@ -20,7 +20,7 @@ instance Arbitrary Individual where
         return $ Individual s (d1, d2)
       
 instance Arbitrary Population where
-    arbitrary = Population <$> arbitrary
+    arbitrary = Population <$> arbitrary 
 
 spec :: Spec
 spec = parallel $ do
