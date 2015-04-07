@@ -55,7 +55,7 @@ library
 
   build-depends:       base >= 4.7 && <5, 
                        containers,
-                       random-fu, random-extras
+                       random-fu, random-extras, random-source, random
   hs-source-dirs:      src
   default-language:    Haskell2010
 
