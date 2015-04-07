@@ -1,6 +1,6 @@
 module Population (Population(Population, individuals),
                    PopulationChange, Selection, Breeding, Mutation,
-                   Individual(Individual, sex, chromosomes), Sex(F,M),
+                   Individual(Individual, sex, chromosomes), Sex(F,M),DnaString,
                    males, females,
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
 
@@ -10,7 +10,7 @@ import Genes
 import Data.Random.RVar
 import Data.Random.Extras
 
-data Sex = M | F deriving (Eq, Show, Ord)
+data Sex = M | F deriving (Eq, Show, Ord, Enum)
 
 data Individual = Individual {
                                 sex :: Sex,

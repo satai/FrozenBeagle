@@ -14,12 +14,11 @@ data EvolutionRules = EvolutionRules {
 step :: [PopulationChange] -> RVar Population -> RVar Population
 step ss p = foldl (>>=) p ss
 
-evolution :: EvolutionRules -> Population -> [(Int, RVar Population)]
-evolution spec population = evolve (0, return population)
+evolution :: EvolutionRules -> RVar Population -> [RVar Population]
+evolution spec population = (population : evolution spec tng)
      where
         mutationForGeneration = mutation spec
         breedingForGeneration = breeding spec
         selectionForGeneration = selection spec
         stepAlgo = [selectionForGeneration, breedingForGeneration, mutationForGeneration]
-        evolve :: (Int, RVar Population) -> [(Int, RVar Population)]
-        evolve (gen, pop) = ((gen, pop) : evolve (gen + 1, step stepAlgo pop))
+        tng = step stepAlgo population

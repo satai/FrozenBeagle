@@ -20,12 +20,9 @@ data AnalysisParameters = AnalysisParameters {
     populationSize :: Int
     }
 
-signal :: [Int] -> [(Int,Double)]
-signal xs = [ (round x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.14159/5))) | x <- map fromIntegral xs ]
 randomPopulation :: Int -> RVar Population
 randomPopulation count = Population <$> randomIndividuals count
 
-signal2 xs = [ (round x,(cos (x*3.14159/45) + 1) / 2 * (cos (x*3.14159/5))) | x <-  map fromIntegral xs ]
 randomIndividuals :: Int -> RVar [Individual]
 randomIndividuals count = sequence $ take count $ repeat randomIndividual
 
@@ -49,8 +46,63 @@ randomDnaString = DnaString <$> (sequence $ take 10 $ repeat randomBase)
 randomBase :: RVar Basis
 randomBase = choice [G,T,C,A]
 
+avgFitness :: Population -> Double
+avgFitness (Population individuals) = average $ map fitness individuals
 
+average :: [Double] -> Double
+average [] = 0.0
+average xs = (sum xs) / fromIntegral (length xs)
+
+minFitness :: Population -> Double
+minFitness (Population individuals) = minimum $ map fitness individuals
+
+fitness :: Individual -> Double
+fitness = fitness' (Phenotype [1.0, 1.0, 0, 0])  --fixme
+
+fitness' :: Phenotype -> Individual -> Double
+fitness' optimum individual = 1.0 / (express individual `distance` optimum + 0.001)
+
+randomRules :: RVar [(Schema, Phenotype)]
+randomRules =  sequence $ take 100 $ repeat randomRule
+
+randomRule = do
+    schema <- randomSchema
+    phenotype <- randomPhenotype
+    return (schema, phenotype)
+
+randomSchema :: RVar Schema
+randomSchema = Schema <$> sequence elems
+        where
+            elems :: [RVar (Maybe Basis)]
+            elems =  take 10 $ repeat randomBaseOrNot -- fixme
+
+randomBaseOrNot :: RVar (Maybe Basis)
+randomBaseOrNot = choice [Just A, Just G, Just T, Just C, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing] -- fixme
+
+randomPhenotype :: RVar Phenotype
+randomPhenotype = do
+        a1 <- doubleStdUniform
+        a2 <- doubleStdUniform
+        a3 <- doubleStdUniform
+        a4 <- doubleStdUniform
+        return $ Phenotype [a1, a2, a3, a4]
+
+express = schemaBasedExpression $ fst $ sampleState (randomRules) (mkStdGen 0)
+
+colapse :: RVar a -> a
+colapse x = fst $ sampleState x (mkStdGen 0)
 
 computeSimulation :: AnalysisParameters -> [(String, [(Int, Double)])]
-computeSimulation params = 
-    [("t1", signal [0,7..400]), ("t2", signal2 [0,7..400])]
+computeSimulation params =
+    let
+        initialPopulation = randomPopulation $ populationSize params
+        rules = EvolutionRules {
+                                    mutation = return,
+                                    breeding = return,
+                                    selection = hardSelection fitness 0.1
+                                }   --FIXME
+        generations = take 100 $ evolution rules initialPopulation
+        allGenerations = map colapse generations
+        stats f = zip [0..] (map f allGenerations)
+    in
+        [("Avg Fitness", stats avgFitness), ("Min Fitness", stats minFitness)]
