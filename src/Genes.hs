@@ -1,9 +1,18 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Genes(DnaString(DnaString), genes, Basis(G,A,T,C), crossover, mutate) where
 
-data Basis = G | A | T | C
-    deriving (Eq, Show, Ord)
+import Data.Hashable
+import GHC.Generics (Generic)
 
-data DnaString = DnaString {genes :: [Basis]} deriving(Eq)
+data Basis = G | A | T | C
+    deriving (Eq, Show, Ord, Generic)
+
+instance Hashable Basis
+
+data DnaString = DnaString {genes :: [Basis]} deriving(Eq, Generic)
+
+instance Hashable DnaString
 
 instance Ord DnaString where
     (DnaString d1) `compare` (DnaString d2) = d1 `compare` d2

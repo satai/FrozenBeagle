@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Population (Population(Population, individuals),
                    PopulationChange, Selection, Breeding, Mutation,
                    Individual(Individual, sex, chromosomes), Sex(F,M),DnaString,
@@ -5,17 +7,23 @@ module Population (Population(Population, individuals),
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
 
 import Data.List
+import Data.Hashable
+import GHC.Generics (Generic)
 import Data.Functor
 import Genes
 import Data.Random.RVar
 import Data.Random.Extras
 
-data Sex = M | F deriving (Eq, Show, Ord, Enum)
+data Sex = M | F deriving (Eq, Show, Ord, Enum, Generic)
+
+instance Hashable Sex
 
 data Individual = Individual {
                                 sex :: Sex,
                                 chromosomes :: (DnaString, DnaString)
-                             } deriving (Eq, Show, Ord)
+                             } deriving (Eq, Show, Ord, Generic)
+
+instance Hashable Individual
 
 data Population = Population { individuals :: [Individual] } deriving (Eq, Show)
 
