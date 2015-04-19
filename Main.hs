@@ -1,4 +1,4 @@
-    {-# LANGUAGE ScopedTypeVariables, PackageImports #-}
+{-# LANGUAGE ScopedTypeVariables, PackageImports #-}
 module Main where
 
 
