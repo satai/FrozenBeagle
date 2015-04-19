@@ -46,7 +46,7 @@ randomBase :: RVar Basis
 randomBase = choice [G,T,C,A]
 
 avgFitness :: Population -> Double
-avgFitness (Population individuals) = average $ map fitness individuals
+avgFitness (Population is) = average $ map fitness is
 
 average :: [Double] -> Double
 average [] = 0.0
