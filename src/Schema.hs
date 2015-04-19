@@ -15,8 +15,9 @@ order :: Schema -> Int
 order (Schema elems) =  length $ filter (/= Nothing) elems
 
 matches :: Schema -> DnaString -> Bool
-matches (Schema s) (DnaString d) = all (== True) $ zipWith matches' s d
+matches (Schema s) (DnaString d) = matches' s d
     where 
-        matches' :: Maybe Basis -> Basis -> Bool
-        matches' (Just b1) b2 = b1 == b2
-        matches' (Nothing) _ = True
+        matches' :: [Maybe Basis] -> [Basis] -> Bool
+        matches' [] [] = True
+        matches' ((Just b1): b1s) (b2:b2s) = (b1 == b2) && (matches' b1s b2s)
+        matches' (Nothing : b1s) (_ : b2s) = matches' b1s b2s
