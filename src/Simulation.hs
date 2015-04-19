@@ -89,6 +89,7 @@ randomPhenotype = do
         a4 <- doubleStdUniform
         return $ Phenotype [a1, a2, a3, a4]
 
+express :: ExpressionStrategy
 express = schemaBasedExpression $ fst $ sampleState (randomRules) (mkStdGen 0)
 
 colapse :: RVar a -> a
@@ -96,12 +97,12 @@ colapse x = fst $ sampleState x (mkStdGen 0)
 
 computeSimulation :: AnalysisParameters -> [(String, [(Int, Double)])]
 computeSimulation params =
-    let
-        initialPopulation = randomPopulation $ populationSize params
+    let startPopulationSize = populationSize params
+        initialPopulation = randomPopulation startPopulationSize
         rules = EvolutionRules {
-                                    mutation = return,
-                                    breeding = return,
-                                    selection = hardSelection fitness 0.1
+                                    mutation = return, --FIXME
+                                    breeding = panmictic,
+                                    selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
                                 }   --FIXME
         generations = take 100 $ evolution rules initialPopulation
         allGenerations = map colapse generations
