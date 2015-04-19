@@ -108,4 +108,4 @@ computeSimulation params =
         allGenerations = map colapse generations
         stats f = zip [0..] (map f allGenerations)
     in
-        [("Avg Fitness", stats avgFitness), ("Min Fitness", stats minFitness)]
+        [("Avg Fitness", stats avgFitness), ("Min Fitness", stats minFitness), ("Population Size", stats (fromIntegral . length . individuals))]
