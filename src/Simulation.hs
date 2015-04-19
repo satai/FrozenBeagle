@@ -25,6 +25,7 @@ randomPopulation count = Population <$> randomIndividuals count
 randomIndividuals :: Int -> RVar [Individual]
 randomIndividuals count = sequence $ take count $ repeat randomIndividual
 
+randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
         chromosomes <- randomChromosomes
