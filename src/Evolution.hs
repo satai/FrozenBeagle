@@ -20,5 +20,5 @@ evolution spec population = (population : evolution spec tng)
         mutationForGeneration = mutation spec
         breedingForGeneration = breeding spec
         selectionForGeneration = selection spec
-        stepAlgo = [selectionForGeneration, breedingForGeneration, mutationForGeneration]
+        stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
         tng = step stepAlgo population
