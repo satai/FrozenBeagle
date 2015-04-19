@@ -54,7 +54,8 @@ average [] = 0.0
 average xs = (sum xs) / fromIntegral (length xs)
 
 minFitness :: Population -> Double
-minFitness (Population individuals) = minimum $ map fitness individuals
+minFitness (Population is) = minimum $ (largestDouble :) $ map fitness is
+    where largestDouble = 1.7976931348623157e308
 
 fitness :: Individual -> Double
 fitness = fitness' (Phenotype [1.0, 1.0, 0, 0])  --fixme
