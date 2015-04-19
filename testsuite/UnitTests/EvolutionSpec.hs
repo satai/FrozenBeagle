@@ -12,27 +12,27 @@ import Population
 
 spec :: Spec
 spec = parallel $ do
-    describe "evolution" $ do return ()
-        -- it "evolution step returns the same population when evolutionary operations are identities" $
-        --     property (\p i ->
-        --                     let
-        --                         nothingHappens :: EvolutionRules
-        --                         nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = return}
-        --                         generations :: RVar Population -> [(Int, RVar Population)]
-        --                         generations = evolution nothingHappens
-        --                         populationAfter2Generations = fst $ sampleState ((generations $ return p) !! 2) (mkStdGen i)
-        --                     in
-        --                         populationAfter2Generations `shouldBe` p
-        --      )
+    describe "evolution" $ do
+        it "evolution step returns the same population when evolutionary operations are identities" $
+            property (\p i ->
+                            let
+                                nothingHappens :: EvolutionRules
+                                nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = return}
+                                generations :: RVar Population -> [RVar Population]
+                                generations = evolution nothingHappens
+                                populationAfter2Generations = fst $ sampleState ((generations $ return p) !! 2) (mkStdGen i)
+                            in
+                                populationAfter2Generations `shouldBe` p
+             )
 
-        -- it "evolution step returns empty population when extinction happens" $
-        --     property (\p i ->
-        --                     let
-        --                         nothingHappens :: EvolutionRules
-        --                         nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = extinction}
-        --                         generations :: RVar Population -> [(Int, RVar Population)]
-        --                         generations = evolution nothingHappens
-        --                         populationAfter2Generations = fst $ sampleState ((generations $ return  p) !! 2) (mkStdGen i)
-        --                     in
-        --                         populationAfter2Generations `shouldBe` Population []
-        --     )
+        it "evolution step returns empty population when extinction happens" $
+            property (\p i ->
+                            let
+                                nothingHappens :: EvolutionRules
+                                nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = extinction}
+                                generations :: RVar Population -> [RVar Population]
+                                generations = evolution nothingHappens
+                                populationAfter2Generations = fst $ sampleState ((generations $ return  p) !! 2) (mkStdGen i)
+                            in
+                                populationAfter2Generations `shouldBe` Population []
+            )
