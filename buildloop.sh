@@ -21,7 +21,7 @@ while true; do
   else
     echo
     echo -e "\tBuild FAILED" | ack --flush --passthru --color --color-match=red "."
-    beep
+    #beep
   fi
 
   echo
