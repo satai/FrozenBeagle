@@ -66,6 +66,7 @@ fitness' optimum individual = 1.0 / (express individual `distance` optimum + 0.0
 randomRules :: RVar [(Schema, Phenotype)]
 randomRules =  sequence $ take 100 $ repeat randomRule
 
+randomRule :: RVar (Schema, Phenotype)
 randomRule = do
     schema <- randomSchema
     phenotype <- randomPhenotype
