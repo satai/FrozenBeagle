@@ -12,7 +12,6 @@ import Data.Random
 import Data.Random.Extras
 import Data.Random.Distribution.Uniform
 import System.Random
-import Debug.Trace
 
 data AnalysisParameters = AnalysisParameters {
     multipleRuns :: Bool,
