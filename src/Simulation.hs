@@ -29,7 +29,7 @@ randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
         chromosomes <- randomChromosomes
-        return $ Individual gender chromosomes
+        return $ Individual gender chromosomes $ Phenotype []
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -61,7 +61,7 @@ fitness :: Individual -> Double
 fitness = fitness' (Phenotype [1.0, 1.0, 0, 0])  --fixme
 
 fitness' :: Phenotype -> Individual -> Double
-fitness' optimum individual = 1.0 / (express individual `distance` optimum + 0.001)
+fitness' optimum individual = 1.0 / (phenotype individual `distance` optimum + 0.001)
 
 randomRules :: RVar [(Schema, Phenotype)]
 randomRules =  sequence $ take 100 $ repeat randomRule

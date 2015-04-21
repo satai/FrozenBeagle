@@ -1,4 +1,4 @@
-module UnitTests.PhenotypeSpec (spec, Phenotype) where
+module UnitTests.PhenotypeSpec (spec, Phenotype, Arbitrary) where
 
 import Test.Hspec
 import Test.QuickCheck
@@ -12,7 +12,7 @@ spec :: Spec
 spec = parallel $ do
     describe "Phenotype" $ do
         it "Phenotype distance is euklidean one" $
-            (distance (Phenotype [0, 0, 1]) (Phenotype [1, 0, 2])) `shouldBe` (sqrt 2)
+          (distance (Phenotype [0, 0, 1]) (Phenotype [1, 0, 2])) `shouldBe` (sqrt 2)
 
         it "Distance of phenotype to itself is zero" $
             property (

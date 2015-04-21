@@ -1,6 +1,6 @@
 module Phenotype(Phenotype(Phenotype), distance, phenotypeToVector) where
 
-data Phenotype = Phenotype [Double] deriving (Eq, Show)
+data Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
 
 phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs

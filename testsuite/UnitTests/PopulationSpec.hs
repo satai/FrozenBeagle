@@ -11,23 +11,25 @@ import qualified Data.MultiSet as MultiSet
 import Population
 
 import UnitTests.GenesSpec()
+import UnitTests.PhenotypeSpec(Arbitrary)
 
 instance Arbitrary Individual where
     arbitrary = do
         s <- elements [M, F]
         d1 <- arbitrary
         d2 <- arbitrary
-        return $ Individual s (d1, d2)
-      
+        phenotype <- arbitrary
+        return $ Individual s (d1, d2) phenotype
+
 instance Arbitrary Population where
-    arbitrary = Population <$> arbitrary 
+    arbitrary = Population <$> arbitrary
 
 spec :: Spec
 spec = parallel $ do
     describe "Population" $ do
 
         it "individual has two different dna strings" $
-            property ( \(Individual _ (dna1, dna2)) ->
+            property ( \(Individual _ (dna1, dna2) _) ->
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )
 
@@ -51,7 +53,7 @@ spec = parallel $ do
         it "doesn't change the population" $
             property ( \p i ->
                     let survivors = fst $ sampleState (allSurvive  p) $ mkStdGen i
-                    in 
+                    in
                         p == survivors
                 )
 
@@ -59,7 +61,7 @@ spec = parallel $ do
         it "has no surviors" $
             property ( \p i ->
                 let survivingPopulation = fst $ sampleState (individuals <$> extinction p) $ mkStdGen i
-                in 
+                in
                     [] == survivingPopulation
             )
 
@@ -67,7 +69,7 @@ spec = parallel $ do
         it "produces population of limited size" $
             property ( \p i ->
                 let survivingPopulation = fst $ sampleState (individuals <$> fittest 3 (const 1.0) p) $ mkStdGen i
-                in 
+                in
                     3 >= length survivingPopulation
             )
 
