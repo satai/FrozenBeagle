@@ -1,12 +1,7 @@
 #!/bin/bash
 
-cabal clean
-cabal configure --enable-tests --disable-optimization --disable-library-coverage
-rm -r tests.tix  .hpc/
-
-while true; do
-  inotifywait -r -e modify src/ testsuite/ FrozenBeagle.cabal  
-
+function test_it {
+  rm -r tests.tix  .hpc/
   cabal test 2>&1  \
         | ack --flush --passthru --color --color-match=red    "^.*FAIL.*" \
         | ack --flush --passthru --color --color-match=red    "^.*Fail.*" \
@@ -26,4 +21,15 @@ while true; do
 
   echo
   echo
+}
+
+cabal clean
+cabal configure --enable-tests --disable-optimization --disable-library-coverage
+
+test_it
+
+while true; do
+  inotifywait -r -e modify src/ testsuite/ FrozenBeagle.cabal  
+
+  test_it
 done

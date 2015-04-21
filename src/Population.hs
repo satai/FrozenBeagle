@@ -16,19 +16,13 @@ import Data.Random.RVar
 import System.Random
 import Data.Functor
 import Genes
+import Sex
+import Individual
 import Phenotype
+import Individual
+import Expression
 import Debug.Trace
 import Data.Bits
-
-data Sex = M | F deriving (Eq, Show, Ord, Enum, Generic)
-
-instance Hashable Sex
-
-data Individual = Individual {
-                                sex :: Sex,
-                                chromosomes :: (DnaString, DnaString),
-                                phenotype :: Phenotype
-                             } deriving (Eq, Show, Ord, Generic)
 
 instance Hashable Individual where
   hashWithSalt s i = s `xor` hash (sex i) `xor` hash (chromosomes i)
@@ -58,30 +52,31 @@ chosenPairs population = zip m f
           (m, gen') = sampleState m' gen
           (f, _   ) = sampleState f' gen'
 
-mate :: (Individual, Individual) -> [Individual]
-mate (Individual M (mdna1, mdna2) _, Individual F (fdna1, fdna2) _) = [son1, daughter1, son2, daughter2]
+mate :: ExpressionStrategy -> (Individual, Individual) -> [Individual]
+mate expression (Individual M (mdna1, mdna2) _, Individual F (fdna1, fdna2) _) = [son1, daughter1, son2, daughter2]
         where
             s1d1 = crossover 5 mdna1 fdna1
             s1d2 = crossover 5 fdna2 mdna2
             d1d1 = crossover 4 mdna1 fdna1
             d1d2 = crossover 4 fdna2 mdna2
 
-            son1 = Individual M (s1d1, s1d2) $ Phenotype []
-            daughter1 = Individual F (d1d1, d1d2) $ Phenotype []
+            son1 = Individual M (s1d1, s1d2) $ expression M (s1d1, s1d2)
+            daughter1 = Individual F (d1d1, d1d2) $ expression F (d1d1, d1d2)
 
             s2d1 = crossover 7 mdna1 fdna1
             s2d2 = crossover 7 fdna2 mdna2
             d2d1 = crossover 8 mdna1 fdna1
             d2d2 = crossover 8 fdna2 mdna2
 
-            son2 = Individual M (s2d1, s2d2) $ Phenotype []
-            daughter2 = Individual F (d2d1, d2d2) $ Phenotype []
+            son2 = Individual M (s2d1, s2d2) $ expression M (s2d1, s2d2)
+            daughter2 = Individual F (d2d1, d2d2) $ expression F (d2d1, d2d2)
             --FIXME totaly wrong
 
-panmictic :: Breeding
-panmictic population = return $ Population $ concat children
+panmictic :: ExpressionStrategy -> Breeding
+panmictic expression population = return $ Population $ concat children
         where
-          children = map mate $ chosenPairs population
+          children :: [[Individual]]
+          children = map (mate expression) $ chosenPairs population
 
 type Selection = PopulationChange
 
@@ -91,19 +86,21 @@ allSurvive = return
 extinction :: Selection
 extinction = return . (const $ Population [])
 
+type Fitness = Phenotype -> Double
+
 hardSelection :: Fitness -> Double -> Selection
 hardSelection fitness treshold = return . Population . filterSurvivors . individuals
         where
             filterSurvivors :: [Individual] -> [Individual]
-            filterSurvivors = filter ((>treshold) . fitness)
-
-type Fitness = Individual -> Double
+            filterSurvivors = filter ((>treshold) . fitness . phenotype)
 
 fittest :: Int -> Fitness-> Selection
 fittest newSize fitness (Population p) = return $ Population survivors
     where
+        survivors :: [Individual]
         survivors = take newSize $ sortBy fitnessComparator p
-        fitnessComparator i1 i2 = fitness i2 `compare` fitness i1
+        fitnessComparator :: Individual ->Individual -> Ordering
+        fitnessComparator i1 i2 = fitness (phenotype i2) `compare` fitness (phenotype i1)
 
 fairChance :: Int -> Selection
 fairChance newSize p = Population <$> sample newSize (individuals p)

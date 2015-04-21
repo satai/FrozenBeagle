@@ -47,21 +47,21 @@ randomBase :: RVar Basis
 randomBase = choice [G,T,C,A]
 
 avgFitness :: Population -> Double
-avgFitness (Population is) = average $ map fitness is
+avgFitness (Population is) = average $ map (fitness . phenotype) is
 
 average :: [Double] -> Double
 average [] = 0.0
 average xs = (sum xs) / fromIntegral (length xs)
 
 minFitness :: Population -> Double
-minFitness (Population is) = minimum $ (largestDouble :) $ map fitness is
+minFitness (Population is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
     where largestDouble = 1.7976931348623157e308
 
-fitness :: Individual -> Double
+fitness :: Phenotype -> Double
 fitness = fitness' (Phenotype [1.0, 1.0, 0, 0])  --fixme
 
-fitness' :: Phenotype -> Individual -> Double
-fitness' optimum individual = 1.0 / (phenotype individual `distance` optimum + 0.001)
+fitness' :: Phenotype -> Phenotype -> Double
+fitness' optimum individual = 1.0 / (individual `distance` optimum + 0.001)
 
 randomRules :: RVar [(Schema, Phenotype)]
 randomRules =  sequence $ take 100 $ repeat randomRule
@@ -101,7 +101,7 @@ computeSimulation params =
         initialPopulation = randomPopulation startPopulationSize
         rules = EvolutionRules {
                                     mutation = return, --FIXME
-                                    breeding = panmictic,
+                                    breeding = panmictic express,
                                     selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
                                 }   --FIXME
         generations = take 100 $ evolution rules initialPopulation

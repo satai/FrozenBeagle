@@ -3,7 +3,7 @@ module Expression(ExpressionStrategy, schemaBasedExpression) where
 import Genes
 import Schema
 import Phenotype
-import Population
+import Sex
 
 type ExpressionStrategy = Sex -> (DnaString, DnaString) -> Phenotype
 

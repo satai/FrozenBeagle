@@ -24,6 +24,8 @@ instance Arbitrary Individual where
 instance Arbitrary Population where
     arbitrary = Population <$> arbitrary
 
+instance Arbitrary Sex
+
 spec :: Spec
 spec = parallel $ do
     describe "Population" $ do
