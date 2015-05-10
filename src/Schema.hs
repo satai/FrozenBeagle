@@ -19,6 +19,6 @@ matches (Schema s) (DnaString d) = matches' s d
     where
         matches' :: [Maybe Basis] -> [Basis] -> Bool
         matches' [] [] = True
-        matches' ((Just b1): b1s) (b2:b2s) = (b1 == b2) && (matches' b1s b2s)
         matches' (Nothing : b1s) (_ : b2s) = matches' b1s b2s
+        matches' ((Just b1): b1s) (b2:b2s) = (b1 == b2) && (matches' b1s b2s)
         matches' _ _ = error "Incopatible Schema and DNA"

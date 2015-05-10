@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module UnitTests.PopulationSpec (spec, Arbitrary) where
 
 import Test.Hspec

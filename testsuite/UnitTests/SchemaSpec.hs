@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module UnitTests.SchemaSpec(spec, Arbitrary, allMatchingSchema) where
 
 import Test.Hspec
@@ -13,7 +15,7 @@ instance Arbitrary Schema where
 
 allMatchingSchema :: Schema
 allMatchingSchema = Schema $ replicate 10 Nothing
-      
+
 spec :: Spec
 spec = parallel $ do
     describe "Schema" $ do

@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module UnitTests.PhenotypeSpec (spec, Phenotype, Arbitrary) where
 
 import Test.Hspec

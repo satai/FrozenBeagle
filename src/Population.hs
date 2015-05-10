@@ -4,7 +4,7 @@ module Population (Population(Population, individuals),
                    PopulationChange, Selection, Breeding, Mutation, Fitness,
                    Individual(Individual, sex, chromosomes, phenotype), Sex(F,M),DnaString,
                    males, females,
-                   panmictic,
+                   panmictic, panmicticOverlap,
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
 
 import Data.List
@@ -20,10 +20,6 @@ import Sex
 import Individual
 import Phenotype
 import Expression
-import Data.Bits
-
-instance Hashable Individual where
-  hashWithSalt s i = s `xor` hash (sex i) `xor` hash (chromosomes i)
 
 data Population = Population { individuals :: [Individual] } deriving (Eq, Show, Generic)
 
@@ -70,8 +66,16 @@ mate expression (Individual M (mdna1, mdna2) _, Individual F (fdna1, fdna2) _) =
             daughter2 = Individual F (d2d1, d2d2) $ expression F (d2d1, d2d2)
             --FIXME totaly wrong
 
+mate _ _ = error "Should not happen"
+
 panmictic :: ExpressionStrategy -> Breeding
 panmictic expression population = return $ Population $ concat children
+        where
+          children :: [[Individual]]
+          children = map (mate expression) $ chosenPairs population
+
+panmicticOverlap :: ExpressionStrategy -> Breeding
+panmicticOverlap expression population = return $ Population $ individuals population ++ concat children
         where
           children :: [[Individual]]
           children = map (mate expression) $ chosenPairs population

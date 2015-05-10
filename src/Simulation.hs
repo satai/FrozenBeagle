@@ -14,7 +14,6 @@ import Data.Random.Distribution.Uniform
 import System.Random
 
 data AnalysisParameters = AnalysisParameters {
-    multipleRuns :: Bool,
     separatedGenerations :: Bool,
     populationSize :: Int
     }
@@ -29,7 +28,7 @@ randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
         chs <- randomChromosomes
-        return $ Individual gender chs $ Phenotype []
+        return $ Individual gender chs $ Phenotype [1000.0, 1000.0, 10000.0, 10000.0 ] --FIXME
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -41,7 +40,7 @@ randomChromosomes = do
             return (dna1, dna2)
 
 randomDnaString :: RVar DnaString
-randomDnaString = DnaString <$> (sequence $ take 10 $ repeat randomBase)
+randomDnaString = DnaString <$> (sequence $ take 15 $ repeat randomBase)
 
 randomBase :: RVar Basis
 randomBase = choice [G,T,C,A]
@@ -95,13 +94,14 @@ express = schemaBasedExpression $ fst $ sampleState (randomRules) (mkStdGen 0)
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
 
-computeSimulation :: AnalysisParameters -> [(String, [(Int, Double)])]
+computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
     let startPopulationSize = populationSize params
         initialPopulation = randomPopulation startPopulationSize
+        breedingStrategy = if (separatedGenerations params) then panmictic express else panmicticOverlap express
         rules = EvolutionRules {
                                     mutation = return, --FIXME
-                                    breeding = panmictic express,
+                                    breeding = breedingStrategy,
                                     selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
                                 }   --FIXME
         generations = take 100 $ evolution rules initialPopulation

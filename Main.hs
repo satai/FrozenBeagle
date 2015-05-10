@@ -14,7 +14,6 @@ import System.Directory
 import Simulation
 
 data AnalysisParametersFields = AnalysisParametersFields {
-    multipleRunsField :: CheckButton,
     separatedGenerationsField :: CheckButton,
     populationSizeField :: SpinButton
     }
@@ -51,7 +50,6 @@ prepareWindow nameField parameterFields resultNotebook = do
     boxPackStart settingsSwitchesBoxLeft populationSizeBox PackNatural 0
 
     boxPackStart settingsSwitchesBoxLeft (separatedGenerationsField parameterFields) PackNatural 0
-    boxPackStart settingsSwitchesBoxLeft (multipleRunsField parameterFields) PackNatural 0
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     settingsSwitchesBox <- hBoxNew False 0
@@ -105,10 +103,9 @@ main = do
 
     nameField <- entryNew
     separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
-    multipleSimulationsSwitch <- checkButtonNewWithLabel "Multiple Simulations"
     populationSizeScale <- spinButtonNewWithRange  10 10000 10
 
-    let parameterFields = AnalysisParametersFields separatedGenerationsSwitch multipleSimulationsSwitch populationSizeScale
+    let parameterFields = AnalysisParametersFields separatedGenerationsSwitch populationSizeScale
 
     resultNotebook <- notebookNew
 
@@ -119,10 +116,9 @@ main = do
 
 extractParameters :: AnalysisParametersFields -> IO (AnalysisParameters)
 extractParameters parameterFields = do
-    multipleRuns <- toggleButtonGetMode $ multipleRunsField parameterFields
     separatedGen <- toggleButtonGetMode $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
-    return (AnalysisParameters  multipleRuns separatedGen popSize)
+    return (AnalysisParameters separatedGen popSize)
 
 runSimulation :: Entry -> AnalysisParametersFields -> Notebook -> Window -> IO()
 runSimulation nameField parameterFields resultNotebook window =
@@ -133,7 +129,7 @@ runSimulation nameField parameterFields resultNotebook window =
             let simResults = computeSimulation parameters
             putStrLn $ show simResults
             sequence_ (map (showResult resultNotebook name) simResults)
-            
+
             postGUIAsync $ do
                 widgetShowAll window
                 return ()

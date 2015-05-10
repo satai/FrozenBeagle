@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module UnitTests.GenesSpec (spec, DnaString, Basis) where
 
 import Test.Hspec
@@ -8,7 +10,7 @@ import Data.List
 import Genes
 
 instance Arbitrary Basis where
-  arbitrary = do 
+  arbitrary = do
        elements [G, A, T, C]
 
 instance Arbitrary DnaString where
@@ -33,7 +35,7 @@ spec = parallel $ do
 
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) -> \(DnaString dna2)  ->
-                (length $ dna1) == 
+                (length $ dna1) ==
                     (length $ genes $ crossover 4 (DnaString dna1) (DnaString dna2))
             )
 
@@ -43,21 +45,21 @@ spec = parallel $ do
                     (take n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
             )
 
-        it "end of crosovered DNA is from the second mother string" $ 
+        it "end of crosovered DNA is from the second mother string" $
             property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  ->
-                (drop n dna2) == 
+                (drop n dna2) ==
                     (drop n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
             )
 
         it "mutated dna has same length as dna before mutation" $
             property ( \(IndexInString n) -> \b -> \(DnaString dna) ->
-                (length dna) == 
+                (length dna) ==
                     (length $ genes $ mutate n b (DnaString dna))
             )
 
         it "mutated dna has new basis at point of mutation" $
             property ( \(IndexInString n) -> \b -> \(DnaString dna ) ->
-                b == 
+                b ==
                     (genes $ mutate n b (DnaString dna)) !! n
             )
 
