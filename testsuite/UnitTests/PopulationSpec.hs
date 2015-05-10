@@ -11,15 +11,15 @@ import qualified Data.MultiSet as MultiSet
 import Population
 
 import UnitTests.GenesSpec()
-import UnitTests.PhenotypeSpec(Arbitrary)
+import UnitTests.PhenotypeSpec()
 
 instance Arbitrary Individual where
     arbitrary = do
         s <- elements [M, F]
         d1 <- arbitrary
         d2 <- arbitrary
-        phenotype <- arbitrary
-        return $ Individual s (d1, d2) phenotype
+        p <- arbitrary
+        return $ Individual s (d1, d2) p
 
 instance Arbitrary Population where
     arbitrary = Population <$> arbitrary
@@ -93,13 +93,14 @@ spec = parallel $ do
             )
 
         it "can keep only part of the population" $
-            property ( \populationPart1 populationPart2 i macho1 macho2 ->
-                let fitness individual
-                        | macho1 == individual = 100.0
-                        | macho2 == individual = 111.0
+            property ( \ populationPart1 populationPart2 i g1 g2 g3 g4 macho1 macho2 ->
+                let fitness :: Fitness
+                    fitness p
+                        | macho1 == p = 100.0
+                        | macho2 == p = 111.0
                         | otherwise            =   0.1
-                    populationWithMacho = Population $ [macho1] ++ populationPart1 ++ [macho2] ++ populationPart2
+                    populationWithMacho = Population $ [Individual M (g1, g2) macho1] ++ populationPart1 ++ [Individual M (g3, g4) macho2] ++ populationPart2
                     survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
                 in
-                    survivingPopulation `shouldBe` [macho1, macho2]
+                    map phenotype survivingPopulation `shouldBe` [macho1, macho2]
             )

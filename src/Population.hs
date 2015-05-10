@@ -19,9 +19,7 @@ import Genes
 import Sex
 import Individual
 import Phenotype
-import Individual
 import Expression
-import Debug.Trace
 import Data.Bits
 
 instance Hashable Individual where

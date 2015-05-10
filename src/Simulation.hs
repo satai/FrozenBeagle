@@ -28,8 +28,8 @@ randomIndividuals count = sequence $ take count $ repeat randomIndividual
 randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
-        chromosomes <- randomChromosomes
-        return $ Individual gender chromosomes $ Phenotype []
+        chs <- randomChromosomes
+        return $ Individual gender chs $ Phenotype []
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -69,8 +69,8 @@ randomRules =  sequence $ take 100 $ repeat randomRule
 randomRule :: RVar (Schema, Phenotype)
 randomRule = do
     schema <- randomSchema
-    phenotype <- randomPhenotype
-    return (schema, phenotype)
+    p <- randomPhenotype
+    return (schema, p)
 
 randomSchema :: RVar Schema
 randomSchema = Schema <$> sequence elems

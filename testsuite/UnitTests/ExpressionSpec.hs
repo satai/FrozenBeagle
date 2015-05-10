@@ -2,7 +2,6 @@ module UnitTests.ExpressionSpec(spec) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
 
 import Genes
 import Population
@@ -19,21 +18,21 @@ spec = parallel $ do
     describe "Schema based Expression" $ do
 
         it "Is zero vector for no schema" $
-            property (\sex chromosomes ->
-                schemaBasedExpression [] sex chromosomes `shouldBe` Phenotype [0, 0, 0, 0]
+            property (\ s chs ->
+                schemaBasedExpression [] s chs `shouldBe` Phenotype [0, 0, 0, 0]
             )
 
         it "Is zero vector when no matching schema" $
-            property (\phenotypeChange ->
+            property (\ phenotypeChange ->
                 schemaBasedExpression [(Schema $ replicate 10 $ Just A, phenotypeChange)] M (DnaString $ replicate 10 T, DnaString $ replicate 10 G) `shouldBe` Phenotype [0, 0, 0, 0]
             )
 
         it "Moves phenotype if matches" $
-            property (\phenotypeChange sex chromosomes ->
-                schemaBasedExpression [(allMatchingSchema, phenotypeChange)] sex chromosomes `shouldBe` phenotypeChange
+            property (\ phenotypeChange s chs ->
+                schemaBasedExpression [(allMatchingSchema, phenotypeChange)] s chs `shouldBe` phenotypeChange
             )
 
         it "Moves phenotype for each matching schema" $
-            property (\sex chromosomes ->
-                schemaBasedExpression [(allMatchingSchema, Phenotype [1, 0, 0, 1]), (allMatchingSchema, Phenotype [0, 1, 0, 1])] sex chromosomes `shouldBe` Phenotype [1, 1, 0, 2]
+            property (\ s chs ->
+                schemaBasedExpression [(allMatchingSchema, Phenotype [1, 0, 0, 1]), (allMatchingSchema, Phenotype [0, 1, 0, 1])] s chs `shouldBe` Phenotype [1, 1, 0, 2]
             )

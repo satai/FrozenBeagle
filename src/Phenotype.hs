@@ -6,4 +6,4 @@ phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs
 
 distance :: Phenotype -> Phenotype -> Double
-distance (Phenotype p1) (Phenotype p2) = sqrt $ sum $ map (^2) $ zipWith (-) p1 p2
+distance (Phenotype p1) (Phenotype p2) = sqrt $ sum $ map (\ x -> x * x) $ zipWith (-) p1 p2

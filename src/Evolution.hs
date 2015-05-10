@@ -1,7 +1,7 @@
 module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection), evolution) where
 
 import Data.Random
-import Data.Functor
+import Data.Functor()
 
 import Population
 
