@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Population (Population(Population, individuals),
-                   PopulationChange, Selection, Breeding, Mutation,
+                   PopulationChange, Selection, Breeding, Mutation, Fitness,
                    Individual(Individual, sex, chromosomes, phenotype), Sex(F,M),DnaString,
                    males, females,
                    panmictic,
