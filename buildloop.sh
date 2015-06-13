@@ -29,7 +29,7 @@ cabal configure --enable-tests --disable-optimization --disable-library-coverage
 test_it
 
 while true; do
-  inotifywait -r -e modify src/ testsuite/ FrozenBeagle.cabal  
+  inotifywait -r -e modify src/ testsuite/ FrozenBeagle.cabal
 
   test_it
 done
