@@ -7,7 +7,6 @@ import Genes
 import Phenotype
 import Population
 
-import Data.Functor
 import Data.Random
 import Data.Random.Extras
 import Data.Random.Distribution.Uniform

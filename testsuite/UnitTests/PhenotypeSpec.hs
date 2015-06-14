@@ -4,7 +4,6 @@ module UnitTests.PhenotypeSpec (spec, Phenotype, Arbitrary) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
 import Phenotype
 
 instance Arbitrary Phenotype where

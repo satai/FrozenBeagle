@@ -4,7 +4,6 @@ module UnitTests.GenesSpec (spec, DnaString, Basis) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
 import Data.List
 
 import Genes

@@ -14,7 +14,6 @@ import Data.Random.Extras
 import Data.Random(sampleState)
 import Data.Random.RVar
 import System.Random
-import Data.Functor
 import Genes
 import Sex
 import Individual

@@ -4,7 +4,6 @@ module UnitTests.SchemaSpec(spec, Arbitrary, allMatchingSchema) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Data.Functor
 
 import Genes
 import Schema

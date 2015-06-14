@@ -6,7 +6,6 @@ import Test.Hspec
 import Test.QuickCheck
 
 import System.Random
-import Data.Functor
 import Data.Random
 import qualified Data.MultiSet as MultiSet
 
