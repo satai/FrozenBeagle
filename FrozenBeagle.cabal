@@ -46,14 +46,14 @@ build-type:          Simple
 -- extra-source-files:  
 
 -- Constraint on the version of Cabal needed to build this package.
-cabal-version:       >=1.10
+cabal-version:       >=1.22
 
 library
   ghc-options:         -Wall -O2 -rtsopts -auto-all -fforce-recomp
   exposed-modules:     FrozenBeagle, Genes, Sex, Individual, Population, Schema, Phenotype,
                        Evolution, Expression, Simulation
 
-  build-depends:       base >= 4.7 && <5,
+  build-depends:       base >= 4.8 && <5,
                        containers, hashable,
                        random-fu, random-extras, random-source, random
   hs-source-dirs:      src
@@ -70,7 +70,7 @@ executable FrozenBeagleSimulation
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.7 && <=4.8,
+  build-depends:       base >=4.8 && <=4.9,
                        random-fu, random-extras, random-source,
                        Chart >= 1.3, Chart-cairo,
                        gtk3, colour, data-default-class, lens, cairo > 0.13,
