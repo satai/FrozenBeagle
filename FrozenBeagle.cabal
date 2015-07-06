@@ -92,8 +92,8 @@ test-suite tests
   type:                exitcode-stdio-1.0
   main-is:             Spec.hs
   hs-source-dirs:      testsuite
-  build-depends:       ghc, base, 
-                       array, containers, multiset,
+  build-depends:       ghc, base,
+                       array, containers, multiset, hashable,
                        random-fu, random-extras, random-source, random,
                        QuickCheck > 2.5, hspec == 2.1.*,
                        FrozenBeagle
