@@ -12,8 +12,8 @@ dist/prace.ps: dist/prace.dvi
 
 # LaTeX je potreba spustit dvakrat, aby spravne spocital odkazy
 dist/prace.dvi: prace.tex $(wildcard *.tex)
-	cslatex -output-directory=dist/ $<
-	cslatex -output-directory=dist/ $<
+	cslatex -output-directory=dist $<
+	cslatex -output-directory=dist $<
 
 clean:
-	rm -f *.{log,dvi,aux,toc,lof,out} prace.ps prace.pdf
+	rm -f dist/*
