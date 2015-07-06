@@ -22,3 +22,6 @@ spec = parallel $ do
 
         it "Distance is symetric" $
             property (\p1 p2 -> (distance p1 p2) == (distance p2 p1))
+
+        it "Phenotype has sane text representation" $
+            (show (Phenotype [0, 0, 1])) `shouldBe` "Phenotype [0.0,0.0,1.0]"
