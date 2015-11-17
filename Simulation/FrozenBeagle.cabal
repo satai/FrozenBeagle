@@ -73,7 +73,7 @@ executable FrozenBeagleSimulation
   build-depends:       base >=4.8 && <=4.9,
                        random-fu, random-extras, random-source,
                        Chart >= 1.3, Chart-cairo,
-                       gtk3, colour, data-default-class, lens, cairo > 0.13,
+                       gtk3, colour, data-default-class, lens, cairo >= 0.13,
                        FrozenBeagle,
                        directory
 
@@ -81,7 +81,7 @@ executable FrozenBeagleSimulation
   --hs-source-dirs:      src
 
   -- compiler options
-  ghc-options:         -Wall -threaded -O2 -rtsopts -auto-all -prof -fforce-recomp
+  ghc-options:         -Wall -threaded -O2 -rtsopts -auto-all
   
   -- Base language which the package is written in.
   default-language:    Haskell2010
@@ -95,6 +95,6 @@ test-suite tests
   build-depends:       ghc, base,
                        array, containers, multiset, hashable,
                        random-fu, random-extras, random-source, random,
-                       QuickCheck > 2.5, hspec == 2.1.*,
+                       QuickCheck > 2.5, hspec >= 2.1,
                        FrozenBeagle
   default-language:    Haskell2010 
