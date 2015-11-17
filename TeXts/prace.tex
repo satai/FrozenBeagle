@@ -25,11 +25,13 @@
 % \setlength\headheight{0mm}
 % \let\openright=\cleardoublepage
 
+\usepackage{lmodern}
+
 %% Pokud používáte csLaTeX (doporučeno):
-\usepackage{czech}
+%\usepackage{czech}
 %% Pokud nikoliv:
-%\usepackage[czech]{babel}
-%\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
+\usepackage[T1]{fontenc}
 
 %% Použité kódování znaků: obvykle latin2, cp1250 nebo utf8:
 \usepackage[utf8]{inputenc}
@@ -37,6 +39,7 @@
 %% Ostatní balíčky
 \usepackage{graphicx}
 \usepackage{amsthm}
+
 
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
 %% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
