@@ -14,6 +14,7 @@ import System.Random
 
 data AnalysisParameters = AnalysisParameters {
     separatedGenerations :: Bool,
+    hardSelectionTreshold :: Double,
     populationSize :: Int
     }
 
