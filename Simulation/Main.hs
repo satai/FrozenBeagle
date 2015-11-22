@@ -27,48 +27,45 @@ disableButtonIfInBroadway button = do
     where
         runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
 
-labeledTextField :: String -> VBox -> IO(Entry)
-labeledTextField description container = do
+labeledNewTextField :: String -> VBox -> IO(Entry)
+labeledNewTextField description container = do
     entry <- entryNew
-
-    nameFieldBox <- hBoxNew False 10
-    nameFieldlabel <- labelNew (Just description)
-    boxPackStart nameFieldBox nameFieldlabel PackNatural 0
-    boxPackStart nameFieldBox entry PackNatural 10
-    boxPackStart container nameFieldBox PackNatural 0
+    insertIntoBoxWithLabel entry description container
     return entry
+
+labeledNewScale :: String -> Double -> Double -> Double -> VBox -> IO(SpinButton)
+labeledNewScale description min max step container = do
+    scale <- spinButtonNewWithRange min max step
+    insertIntoBoxWithLabel scale description container
+    return scale
+
+checkBoxNewWithLabel :: String -> VBox -> IO(CheckButton)
+checkBoxNewWithLabel description container = do
+    switch <- checkButtonNew
+    insertIntoBoxWithLabel switch description container
+    return switch
+
+insertIntoBoxWithLabel control description container = do
+    box <- hBoxNew False 10
+    label <- labelNew (Just description)
+
+    boxPackStart box label PackNatural 0
+    boxPackEnd box control  PackNatural 10
+    boxPackStart container box PackNatural 0
 
 prepareWindow :: Notebook -> IO(Window)
 prepareWindow resultNotebook = do
-
-    separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
-    hardSelectionTresholdScale <- spinButtonNewWithRange 0 100 0.001
-    populationSizeScale <- spinButtonNewWithRange  10 10000 10
 
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
     settingsBox <- vBoxNew True 10
-
     settingsSwitchesBoxLeft <- vBoxNew False 0
 
-    nameField <- labeledTextField "Description" settingsSwitchesBoxLeft
-
-    populationSizeBox <- hBoxNew False 10
-    populationSizeLabel <- labelNew (Just "Population Size")
-
-    hardSelectionTresholdBox <- hBoxNew False 10
-    hardSelectionTresholdLabel <- labelNew (Just "Hard Selection Treshold")
-
-    boxPackStart populationSizeBox populationSizeLabel PackNatural 0
-    boxPackStart populationSizeBox populationSizeScale  PackNatural 10
-    boxPackStart settingsSwitchesBoxLeft populationSizeBox PackNatural 0
-
-    boxPackStart hardSelectionTresholdBox hardSelectionTresholdLabel PackNatural 0
-    boxPackStart hardSelectionTresholdBox hardSelectionTresholdScale PackNatural 10
-    boxPackStart settingsSwitchesBoxLeft hardSelectionTresholdBox PackNatural 0
-
-    boxPackStart settingsSwitchesBoxLeft separatedGenerationsSwitch PackNatural 0
+    nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
+    populationSizeScale <- labeledNewScale "Population Size" 10 1000 10 settingsSwitchesBoxLeft
+    hardSelectionTresholdScale <- labeledNewScale "Hard selection treshold" 0.0 100.0 0.01 settingsSwitchesBoxLeft
+    separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     settingsSwitchesBox <- hBoxNew False 0
