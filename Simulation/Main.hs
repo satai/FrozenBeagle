@@ -27,9 +27,24 @@ disableButtonIfInBroadway button = do
     where
         runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
 
+labeledTextField :: String -> VBox -> IO(Entry)
+labeledTextField description container = do
+    entry <- entryNew
 
-prepareWindow :: Entry -> AnalysisParametersFields -> Notebook -> IO(Window)
-prepareWindow nameField parameterFields resultNotebook = do
+    nameFieldBox <- hBoxNew False 10
+    nameFieldlabel <- labelNew (Just description)
+    boxPackStart nameFieldBox nameFieldlabel PackNatural 0
+    boxPackStart nameFieldBox entry PackNatural 10
+    boxPackStart container nameFieldBox PackNatural 0
+    return entry
+
+prepareWindow :: Notebook -> IO(Window)
+prepareWindow resultNotebook = do
+
+    separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
+    hardSelectionTresholdScale <- spinButtonNewWithRange 0 100 0.001
+    populationSizeScale <- spinButtonNewWithRange  10 10000 10
+
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
@@ -37,11 +52,7 @@ prepareWindow nameField parameterFields resultNotebook = do
 
     settingsSwitchesBoxLeft <- vBoxNew False 0
 
-    nameFieldBox <- hBoxNew False 10
-    nameFieldlabel <- labelNew (Just "Description")
-    boxPackStart nameFieldBox nameFieldlabel PackNatural 0
-    boxPackStart nameFieldBox nameField PackNatural 10
-    boxPackStart settingsSwitchesBoxLeft nameFieldBox PackNatural 0
+    nameField <- labeledTextField "Description" settingsSwitchesBoxLeft
 
     populationSizeBox <- hBoxNew False 10
     populationSizeLabel <- labelNew (Just "Population Size")
@@ -50,14 +61,14 @@ prepareWindow nameField parameterFields resultNotebook = do
     hardSelectionTresholdLabel <- labelNew (Just "Hard Selection Treshold")
 
     boxPackStart populationSizeBox populationSizeLabel PackNatural 0
-    boxPackStart populationSizeBox (populationSizeField parameterFields) PackNatural 10
+    boxPackStart populationSizeBox populationSizeScale  PackNatural 10
     boxPackStart settingsSwitchesBoxLeft populationSizeBox PackNatural 0
 
     boxPackStart hardSelectionTresholdBox hardSelectionTresholdLabel PackNatural 0
-    boxPackStart hardSelectionTresholdBox (hardSelectionTresholdField parameterFields) PackNatural 10
+    boxPackStart hardSelectionTresholdBox hardSelectionTresholdScale PackNatural 10
     boxPackStart settingsSwitchesBoxLeft hardSelectionTresholdBox PackNatural 0
 
-    boxPackStart settingsSwitchesBoxLeft (separatedGenerationsField parameterFields) PackNatural 0
+    boxPackStart settingsSwitchesBoxLeft separatedGenerationsSwitch PackNatural 0
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     settingsSwitchesBox <- hBoxNew False 0
@@ -98,9 +109,14 @@ prepareWindow nameField parameterFields resultNotebook = do
                                  containerBorderWidth := 10,
                                  containerChild := mainTable ]
 
-    _ <- on runButton buttonActivated (runSimulation nameField parameterFields resultNotebook window)
+    Graphics.UI.Gtk.windowFullscreen window
+
+    let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale
+
+    _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
+
 
     return (window)
 
@@ -109,16 +125,9 @@ main :: IO ()
 main = do
     _ <- initGUI
 
-    nameField <- entryNew
-    separatedGenerationsSwitch <- checkButtonNewWithLabel "Separated Generations"
-    hardSelectionTresholdScale <- spinButtonNewWithRange 0 100 0.001
-    populationSizeScale <- spinButtonNewWithRange  10 10000 10
-
-    let parameterFields = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale
-
     resultNotebook <- notebookNew
 
-    window <- prepareWindow nameField parameterFields resultNotebook
+    window <- prepareWindow resultNotebook
     widgetShowAll window
 
     mainGUI
