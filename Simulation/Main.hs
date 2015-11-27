@@ -53,8 +53,6 @@ insertIntoBoxWithLabel control description container = do
     boxPackEnd box control  PackNatural 10
     boxPackStart container box PackNatural 0
 
-prepareWindow :: Notebook -> IO(Window)
-prepareWindow resultNotebook = do
 placeAndSizeWindow window mainTable = do
     Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
                                  windowDefaultHeight := 1200,
@@ -62,6 +60,9 @@ placeAndSizeWindow window mainTable = do
                                  containerChild := mainTable ]
 
     Graphics.UI.Gtk.windowFullscreen window
+
+prepareWindow :: IO(Window)
+prepareWindow = do
 
     window  <- windowNew
     mainTable <- vBoxNew False 3
@@ -94,6 +95,8 @@ placeAndSizeWindow window mainTable = do
     boxPackStart mainTable runBox PackNatural 3
     boxPackStart mainTable sep1 PackNatural 3
 
+    resultNotebook <- notebookNew
+
     boxPackStart mainTable resultNotebook PackGrow 3
     Graphics.UI.Gtk.set resultNotebook [notebookScrollable := True, notebookTabPos := PosTop]
 
@@ -115,6 +118,7 @@ placeAndSizeWindow window mainTable = do
     _ <- on window objectDestroy mainQuit
 
     placeAndSizeWindow window mainTable
+    widgetShowAll window
 
     return (window)
 
@@ -123,10 +127,7 @@ main :: IO ()
 main = do
     _ <- initGUI
 
-    resultNotebook <- notebookNew
-
-    window <- prepareWindow resultNotebook
-    widgetShowAll window
+    window <- prepareWindow
 
     mainGUI
 
