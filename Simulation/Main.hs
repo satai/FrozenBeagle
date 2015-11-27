@@ -55,6 +55,13 @@ insertIntoBoxWithLabel control description container = do
 
 prepareWindow :: Notebook -> IO(Window)
 prepareWindow resultNotebook = do
+placeAndSizeWindow window mainTable = do
+    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
+                                 windowDefaultHeight := 1200,
+                                 containerBorderWidth := 10,
+                                 containerChild := mainTable ]
+
+    Graphics.UI.Gtk.windowFullscreen window
 
     window  <- windowNew
     mainTable <- vBoxNew False 3
@@ -101,19 +108,13 @@ prepareWindow resultNotebook = do
 
     boxPackStart mainTable quitBox  PackNatural 3
 
-    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
-                                 windowDefaultHeight := 1200,
-                                 containerBorderWidth := 10,
-                                 containerChild := mainTable ]
-
-    Graphics.UI.Gtk.windowFullscreen window
-
     let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
 
+    placeAndSizeWindow window mainTable
 
     return (window)
 
