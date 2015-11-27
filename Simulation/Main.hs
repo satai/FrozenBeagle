@@ -49,8 +49,8 @@ insertIntoBoxWithLabel control description container = do
     box <- hBoxNew False 10
     label <- labelNew (Just description)
 
-    boxPackStart box label PackNatural 0
-    boxPackEnd box control  PackNatural 10
+    boxPackStart box label PackNatural 3
+    boxPackEnd box control  PackNatural 3
     boxPackStart container box PackNatural 0
 
 placeAndSizeWindow window mainTable = do
@@ -61,33 +61,74 @@ placeAndSizeWindow window mainTable = do
 
     Graphics.UI.Gtk.windowFullscreen window
 
+optimumMovement row container = do
+  hbox <- hBoxNew False 10
+
+  label <- labelNew $ Just $ "Dimension " ++ show row
+  boxPackStart hbox label PackNatural 3
+
+  period <- spinButtonNewWithRange 0 100 1
+  spinButtonSetValue period 100
+  boxPackStart hbox period PackNatural 3
+  widgetSetTooltipText period (Just "Period in generations")
+
+  amplitude <- spinButtonNewWithRange 0 10.0 0.001
+  spinButtonSetValue amplitude 0.0
+  boxPackStart hbox amplitude PackNatural 3
+  widgetSetTooltipText period (Just "Amplitude")
+
+  gradient <- spinButtonNewWithRange 0 1.0 0.001
+  spinButtonSetValue gradient 0.0
+  boxPackStart hbox gradient PackNatural 3
+  widgetSetTooltipText period (Just "Gradient of change - change per generation")
+
+  boxPackStart container hbox PackNatural 3
+  return (period)
+
+optimumMovements container =
+   mapM_ (\i -> optimumMovement i container) [1..4]
+
 prepareWindow :: IO(Window)
 prepareWindow = do
 
     window  <- windowNew
     mainTable <- vBoxNew False 3
 
-    settingsBox <- vBoxNew True 10
+    settingsBox <- vBoxNew False 10
+
     settingsSwitchesBoxLeft <- vBoxNew False 0
+    containerSetBorderWidth settingsSwitchesBoxLeft 10
+    boxSetHomogeneous settingsSwitchesBoxLeft True
 
     nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
     populationSizeScale <- labeledNewScale "Population Size" 10 1000 10 settingsSwitchesBoxLeft
-    hardSelectionTresholdScale <- labeledNewScale "Hard selection treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
+    hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
     settingsSwitchesBoxRight <- vBoxNew False 0
+    containerSetBorderWidth settingsSwitchesBoxRight 10
     settingsSwitchesBox <- hBoxNew False 0
-    boxPackStart settingsSwitchesBox settingsSwitchesBoxLeft PackNatural 0
-    boxPackStart settingsSwitchesBox settingsSwitchesBoxRight PackNatural 0
+    boxSetHomogeneous settingsSwitchesBoxRight True
+
+    settingsSwitchesFrameLeft <- frameNew
+    containerAdd settingsSwitchesFrameLeft settingsSwitchesBoxLeft
+
+    settingsSwitchesFrameRight <- frameNew
+    containerAdd settingsSwitchesFrameRight settingsSwitchesBoxRight
+
+    boxPackStart settingsSwitchesBox settingsSwitchesFrameLeft PackNatural 30
+    boxPackStart settingsSwitchesBox settingsSwitchesFrameRight PackNatural 30
+
+    optimumMovements <- optimumMovements settingsSwitchesBoxRight
 
     settingsLabel <- labelNew (Just "Settings:")
     miscSetAlignment settingsLabel 0 0
-    boxPackStart settingsBox settingsLabel PackNatural 0
-    boxPackStart settingsBox settingsSwitchesBox PackNatural 0
+    boxPackStart settingsBox settingsLabel PackNatural 3
+    boxPackStart settingsBox settingsSwitchesBox PackNatural 3
 
     runBox <- hBoxNew False 10
     runButton <- buttonNewWithLabel "Evolve!"
-    boxPackEnd runBox runButton PackNatural 10
+    boxPackEnd runBox runButton PackNatural 3
 
     boxPackStart mainTable settingsBox PackNatural 3
     sep1 <- hSeparatorNew
@@ -107,7 +148,7 @@ prepareWindow = do
     quitbutton <- buttonNewFromStock stockQuit
     disableButtonIfInBroadway quitbutton
 
-    boxPackEnd quitBox quitbutton PackNatural 10
+    boxPackEnd quitBox quitbutton PackNatural 3
 
     boxPackStart mainTable quitBox  PackNatural 3
 
