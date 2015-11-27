@@ -71,7 +71,7 @@ placeAndSizeWindow window mainTable = do
 
     nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
     populationSizeScale <- labeledNewScale "Population Size" 10 1000 10 settingsSwitchesBoxLeft
-    hardSelectionTresholdScale <- labeledNewScale "Hard selection treshold" 0.0 100.0 0.01 settingsSwitchesBoxLeft
+    hardSelectionTresholdScale <- labeledNewScale "Hard selection treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
     settingsSwitchesBoxRight <- vBoxNew False 0
