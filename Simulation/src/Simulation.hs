@@ -15,7 +15,8 @@ import System.Random
 data AnalysisParameters = AnalysisParameters {
     separatedGenerations :: Bool,
     hardSelectionTreshold :: Double,
-    populationSize :: Int
+    populationSize :: Int,
+    optimumChange :: [(Double, Double, Double)]
     }
 
 randomPopulation :: Int -> RVar Population

@@ -68,8 +68,8 @@ optimumMovement row container = do
   label <- labelNew $ Just $ "Dimension " ++ show row
   boxPackStart hbox label PackNatural 3
 
-  period <- spinButtonNewWithRange 0 100 1
-  spinButtonSetValue period 100
+  period <- spinButtonNewWithRange 0 200 1
+  spinButtonSetValue period 200
   boxPackStart hbox period PackNatural 3
   widgetSetTooltipText period (Just "Period in generations")
 
@@ -183,7 +183,15 @@ extractParameters parameterFields = do
     separatedGen <- toggleButtonGetMode $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
     hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
-    return (AnalysisParameters separatedGen hardSelectionTreshold popSize)
+    optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
+    return (AnalysisParameters separatedGen hardSelectionTreshold popSize optimumMovements)
+      where
+        optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
+        optimumChangesGetValue (period, amplitude, gradient) = do
+            period' <- spinButtonGetValue period
+            amplitude' <- spinButtonGetValue amplitude
+            gradient' <- spinButtonGetValue gradient
+            return (period', amplitude', gradient')
 
 runSimulation :: Entry -> AnalysisParametersFields -> Notebook -> Window -> IO()
 runSimulation nameField parameterFields resultNotebook window =
@@ -210,7 +218,7 @@ resetOptions nameField parameterFields =
     mapM resetOptimumMovement (optimumMovementFields parameterFields)
     return ()
         where resetOptimumMovement (per, ampl, a) = do
-                spinButtonSetValue per 100
+                spinButtonSetValue per 200
                 spinButtonSetValue ampl 0.0
                 spinButtonSetValue a 0.0
                 return ()
