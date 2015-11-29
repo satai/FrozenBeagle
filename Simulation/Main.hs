@@ -16,7 +16,8 @@ import Simulation
 data AnalysisParametersFields = AnalysisParametersFields {
     separatedGenerationsField :: CheckButton,
     hardSelectionTresholdField :: SpinButton,
-    populationSizeField :: SpinButton
+    populationSizeField :: SpinButton,
+    optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
     }
 
 disableButtonIfInBroadway :: Button -> IO()
@@ -75,18 +76,18 @@ optimumMovement row container = do
   amplitude <- spinButtonNewWithRange 0 10.0 0.001
   spinButtonSetValue amplitude 0.0
   boxPackStart hbox amplitude PackNatural 3
-  widgetSetTooltipText period (Just "Amplitude")
+  widgetSetTooltipText amplitude (Just "Amplitude")
 
   gradient <- spinButtonNewWithRange 0 1.0 0.001
   spinButtonSetValue gradient 0.0
   boxPackStart hbox gradient PackNatural 3
-  widgetSetTooltipText period (Just "Gradient of change - change per generation")
+  widgetSetTooltipText gradient (Just "Gradient of change - change per generation")
 
   boxPackStart container hbox PackNatural 3
-  return (period)
+  return (period, amplitude, gradient)
 
 optimumMovements container =
-   mapM_ (\i -> optimumMovement i container) [1..4]
+   mapM (\i -> optimumMovement i container) [1..4]
 
 prepareWindow :: IO(Window)
 prepareWindow = do
@@ -152,7 +153,7 @@ prepareWindow = do
 
     boxPackStart mainTable quitBox  PackNatural 3
 
-    let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale
+    let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale optimumMovements
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
     _ <- on quitbutton buttonActivated mainQuit
