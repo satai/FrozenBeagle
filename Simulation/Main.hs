@@ -128,8 +128,12 @@ prepareWindow = do
     boxPackStart settingsBox settingsSwitchesBox PackNatural 3
 
     runBox <- hBoxNew False 10
+
     runButton <- buttonNewWithLabel "Evolve!"
     boxPackEnd runBox runButton PackNatural 3
+
+    resetButton <- buttonNewWithLabel "Reset Settings"
+    boxPackEnd runBox resetButton PackNatural 3
 
     boxPackStart mainTable settingsBox PackNatural 3
     sep1 <- hSeparatorNew
@@ -156,6 +160,7 @@ prepareWindow = do
     let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale optimumMovements
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
+    _ <- on resetButton buttonActivated (resetOptions nameField inputs)
     _ <- on quitbutton buttonActivated mainQuit
     _ <- on window objectDestroy mainQuit
 
@@ -194,6 +199,21 @@ runSimulation nameField parameterFields resultNotebook window =
                 widgetShowAll window
                 return ()
         return ()
+
+resetOptions :: Entry -> AnalysisParametersFields -> IO()
+resetOptions nameField parameterFields =
+  do
+    entrySetText nameField ""
+    spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
+    spinButtonSetValue (populationSizeField parameterFields) 10
+    toggleButtonSetMode (separatedGenerationsField parameterFields) False
+    mapM resetOptimumMovement (optimumMovementFields parameterFields)
+    return ()
+        where resetOptimumMovement (per, ampl, a) = do
+                spinButtonSetValue per 100
+                spinButtonSetValue ampl 0.0
+                spinButtonSetValue a 0.0
+                return ()
 
 showResult resultNotebook name (resultName, resultValue) = do
             let fileName = "/tmp/img_" ++ name ++ "_" ++ resultName ++ ".png"
