@@ -85,7 +85,7 @@ allSurvive :: Selection
 allSurvive = return
 
 extinction :: Selection
-extinction = return . (const $ Population [])
+extinction = return . const (Population [])
 
 type Fitness = Phenotype -> Double
 

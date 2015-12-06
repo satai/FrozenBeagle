@@ -15,7 +15,7 @@ step :: [PopulationChange] -> RVar Population -> RVar Population
 step ss p = foldl (>>=) p ss
 
 evolution :: EvolutionRules -> RVar Population -> [RVar Population]
-evolution spec population = (population : evolution spec tng)
+evolution spec population = population : evolution spec tng
      where
         mutationForGeneration = mutation spec
         breedingForGeneration = breeding spec

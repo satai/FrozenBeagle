@@ -26,21 +26,21 @@ disableButtonIfInBroadway button = do
     widgetSetSensitivity button (not $ runningInBroadway environment)
     return ()
     where
-        runningInBroadway environment = (("GDK_BACKEND", "broadway") `elem` environment)
+        runningInBroadway environment = ("GDK_BACKEND", "broadway") `elem` environment
 
-labeledNewTextField :: String -> VBox -> IO(Entry)
+labeledNewTextField :: String -> VBox -> IO Entry
 labeledNewTextField description container = do
     entry <- entryNew
     insertIntoBoxWithLabel entry description container
     return entry
 
-labeledNewScale :: String -> Double -> Double -> Double -> VBox -> IO(SpinButton)
+labeledNewScale :: String -> Double -> Double -> Double -> VBox -> IO SpinButton
 labeledNewScale description min max step container = do
     scale <- spinButtonNewWithRange min max step
     insertIntoBoxWithLabel scale description container
     return scale
 
-checkBoxNewWithLabel :: String -> VBox -> IO(CheckButton)
+checkBoxNewWithLabel :: String -> VBox -> IO CheckButton
 checkBoxNewWithLabel description container = do
     switch <- checkButtonNew
     insertIntoBoxWithLabel switch description container
@@ -87,9 +87,9 @@ optimumMovement row container = do
   return (period, amplitude, gradient)
 
 optimumMovements container =
-   mapM (\i -> optimumMovement i container) [1..4]
+   mapM (`optimumMovement` container) [1..4]
 
-prepareWindow :: IO(Window)
+prepareWindow :: IO Window
 prepareWindow = do
 
     window  <- windowNew
@@ -167,7 +167,7 @@ prepareWindow = do
     placeAndSizeWindow window mainTable
     widgetShowAll window
 
-    return (window)
+    return window
 
 
 main :: IO ()
@@ -178,7 +178,7 @@ main = do
 
     mainGUI
 
-extractParameters :: AnalysisParametersFields -> IO (AnalysisParameters)
+extractParameters :: AnalysisParametersFields -> IO AnalysisParameters
 extractParameters parameterFields = do
     separatedGen <- toggleButtonGetMode $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
@@ -200,8 +200,8 @@ runSimulation nameField parameterFields resultNotebook window =
         name <- entryGetText nameField
         _ <- forkIO $ do
             let simResults = computeSimulation parameters
-            putStrLn $ show simResults
-            sequence_ (map (showResult resultNotebook name) simResults)
+            print simResults
+            mapM_ (showResult resultNotebook name) simResults
 
             postGUIAsync $ do
                 widgetShowAll window
@@ -215,7 +215,7 @@ resetOptions nameField parameterFields =
     spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
     spinButtonSetValue (populationSizeField parameterFields) 10
     toggleButtonSetMode (separatedGenerationsField parameterFields) False
-    mapM resetOptimumMovement (optimumMovementFields parameterFields)
+    mapM_ resetOptimumMovement (optimumMovementFields parameterFields)
     return ()
         where resetOptimumMovement (per, ampl, a) = do
                 spinButtonSetValue per 200
@@ -229,7 +229,7 @@ showResult resultNotebook name (resultName, resultValue) = do
             toFile def fileName $ do
                 layout_title .= (name ++ "/" ++ resultName)
                 layout_all_font_styles . font_size %= (*1.5)
-                plot (points resultName $ resultValue)
+                plot $ points resultName resultValue
 
             putStrLn $ "Ploted to " ++ fileName
             postGUIAsync $ do

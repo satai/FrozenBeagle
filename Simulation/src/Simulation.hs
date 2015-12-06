@@ -23,13 +23,13 @@ randomPopulation :: Int -> RVar Population
 randomPopulation count = Population <$> randomIndividuals count
 
 randomIndividuals :: Int -> RVar [Individual]
-randomIndividuals count = sequence $ take count $ repeat randomIndividual
+randomIndividuals count = sequence $ replicate count randomIndividual
 
 randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
         chs <- randomChromosomes
-        return $ Individual gender chs $ Phenotype [1000.0, 1000.0, 10000.0, 10000.0 ] --FIXME
+        return $ Individual gender chs $ express gender chs
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -41,7 +41,7 @@ randomChromosomes = do
             return (dna1, dna2)
 
 randomDnaString :: RVar DnaString
-randomDnaString = DnaString <$> (sequence $ take 15 $ repeat randomBase)
+randomDnaString = DnaString <$> sequence (replicate 15 randomBase)
 
 randomBase :: RVar Basis
 randomBase = choice [G,T,C,A]
@@ -51,7 +51,7 @@ avgFitness (Population is) = average $ map (fitness . phenotype) is
 
 average :: [Double] -> Double
 average [] = 0.0
-average xs = (sum xs) / fromIntegral (length xs)
+average xs = sum xs / fromIntegral (length xs)
 
 minFitness :: Population -> Double
 minFitness (Population is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
@@ -90,7 +90,7 @@ randomPhenotype = do
         return $ Phenotype [a1, a2, a3, a4]
 
 express :: ExpressionStrategy
-express = schemaBasedExpression $ fst $ sampleState (randomRules) (mkStdGen 0)
+express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
 
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
@@ -99,7 +99,7 @@ computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
     let startPopulationSize = populationSize params
         initialPopulation = randomPopulation startPopulationSize
-        breedingStrategy = if (separatedGenerations params) then panmictic express else panmicticOverlap express
+        breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
         rules = EvolutionRules {
                                     mutation = return, --FIXME
                                     breeding = breedingStrategy,
