@@ -235,7 +235,8 @@ showResult resultNotebook name (resultName, resultValue) = do
             postGUIAsync $ do
                 drawingArea <- imageNew
                 imageSetFromFile drawingArea fileName
-                _ <- notebookAppendPage resultNotebook drawingArea (name ++ "/" ++ resultName)
+                _ <- notebookPrependPage resultNotebook drawingArea (name ++ "/" ++ resultName)
                 removeFile fileName
                 widgetShowAll resultNotebook
+                _ <- notebookSetCurrentPage resultNotebook 0
                 return ()
