@@ -4,6 +4,7 @@ module Main where
 
 import "gtk3" Graphics.UI.Gtk
 
+import Data.Maybe
 import Graphics.Rendering.Chart
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
@@ -193,10 +194,18 @@ extractParameters parameterFields = do
             gradient' <- spinButtonGetValue gradient
             return (period', amplitude', gradient')
 
+presentationMode :: CursorType -> Window -> IO()
+presentationMode cursorType window = do
+      display <- fromJust <$> displayGetDefault
+      waitCursor <- cursorNewForDisplay display cursorType
+      drawWindow <- widgetGetWindow window
+      drawWindowSetCursor (fromJust drawWindow) $ Just waitCursor
+
 runSimulation :: Entry -> AnalysisParametersFields -> Notebook -> Window -> IO()
 runSimulation nameField parameterFields resultNotebook window =
     do
         parameters <- extractParameters parameterFields
+        _ <- presentationMode Watch window
         name <- entryGetText nameField
         _ <- forkIO $ do
             let simResults = computeSimulation parameters
@@ -204,6 +213,7 @@ runSimulation nameField parameterFields resultNotebook window =
             mapM_ (showResult resultNotebook name) simResults
 
             postGUIAsync $ do
+                _ <- presentationMode LeftPtr window
                 widgetShowAll window
                 return ()
         return ()
