@@ -233,6 +233,13 @@ resetOptions nameField parameterFields =
                 spinButtonSetValue a 0.0
                 return ()
 
+closeTab :: Notebook -> Widget -> IO()
+closeTab notebook widget =
+  do
+    page <- fromJust <$> notebookPageNum notebook widget
+    notebookRemovePage notebook page
+    return ()
+
 showResult resultNotebook name (resultName, resultValue) = do
             let fileName = "/tmp/img_" ++ name ++ "_" ++ resultName ++ ".png"
 
@@ -245,7 +252,17 @@ showResult resultNotebook name (resultName, resultValue) = do
             postGUIAsync $ do
                 drawingArea <- imageNew
                 imageSetFromFile drawingArea fileName
-                _ <- notebookPrependPage resultNotebook drawingArea (name ++ "/" ++ resultName)
+                tabLabel <- labelNew $ Just (name ++ "/" ++ resultName)
+                tabClose <- buttonNew
+                closeImage <- imageNewFromStock stockClose IconSizeMenu
+                containerAdd tabClose closeImage
+                on tabClose buttonActivated (closeTab resultNotebook $ castToWidget drawingArea)
+                tabTop <- hBoxNew False 1
+                boxPackEnd tabTop tabClose PackNatural 1
+                boxPackEnd tabTop tabLabel PackNatural 1
+                widgetShowAll tabTop
+                tabMenu <- labelNew $ Just "xxxx"
+                _ <- notebookPrependPageMenu resultNotebook drawingArea tabTop tabMenu
                 removeFile fileName
                 widgetShowAll resultNotebook
                 _ <- notebookSetCurrentPage resultNotebook 0
