@@ -1,95 +1,21 @@
-# For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
+# For more information, see: http://docs.haskellstack.org/en/stable/yaml_configuration.html
 
 # Specifies the GHC version and set of packages available (e.g., lts-3.5, nightly-2015-09-21, ghc-7.10.2)
-resolver: ghc-7.10.2
+resolver: lts-3.22
 
 # Local packages, usually specified by relative directory name
 packages:
-- '.'
+- GUI/
+- CLI/
+- Lib/
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
-- Chart-1.5.4
-- Chart-cairo-1.5.4
-- HUnit-1.3.0.0
-- MonadPrompt-1.0.0.5
-- MonadRandom-0.4
-- QuickCheck-2.8.1
-- StateVar-1.1.0.1
-- adjunctions-4.2.2
-- ansi-terminal-0.6.2.3
-- async-2.0.2
-- base-orphans-0.4.4
-- bifunctors-5
-- bytes-0.15.0.1
-- cairo-0.13.1.0
-- cereal-0.4.1.1
-- colour-2.3.3
-- comonad-4.2.7.2
-- contravariant-1.3.3
-- data-default-class-0.0.1
-- distributive-0.4.4
-- erf-2.0.0.0
-- exceptions-0.8.0.2
-- flexible-defaults-0.0.1.1
-- free-4.12.1
-- gio-0.13.1.0
-- glib-0.13.2.1
-- gtk3-0.14.1
-- hashable-1.2.3.3
-- hashable-extras-0.2.2
-- hspec-2.2.0
-- hspec-core-2.2.0
-- hspec-discover-2.2.0
-- hspec-expectations-0.7.2
-- kan-extensions-4.2.3
-- lens-4.13
-- log-domain-0.10.3
-- math-functions-0.1.5.2
 - mersenne-random-pure64-0.2.0.4
-- monad-loops-0.4.3
-- mtl-2.2.1
-- multiset-0.3.0
-- mwc-random-0.13.3.2
-- nats-1.1
-- old-locale-1.0.0.7
-- old-time-1.1.0.3
-- operational-0.2.3.2
-- pango-0.13.1.0
-- parallel-3.2.0.6
-- prelude-extras-0.4.0.2
-- primitive-0.6.1.0
-- profunctors-5.1.1
-- quickcheck-io-0.1.2
-- random-1.1
 - random-extras-0.19
-- random-fu-0.2.6.2
-- random-shuffle-0.0.4
-- random-source-0.3.0.6
-- reflection-2.1
-- rvar-0.2.0.2
-- safecopy-0.8.6
-- semigroupoids-5.0.0.4
-- semigroups-0.18
-- setenv-0.1.1.3
-- stateref-0.3
-- stm-2.4.4
-- syb-0.6
-- tagged-0.8.2
-- text-1.2.1.3
-- tf-random-0.5
-- th-extras-0.0.0.2
-- transformers-compat-0.4.0.4
-- unordered-containers-0.2.5.1
-- utf8-string-1.0.1.1
-- vector-0.11.0.0
-- vector-th-unbox-0.2.1.3
-- void-0.7.1
 
 # Override default flag values for local packages and extra-deps
-flags:
-  text:
-    integer-simple: false
+flags: {}
 
 # Extra package databases containing global packages
 extra-package-dbs: []
@@ -99,7 +25,7 @@ extra-package-dbs: []
 
 # Require a specific version of stack, using version ranges
 # require-stack-version: -any # Default
-# require-stack-version: >= 0.1.4.0
+# require-stack-version: >= 1.0.0
 
 # Override the architecture used by stack, especially useful on Windows
 # arch: i386
@@ -108,3 +34,6 @@ extra-package-dbs: []
 # Extra directories used by stack for building
 # extra-include-dirs: [/path/to/dir]
 # extra-lib-dirs: [/path/to/dir]
+
+# Allow a newer minor version of GHC than the snapshot specifies
+# compiler-check: newer-minor

@@ -3,8 +3,9 @@ FrozenBeagle: simulation simulation-results pdf
 clean: clean-simulation clean-texts
 
 simulation:
-	cd Simulation ; \
+	cd Simulation/Lib ; \
 	stack test ; \
+	cd .. ; \
 	stack install
 
 clean-simulation:
