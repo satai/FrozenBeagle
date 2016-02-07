@@ -10,10 +10,11 @@ simulation:
 
 clean-simulation:
 	cd Simulation ; \
-	stack clean
+	stack clean ; \
+	cd ..
 
 simulation-results:
-	echo "ddd"
+	echo "Running Simulation... sorta."
 
 pdf:
 	$(MAKE) -C TeXts
