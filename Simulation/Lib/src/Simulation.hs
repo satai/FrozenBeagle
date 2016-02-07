@@ -95,16 +95,22 @@ express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
 
+params2rules :: AnalysisParameters -> EvolutionRules
+params2rules params = --FIXME
+    let breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
+        startPopulationSize = populationSize params
+    in
+        EvolutionRules {
+                           mutation = return,
+                           breeding = breedingStrategy,
+                           selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
+                       }   --FIXME
+
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
-    let startPopulationSize = populationSize params
+    let rules = params2rules params
+        startPopulationSize = populationSize params
         initialPopulation = randomPopulation startPopulationSize
-        breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
-        rules = EvolutionRules {
-                                    mutation = return, --FIXME
-                                    breeding = breedingStrategy,
-                                    selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
-                                }   --FIXME
         generations = take 100 $ evolution rules initialPopulation
         allGenerations = map colapse generations
         stats f = zip [0..] (map f allGenerations)
