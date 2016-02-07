@@ -1,3 +1,4 @@
 #!/bin/bash
 
-stack test --file-watch
+stack clean
+stack test --file-watch --coverage
