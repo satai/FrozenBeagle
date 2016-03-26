@@ -1,3 +1,9 @@
+dist/
+.hpc/
+*.tix
+cabal.config
+cabal.sandbox.config
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
