@@ -99,7 +99,7 @@ spec = parallel $ do
                     fitness p
                         | macho1 == p = 100.0
                         | macho2 == p = 111.0
-                        | otherwise            =   0.1
+                        | otherwise  =   0.1
                     populationWithMacho = Population $ [Individual M (g1, g2) macho1] ++ populationPart1 ++ [Individual M (g3, g4) macho2] ++ populationPart2
                     survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
                 in
