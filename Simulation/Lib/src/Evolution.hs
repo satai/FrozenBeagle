@@ -12,7 +12,7 @@ data EvolutionRules = EvolutionRules {
 }
 
 step :: [PopulationChange] -> RVar Population -> RVar Population
-step ss p = foldl (>>=) p ss
+step changes population = foldl (>>=) population changes
 
 evolution :: EvolutionRules -> RVar Population -> [RVar Population]
 evolution spec population = population : evolution spec tng
