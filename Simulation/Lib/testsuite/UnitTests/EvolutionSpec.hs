@@ -28,10 +28,10 @@ spec = parallel $ do
         it "evolution step returns empty population when extinction happens" $
             property (\p i ->
                             let
-                                nothingHappens :: EvolutionRules
-                                nothingHappens = EvolutionRules{mutation = return, breeding = return, selection = extinction}
+                                extinctionHappens :: EvolutionRules
+                                extinctionHappens = EvolutionRules{mutation = return, breeding = return, selection = extinction}
                                 generations :: RVar Population -> [RVar Population]
-                                generations = evolution nothingHappens
+                                generations = evolution extinctionHappens
                                 populationAfter2Generations = fst $ sampleState ((generations $ return  p) !! 2) (mkStdGen i)
                             in
                                 populationAfter2Generations `shouldBe` Population []
