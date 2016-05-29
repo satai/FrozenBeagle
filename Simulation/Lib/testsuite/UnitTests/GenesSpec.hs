@@ -50,6 +50,12 @@ spec = parallel $ do
                     (drop n $ genes $ crossover n (DnaString dna1) (DnaString dna2))
             )
 
+        it "crosovered DNA is of the same length as mother dnas" $
+            property ( \(PointInString n) -> \(DnaString dna1) -> \(DnaString dna2)  ->
+                (length dna1) ==
+                    (length $ genes $ crossover n (DnaString dna1) (DnaString dna2))
+            )
+
         it "mutated dna has same length as dna before mutation" $
             property ( \(IndexInString n) -> \b -> \(DnaString dna) ->
                 (length dna) ==
