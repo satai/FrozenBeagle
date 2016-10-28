@@ -59,7 +59,7 @@ executable fbeagle
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.8 && <=4.9,
+  build-depends:       base >=4.8 && <5,
                        random-fu, random-extras, random-source,
                        Chart >= 1.4, Chart-cairo,
                        FrozenBeagle,
