@@ -7,10 +7,17 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 > import Data.Hashable
 > import GHC.Generics (Generic)
 
-Bases are the common ones: cytosine, guanine, adenine and thymine,
+Bases are the abstract G1..G5
 
-> data Basis = G | A | T | C
->     deriving (Eq, Show, Ord, Generic)
+> data Basis = G1 | G2 | G3 | G4 | G5
+>     deriving (Eq, Ord, Generic)
+>
+>  instance Show Basis where
+>   show G1 = "1"
+>   show G2 = "2"
+>   show G3 = "3"
+>   show G4 = "4"
+>   show G5 = "5"
 >
 > instance Hashable Basis
 

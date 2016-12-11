@@ -44,7 +44,7 @@ randomDnaString :: RVar DnaString
 randomDnaString = DnaString <$> sequence (replicate 15 randomBase)
 
 randomBase :: RVar Basis
-randomBase = choice [G,T,C,A]
+randomBase = choice [G1, G2, G3, G4, G5]
 
 avgFitness :: Population -> Double
 avgFitness (Population is) = average $ map (fitness . phenotype) is
@@ -79,7 +79,7 @@ randomSchema = Schema <$> sequence elems
             elems =  take 15 $ repeat randomBaseOrNot -- fixme
 
 randomBaseOrNot :: RVar (Maybe Basis)
-randomBaseOrNot = choice [Just A, Just G, Just T, Just C, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing] -- fixme
+randomBaseOrNot = choice [Just G1, Just G2, Just G3, Just G4, Just G5, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing] -- fixme
 
 randomPhenotype :: RVar Phenotype
 randomPhenotype = do
