@@ -4,6 +4,10 @@ dist/
 cabal.config
 cabal.sandbox.config
 
+.idea
+*.iml
+ideaHaskellLib
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
