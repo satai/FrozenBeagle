@@ -23,7 +23,7 @@ instance Arbitrary Individual where
         return $ Individual s (d1, d2) p
 
 instance Arbitrary Population where
-    arbitrary = Population <$> arbitrary
+    arbitrary = Population <$> arbitrary <*> arbitrary
 
 instance Arbitrary Sex
 
@@ -38,7 +38,7 @@ spec = parallel $ do
 
         it "consist of males and females" $
             property ( \p ->
-                (MultiSet.fromList $ individuals p) == (MultiSet.fromList $ (males p) ++ (females p))
+                (MultiSet.fromList p) == (MultiSet.fromList $ (males p) ++ (females p))
             )
 
         it "males are all males" $
@@ -63,7 +63,7 @@ spec = parallel $ do
     describe "extinction" $ do
         it "has no surviors" $
             property ( \p i ->
-                let survivingPopulation = fst $ sampleState (individuals <$> extinction p) $ mkStdGen i
+                let survivingPopulation = fst $ sampleState (extinction p) $ mkStdGen i
                 in
                     [] == survivingPopulation
             )
@@ -71,7 +71,7 @@ spec = parallel $ do
     describe "fittest" $ do
         it "produces population of limited size" $
             property ( \p i ->
-                let survivingPopulation = fst $ sampleState (individuals <$> fittest 3 (const 1.0) p) $ mkStdGen i
+                let survivingPopulation = fst $ sampleState (fittest 3 (const 1.0) p) $ mkStdGen i
                 in
                     3 >= length survivingPopulation
             )
@@ -80,15 +80,15 @@ spec = parallel $ do
         it "keeps all members of population, that have fitness greater than treshold" $
             property ( \p i treshold ->
                 let fitness = const $ treshold + 0.1
-                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness treshold p) $ mkStdGen i
+                    survivingPopulation = fst $ sampleState (hardSelection fitness treshold p) $ mkStdGen i
                 in
-                    Population survivingPopulation `shouldBe` p
+                    survivingPopulation `shouldBe` p
             )
 
         it "kills all members of population, that have fitness smaller than treshold" $
             property ( \p i treshold ->
                 let fitness = const $ treshold - 0.1
-                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness treshold p) $ mkStdGen i
+                    survivingPopulation = fst $ sampleState (hardSelection fitness treshold p) $ mkStdGen i
                 in
                     survivingPopulation `shouldBe` []
             )
@@ -100,8 +100,8 @@ spec = parallel $ do
                         | macho1 == p = 100.0
                         | macho2 == p = 111.0
                         | otherwise  =   0.1
-                    populationWithMacho = Population $ [Individual M (g1, g2) macho1] ++ populationPart1 ++ [Individual M (g3, g4) macho2] ++ populationPart2
-                    survivingPopulation = fst $ sampleState (individuals <$> hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
+                    populationWithMacho = [Individual M (g1, g2) macho1] ++ populationPart1 ++ [Individual M (g3, g4) macho2] ++ populationPart2
+                    survivingPopulation = fst $ sampleState (hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
                 in
                     map phenotype survivingPopulation `shouldBe` [macho1, macho2]
             )

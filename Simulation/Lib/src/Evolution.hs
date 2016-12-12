@@ -11,7 +11,7 @@ data EvolutionRules = EvolutionRules {
     selection :: Selection
 }
 
-step :: [PopulationChange] -> RVar Population -> RVar Population
+step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]
 step changes population = foldl (>>=) population changes
 
 evolution :: EvolutionRules -> RVar Population -> [RVar Population]
@@ -21,4 +21,10 @@ evolution spec population = population : evolution spec tng
         breedingForGeneration = breeding spec
         selectionForGeneration = selection spec
         stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
-        tng = step stepAlgo population
+
+        tng :: RVar Population
+        tng = do
+          p <- population
+          let g = generation p
+          let newIndividuals = step stepAlgo $ individuals <$> population
+          Population (g + 1) <$> newIndividuals

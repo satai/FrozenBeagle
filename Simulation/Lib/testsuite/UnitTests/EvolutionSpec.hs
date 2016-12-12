@@ -13,7 +13,7 @@ import Population
 spec :: Spec
 spec = parallel $ do
     describe "evolution" $ do
-        it "evolution step returns the same population when evolutionary operations are identities" $
+        it "evolution step returns the population with the same individuals and incremented generation when evolutionary operations are identities" $
             property (\p i ->
                             let
                                 nothingHappens :: EvolutionRules
@@ -22,7 +22,7 @@ spec = parallel $ do
                                 generations = evolution nothingHappens
                                 populationAfter2Generations = fst $ sampleState ((generations $ return p) !! 2) (mkStdGen i)
                             in
-                                populationAfter2Generations `shouldBe` p
+                                populationAfter2Generations `shouldBe` Population (2 + generation p) (individuals p)
              )
 
         it "evolution step returns empty population when extinction happens" $
@@ -34,5 +34,5 @@ spec = parallel $ do
                                 generations = evolution extinctionHappens
                                 populationAfter2Generations = fst $ sampleState ((generations $ return  p) !! 2) (mkStdGen i)
                             in
-                                populationAfter2Generations `shouldBe` Population []
+                                individuals populationAfter2Generations `shouldBe` []
             )

@@ -20,7 +20,7 @@ data AnalysisParameters = AnalysisParameters {
     }
 
 randomPopulation :: Int -> RVar Population
-randomPopulation count = Population <$> randomIndividuals count
+randomPopulation count = Population 0 <$> randomIndividuals count
 
 randomIndividuals :: Int -> RVar [Individual]
 randomIndividuals count = sequence $ replicate count randomIndividual
@@ -47,14 +47,14 @@ randomBase :: RVar Basis
 randomBase = choice [G1, G2, G3, G4, G5]
 
 avgFitness :: Population -> Double
-avgFitness (Population is) = average $ map (fitness . phenotype) is
+avgFitness (Population _ is) = average $ map (fitness . phenotype) is
 
 average :: [Double] -> Double
 average [] = 0.0
 average xs = sum xs / fromIntegral (length xs)
 
 minFitness :: Population -> Double
-minFitness (Population is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
+minFitness (Population _ is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
     where largestDouble = 1.7976931348623157e308
 
 fitness :: Phenotype -> Double

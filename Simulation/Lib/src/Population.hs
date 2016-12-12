@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Population (Population(Population, individuals),
+module Population (Population(Population, generation, individuals),
                    PopulationChange, Selection, Breeding, Mutation, Fitness,
                    Individual(Individual, sex, chromosomes, phenotype), Sex(F,M),DnaString,
                    males, females,
@@ -20,23 +20,26 @@ import Individual
 import Phenotype
 import Expression
 
-data Population = Population { individuals :: [Individual] } deriving (Eq, Show, Generic)
+data Population = Population {
+      generation :: Int,
+      individuals :: [Individual]
+} deriving (Eq, Show, Generic)
 
 instance Hashable Population
 
-males :: Population -> [Individual]
-males = filter ( (== M) . sex) . individuals
+males :: [Individual] -> [Individual]
+males = filter ( (== M) . sex)
 
-females :: Population -> [Individual]
-females = filter ( (== F) . sex) . individuals
+females :: [Individual] -> [Individual]
+females = filter ( (== F) . sex)
 
-type PopulationChange = Population -> RVar Population
+type PopulationChange = [Individual] -> RVar [Individual]
 
 type Mutation = PopulationChange
 
 type Breeding = PopulationChange
 
-chosenPairs :: Population -> [(Individual, Individual)]
+chosenPairs :: [Individual] -> [(Individual, Individual)]
 chosenPairs population = zip m f
     where seed = hash population
           gen = mkStdGen seed
@@ -68,13 +71,13 @@ mate expression (Individual M (mdna1, mdna2) _, Individual F (fdna1, fdna2) _) =
 mate _ _ = error "Should not happen"
 
 panmictic :: ExpressionStrategy -> Breeding
-panmictic expression population = return $ Population $ concat children
+panmictic expression population = return $ concat children
         where
           children :: [[Individual]]
           children = map (mate expression) $ chosenPairs population
 
 panmicticOverlap :: ExpressionStrategy -> Breeding
-panmicticOverlap expression population = return $ Population $ individuals population ++ concat children
+panmicticOverlap expression population = return $ population ++ concat children
         where
           children :: [[Individual]]
           children = map (mate expression) $ chosenPairs population
@@ -85,23 +88,23 @@ allSurvive :: Selection
 allSurvive = return
 
 extinction :: Selection
-extinction = return . const (Population [])
+extinction = return . const []
 
 type Fitness = Phenotype -> Double
 
 hardSelection :: Fitness -> Double -> Selection
-hardSelection fitness treshold = return . Population . filterSurvivors . individuals
+hardSelection fitness treshold = return . filterSurvivors
         where
             filterSurvivors :: [Individual] -> [Individual]
             filterSurvivors = filter ((>treshold) . fitness . phenotype)
 
-fittest :: Int -> Fitness-> Selection
-fittest newSize fitness (Population p) = return $ Population survivors
+fittest :: Int -> Fitness -> Selection
+fittest newSize fitness is = return survivors
     where
         survivors :: [Individual]
-        survivors = take newSize $ sortBy fitnessComparator p
+        survivors = take newSize $ sortBy fitnessComparator is
         fitnessComparator :: Individual ->Individual -> Ordering
         fitnessComparator i1 i2 = fitness (phenotype i2) `compare` fitness (phenotype i1)
 
 fairChance :: Int -> Selection
-fairChance newSize p = Population <$> sample newSize (individuals p)
+fairChance newSize is = sample newSize is
