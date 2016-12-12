@@ -7,7 +7,7 @@ import Population
 
 data EvolutionRules = EvolutionRules {
     mutation :: Mutation,
-    breeding :: Breeding,
+    breeding :: Int -> Breeding,
     selection :: Selection
 }
 
@@ -17,14 +17,16 @@ step changes population = foldl (>>=) population changes
 evolution :: EvolutionRules -> RVar Population -> [RVar Population]
 evolution spec population = population : evolution spec tng
      where
-        mutationForGeneration = mutation spec
-        breedingForGeneration = breeding spec
-        selectionForGeneration = selection spec
-        stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
 
         tng :: RVar Population
         tng = do
           p <- population
-          let g = generation p
-          let newIndividuals = step stepAlgo $ individuals <$> population
-          Population (g + 1) <$> newIndividuals
+          let g = 1 + generation p
+
+          let breedingForGeneration = breeding spec g
+          let mutationForGeneration = mutation spec
+          let selectionForGeneration = selection spec
+
+          let stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
+          let newIndividuals = step stepAlgo $ individuals <$> population
+          Population g  <$> newIndividuals

@@ -2,7 +2,7 @@
 
 module Population (Population(Population, generation, individuals),
                    PopulationChange, Selection, Breeding, Mutation, Fitness,
-                   Individual(Individual, sex, chromosomes, phenotype), Sex(F,M),DnaString,
+                   Individual(Individual, birthGeneration, sex, chromosomes, phenotype), Sex(F,M),DnaString,
                    males, females,
                    panmictic, panmicticOverlap,
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
@@ -48,39 +48,39 @@ chosenPairs population = zip m f
           (m, gen') = sampleState m' gen
           (f, _   ) = sampleState f' gen'
 
-mate :: ExpressionStrategy -> (Individual, Individual) -> [Individual]
-mate expression (Individual M (mdna1, mdna2) _, Individual F (fdna1, fdna2) _) = [son1, daughter1, son2, daughter2]
+mate :: ExpressionStrategy -> Int -> (Individual, Individual) -> [Individual]
+mate expression g (Individual M _ (mdna1, mdna2) _, Individual F _ (fdna1, fdna2) _) = [son1, daughter1, son2, daughter2]
         where
             s1d1 = crossover 5 mdna1 fdna1
             s1d2 = crossover 5 fdna2 mdna2
             d1d1 = crossover 4 mdna1 fdna1
             d1d2 = crossover 4 fdna2 mdna2
 
-            son1 = Individual M (s1d1, s1d2) $ expression M (s1d1, s1d2)
-            daughter1 = Individual F (d1d1, d1d2) $ expression F (d1d1, d1d2)
+            son1 = Individual M g (s1d1, s1d2) $ expression M (s1d1, s1d2)
+            daughter1 = Individual F g (d1d1, d1d2) $ expression F (d1d1, d1d2)
 
             s2d1 = crossover 7 mdna1 fdna1
             s2d2 = crossover 7 fdna2 mdna2
             d2d1 = crossover 8 mdna1 fdna1
             d2d2 = crossover 8 fdna2 mdna2
 
-            son2 = Individual M (s2d1, s2d2) $ expression M (s2d1, s2d2)
-            daughter2 = Individual F (d2d1, d2d2) $ expression F (d2d1, d2d2)
+            son2 = Individual M g (s2d1, s2d2) $ expression M (s2d1, s2d2)
+            daughter2 = Individual F g (d2d1, d2d2) $ expression F (d2d1, d2d2)
             --FIXME totaly wrong
 
-mate _ _ = error "Should not happen"
+mate _ _ _ = error "Should not happen"
 
-panmictic :: ExpressionStrategy -> Breeding
-panmictic expression population = return $ concat children
+panmictic :: ExpressionStrategy -> Int -> Breeding
+panmictic expression g population = return $ concat children
         where
           children :: [[Individual]]
-          children = map (mate expression) $ chosenPairs population
+          children = map (mate expression g) $ chosenPairs population
 
-panmicticOverlap :: ExpressionStrategy -> Breeding
-panmicticOverlap expression population = return $ population ++ concat children
+panmicticOverlap :: ExpressionStrategy -> Int -> Breeding
+panmicticOverlap expression g population = return $ population ++ concat children
         where
           children :: [[Individual]]
-          children = map (mate expression) $ chosenPairs population
+          children = map (mate expression g) $ chosenPairs population
 
 type Selection = PopulationChange
 

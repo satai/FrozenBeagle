@@ -16,11 +16,12 @@ import UnitTests.PhenotypeSpec()
 
 instance Arbitrary Individual where
     arbitrary = do
-        s <- elements [M, F]
+        s  <- elements [M, F]
+        g  <- arbitrary
         d1 <- arbitrary
         d2 <- arbitrary
-        p <- arbitrary
-        return $ Individual s (d1, d2) p
+        p  <- arbitrary
+        return $ Individual s g (d1, d2) p
 
 instance Arbitrary Population where
     arbitrary = Population <$> arbitrary <*> arbitrary
@@ -32,7 +33,7 @@ spec = parallel $ do
     describe "Population" $ do
 
         it "individual has two different dna strings" $
-            property ( \(Individual _ (dna1, dna2) _) ->
+            property ( \(Individual _ _ (dna1, dna2) _) ->
                 dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
             )
 
@@ -100,7 +101,7 @@ spec = parallel $ do
                         | macho1 == p = 100.0
                         | macho2 == p = 111.0
                         | otherwise  =   0.1
-                    populationWithMacho = [Individual M (g1, g2) macho1] ++ populationPart1 ++ [Individual M (g3, g4) macho2] ++ populationPart2
+                    populationWithMacho = [Individual M 1 (g1, g2) macho1] ++ populationPart1 ++ [Individual M 0 (g3, g4) macho2] ++ populationPart2
                     survivingPopulation = fst $ sampleState (hardSelection fitness 10.0 populationWithMacho) $ mkStdGen i
                 in
                     map phenotype survivingPopulation `shouldBe` [macho1, macho2]

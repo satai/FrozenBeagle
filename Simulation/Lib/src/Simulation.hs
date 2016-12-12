@@ -29,7 +29,7 @@ randomIndividual :: RVar Individual
 randomIndividual = do
         gender <- randomGender
         chs <- randomChromosomes
-        return $ Individual gender chs $ express gender chs
+        return $ Individual gender 0 chs $ express gender chs
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -54,7 +54,7 @@ average [] = 0.0
 average xs = sum xs / fromIntegral (length xs)
 
 minFitness :: Population -> Double
-minFitness (Population _ is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
+minFitness (Population _ is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
     where largestDouble = 1.7976931348623157e308
 
 fitness :: Phenotype -> Double
