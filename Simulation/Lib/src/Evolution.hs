@@ -14,19 +14,19 @@ data EvolutionRules = EvolutionRules {
 step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]
 step changes population = foldl (>>=) population changes
 
-evolution :: EvolutionRules -> RVar Population -> [RVar Population]
-evolution spec population = population : evolution spec tng
-     where
+evolution :: Int -> EvolutionRules -> RVar Population -> RVar [Population]
+evolution 0 _ _ = return []
+evolution genToGen spec population = do
+      p <- population
+      let g = 1 + generation p
 
-        tng :: RVar Population
-        tng = do
-          p <- population
-          let g = 1 + generation p
+      let breedingForGeneration = breeding spec g
+      let mutationForGeneration = mutation spec
+      let selectionForGeneration = selection spec
 
-          let breedingForGeneration = breeding spec g
-          let mutationForGeneration = mutation spec
-          let selectionForGeneration = selection spec
+      let stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
 
-          let stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration]
-          let newIndividuals = step stepAlgo $ individuals <$> population
-          Population g  <$> newIndividuals
+      newIndividuals <- step stepAlgo $ individuals <$> population
+
+      rest <- evolution (genToGen - 1) spec <$> return $ Population g newIndividuals
+      return $ (p : rest)

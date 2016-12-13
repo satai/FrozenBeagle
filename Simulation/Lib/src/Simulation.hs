@@ -111,8 +111,8 @@ computeSimulation params =
     let rules = params2rules params
         startPopulationSize = populationSize params
         initialPopulation = randomPopulation startPopulationSize
-        generations = take 100 $ evolution rules initialPopulation
-        allGenerations = map colapse generations
-        stats f = zip [0..] (map f allGenerations)
+        allGenerations = evolution 100 rules initialPopulation
+        generations = colapse allGenerations
+        stats f = zip [0..] (map f generations)
     in
         [("Avg Fitness", stats avgFitness), ("Min Fitness", stats minFitness), ("Population Size", stats (fromIntegral . length . individuals))]

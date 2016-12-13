@@ -17,12 +17,12 @@ spec = parallel $ do
             property (\p i ->
                             let
                                 nothingHappens :: EvolutionRules
-                                nothingHappens = EvolutionRules{mutation = return, breeding = \g -> return, selection = return}
-                                generations :: RVar Population -> [RVar Population]
-                                generations = evolution nothingHappens
-                                populationAfter2Generations = fst $ sampleState ((generations $ return p) !! 2) (mkStdGen i)
+                                nothingHappens = EvolutionRules { mutation = return, breeding = \_ -> return, selection = return }
+                                generations :: RVar Population -> RVar [Population]
+                                generations = evolution 10 nothingHappens
+                                populationAfter2Generations = (fst $ sampleState (generations $ return $ Population 0 p) (mkStdGen i)) !! 2
                             in
-                                populationAfter2Generations `shouldBe` Population (2 + generation p) (individuals p)
+                                populationAfter2Generations `shouldBe` Population 2 p
              )
 
         it "evolution step returns empty population when extinction happens" $
@@ -30,9 +30,9 @@ spec = parallel $ do
                             let
                                 extinctionHappens :: EvolutionRules
                                 extinctionHappens = EvolutionRules{mutation = return, breeding = \g -> return, selection = extinction}
-                                generations :: RVar Population -> [RVar Population]
-                                generations = evolution extinctionHappens
-                                populationAfter2Generations = fst $ sampleState ((generations $ return  p) !! 2) (mkStdGen i)
+                                generations :: RVar Population -> RVar [Population]
+                                generations = evolution 10 extinctionHappens
+                                populationAfter2Generations = (fst $ sampleState (generations $ return p) (mkStdGen i)) !! 2
                             in
                                 individuals populationAfter2Generations `shouldBe` []
             )
