@@ -101,7 +101,7 @@ params2rules params = --FIXME
         startPopulationSize = populationSize params
     in
         EvolutionRules {
-                           mutation = return,
+                           mutation = pointMutation express,
                            breeding = breedingStrategy,
                            selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
                        }   --FIXME

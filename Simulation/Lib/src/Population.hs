@@ -4,6 +4,7 @@ module Population (Population(Population, generation, individuals),
                    PopulationChange, Selection, Breeding, Mutation, Fitness,
                    Individual(Individual, birthGeneration, sex, chromosomes, phenotype), Sex(F,M),DnaString,
                    males, females,
+                   pointMutation,
                    panmictic, panmicticOverlap,
                    allSurvive, fittest, extinction, fairChance, hardSelection) where
 
@@ -13,6 +14,7 @@ import GHC.Generics (Generic)
 import Data.Random.Extras
 import Data.Random(sampleState)
 import Data.Random.RVar
+import Data.Random.Distribution.Bernoulli
 import System.Random
 import Genes
 import Sex
@@ -69,6 +71,45 @@ mate expression g (Individual M _ (mdna1, mdna2) _, Individual F _ (fdna1, fdna2
             --FIXME totaly wrong
 
 mate _ _ _ = error "Should not happen"
+
+probabilityIndividualMutation :: Float
+probabilityIndividualMutation = 0.01
+
+probabilityBasisMutation :: Float
+probabilityBasisMutation = 0.04
+
+pointMutationBasis :: Basis -> RVar Basis
+pointMutationBasis b = do
+      shouldMutateBasis <- boolBernoulli probabilityBasisMutation
+
+      if shouldMutateBasis then
+          choice [G1, G2, G3, G4, G5]
+      else
+          return b
+
+pointMutationDnaString :: DnaString -> RVar DnaString
+pointMutationDnaString  (DnaString s) = do
+    bases <- sequence $ map pointMutationBasis s
+    return $ DnaString bases
+
+pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual
+pointMutationIndividual expression i = do
+
+        shoudMutateIndividual <- boolBernoulli probabilityIndividualMutation
+
+        if shoudMutateIndividual then do
+
+            let (d1, d2) = chromosomes i
+
+            d1' <- pointMutationDnaString d1
+            d2' <- pointMutationDnaString d2
+
+            return $ Individual (sex i) (birthGeneration i) (d1', d2') $ expression (sex i) (d1', d2')
+        else
+            return i
+
+pointMutation :: ExpressionStrategy -> Mutation
+pointMutation expression is = sequence $ map (pointMutationIndividual expression) is
 
 panmictic :: ExpressionStrategy -> Int -> Breeding
 panmictic expression g population = return $ concat children
