@@ -107,6 +107,8 @@ prepareWindow = do
     hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
+    _ <- toggleButtonSetActive separatedGenerationsSwitch True
+
     settingsSwitchesBoxRight <- vBoxNew False 0
     containerSetBorderWidth settingsSwitchesBoxRight 10
     settingsSwitchesBox <- hBoxNew False 0
@@ -181,7 +183,7 @@ main = do
 
 extractParameters :: AnalysisParametersFields -> IO AnalysisParameters
 extractParameters parameterFields = do
-    separatedGen <- toggleButtonGetMode $ separatedGenerationsField parameterFields
+    separatedGen <- toggleButtonGetActive $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
     hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
     optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
@@ -225,6 +227,8 @@ resetOptions nameField parameterFields =
     spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
     spinButtonSetValue (populationSizeField parameterFields) 10
     toggleButtonSetMode (separatedGenerationsField parameterFields) False
+    toggleButtonSetActive (separatedGenerationsField parameterFields) True
+
     mapM_ resetOptimumMovement (optimumMovementFields parameterFields)
     return ()
         where resetOptimumMovement (per, ampl, a) = do
