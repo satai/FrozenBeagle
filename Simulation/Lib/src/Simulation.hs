@@ -106,12 +106,15 @@ params2rules params = --FIXME
                            selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
                        }   --FIXME
 
+maxSteps :: Int
+maxSteps = 500
+
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
     let rules = params2rules params
         startPopulationSize = populationSize params
         initialPopulation = randomPopulation startPopulationSize
-        allGenerations = evolution 100 rules initialPopulation
+        allGenerations = evolution maxSteps rules initialPopulation
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)
     in
