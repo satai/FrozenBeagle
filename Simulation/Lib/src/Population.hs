@@ -6,7 +6,8 @@ module Population (Population(Population, generation, individuals),
                    males, females,
                    pointMutation,
                    panmictic, panmicticOverlap,
-                   allSurvive, fittest, extinction, fairChance, hardSelection) where
+                   allSurvive, fittest, extinction, fairChance, hardSelection,
+                   turbidostat) where
 
 import Data.List
 import Data.Hashable
@@ -138,6 +139,13 @@ hardSelection fitness treshold = return . filterSurvivors
         where
             filterSurvivors :: [Individual] -> [Individual]
             filterSurvivors = filter ((>treshold) . fitness . phenotype)
+
+turbidostat :: Double -> Double -> PopulationChange
+turbidostat k4 k5 population = do
+    let actualSize = length population
+    let turbidostatProbability = k4 * fromIntegral (actualSize * actualSize) + k5
+    shouldDie <- sequence $ map (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
+    return $ map snd $ filter (not . fst) $ zip shouldDie population
 
 fittest :: Int -> Fitness -> Selection
 fittest newSize fitness is = return survivors

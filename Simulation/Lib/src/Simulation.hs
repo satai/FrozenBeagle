@@ -46,22 +46,19 @@ randomDnaString = DnaString <$> sequence (replicate 15 randomBase)
 randomBase :: RVar Basis
 randomBase = choice [G1, G2, G3, G4, G5]
 
-avgFitness :: Population -> Double
-avgFitness (Population _ is) = average $ map (fitness . phenotype) is
+avgFitness :: Phenotype -> Population -> Double
+avgFitness optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
 
 average :: [Double] -> Double
 average [] = 0.0
 average xs = sum xs / fromIntegral (length xs)
 
-minFitness :: Population -> Double
-minFitness (Population _ is) = minimum $ (largestDouble :) $ map (fitness . phenotype) is
+minFitness :: Phenotype -> Population -> Double
+minFitness optimum (Population _ is) = minimum $ (largestDouble :) $ map (fitness optimum . phenotype) is
     where largestDouble = 1.7976931348623157e308
 
-fitness :: Phenotype -> Double
-fitness = fitness' (Phenotype [1.0, 1.0, 0, 0])  --fixme
-
-fitness' :: Phenotype -> Phenotype -> Double
-fitness' optimum individual = 1.0 / (individual `distance` optimum + 0.001)
+fitness :: Phenotype -> Phenotype -> Double
+fitness optimum individual = 1.0 / (individual `distance` optimum + 0.001)
 
 randomRules :: RVar [(Schema, Phenotype)]
 randomRules =  sequence $ take 100 $ repeat randomRule
@@ -99,12 +96,16 @@ params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params = --FIXME
     let breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
         startPopulationSize = populationSize params
+
+        hSelection :: Phenotype -> Selection
+        hSelection optimum = hardSelection (fitness optimum) $ hardSelectionTreshold params
     in
         EvolutionRules {
                            mutation = pointMutation express,
                            breeding = breedingStrategy,
-                           selection = fittest startPopulationSize fitness -- FIXME add hardSelection fitness 0.1
-                       }   --FIXME
+                           selection = hSelection,
+                           deaths = \g -> turbidostat 0.0000001 0.1 --fixme
+                      }
 
 maxSteps :: Int
 maxSteps = 500
@@ -118,4 +119,4 @@ computeSimulation params =
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)
     in
-        [("Avg Fitness", stats avgFitness), ("Min Fitness", stats minFitness), ("Population Size", stats (fromIntegral . length . individuals))]
+        [("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ), ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]), ("Population Size", stats (fromIntegral . length . individuals))]       -- fixme
