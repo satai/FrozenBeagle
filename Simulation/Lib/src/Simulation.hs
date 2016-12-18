@@ -79,7 +79,7 @@ randomSchema = Schema <$> sequence elems
             elems =  take 15 $ repeat randomBaseOrNot -- fixme
 
 randomBaseOrNot :: RVar (Maybe Basis)
-randomBaseOrNot = choice [Just G1, Just G2, Just G3, Just G4, Just G5, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing] -- fixme
+randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 Nothing  -- fixme
 
 randomPhenotype :: RVar Phenotype
 randomPhenotype = do
