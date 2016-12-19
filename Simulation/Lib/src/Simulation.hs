@@ -101,10 +101,10 @@ params2rules params = --FIXME
         hSelection optimum = hardSelection (fitness optimum) $ hardSelectionTreshold params
     in
         EvolutionRules {
-                           mutation = pointMutation express,
-                           breeding = breedingStrategy,
-                           selection = hSelection,
-                           deaths = \g -> turbidostat 0.0000001 0.1 --fixme
+                           mutation = [ pointMutation express ],
+                           breeding = [ breedingStrategy ],
+                           selection = [ hSelection ],
+                           deaths = [ \g -> turbidostat 0.0000001 0.1 ] --fixme
                       }
 
 maxSteps :: Int

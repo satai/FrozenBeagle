@@ -7,10 +7,10 @@ import Population
 import Phenotype
 
 data EvolutionRules = EvolutionRules {
-    mutation :: Mutation,
-    breeding :: Int -> Breeding,
-    selection :: Phenotype -> Selection,
-    deaths :: Int -> PopulationChange
+    mutation :: [Mutation],
+    breeding :: [Int -> Breeding],
+    selection :: [Phenotype -> Selection],
+    deaths :: [Int -> PopulationChange]
 }
 
 step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]
@@ -25,12 +25,12 @@ evolution genToGen spec population = do
       p <- population
       let g = 1 + generation p
 
-      let breedingForGeneration = breeding spec g
+      let breedingForGeneration = map (\f -> f g) $ breeding spec
       let mutationForGeneration = mutation spec
-      let selectionForGeneration = selection spec $ optimumForGeneration g
-      let deathForGeneration = deaths spec g
+      let selectionForGeneration = map (\f -> f $ optimumForGeneration g) $ selection spec
+      let deathForGeneration = map (\f -> f g) $ deaths spec
 
-      let stepAlgo = [breedingForGeneration, mutationForGeneration, selectionForGeneration, deathForGeneration]
+      let stepAlgo = breedingForGeneration ++ mutationForGeneration ++ selectionForGeneration ++ deathForGeneration
 
       newIndividuals <- step stepAlgo $ individuals <$> population
 

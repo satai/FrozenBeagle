@@ -17,7 +17,7 @@ spec = parallel $ do
             property (\p i ->
                             let
                                 nothingHappens :: EvolutionRules
-                                nothingHappens = EvolutionRules { mutation = return, breeding = \_ -> return, selection = \_ -> return, deaths = \_ -> return }
+                                nothingHappens = EvolutionRules { mutation = [ return ], breeding = [ \_ -> return ], selection = [ \_ -> return ], deaths = [ \_ -> return ] }
                                 generations :: RVar Population -> RVar [Population]
                                 generations = evolution 10 nothingHappens
                                 populationAfter2Generations = (fst $ sampleState (generations $ return $ Population 0 p) (mkStdGen i)) !! 2
@@ -29,7 +29,7 @@ spec = parallel $ do
             property (\p i ->
                             let
                                 extinctionHappens :: EvolutionRules
-                                extinctionHappens = EvolutionRules{mutation = return, breeding = \_ -> return, selection = \_ -> extinction, deaths = \_ -> return}
+                                extinctionHappens = EvolutionRules{mutation = [ return ], breeding = [ \_ -> return ], selection = [\_ -> extinction], deaths = [\_ -> return ]}
                                 generations :: RVar Population -> RVar [Population]
                                 generations = evolution 10 extinctionHappens
                                 populationAfter2Generations = (fst $ sampleState (generations $ return p) (mkStdGen i)) !! 2
