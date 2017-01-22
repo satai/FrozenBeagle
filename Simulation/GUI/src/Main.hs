@@ -172,7 +172,6 @@ prepareWindow = do
 
     return window
 
-
 main :: IO ()
 main = do
     _ <- initGUI

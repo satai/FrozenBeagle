@@ -7,6 +7,8 @@ import Genes
 import Phenotype
 import Population
 
+import Data.MultiSet(toOccurList, fromList)
+import Data.List
 import Data.Random
 import Data.Random.Extras
 import Data.Random.Distribution.Uniform
@@ -49,6 +51,29 @@ randomBase = choice [G1, G2, G3, G4, G5]
 
 avgFitness :: Phenotype -> Population -> Double
 avgFitness optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
+
+allTheSame :: (Eq a) => [a] -> Bool
+allTheSame xs = all (== head xs) (tail xs)
+
+almostAllTheSame :: (Eq a, Ord a) => [a] -> Bool
+almostAllTheSame xs = 0.90 * fromIntegral (length xs)  > fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
+
+polymorphism :: Population -> Double
+polymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
+    where
+      chs = map chromosomes $ individuals population
+      genesList = transpose $ map genes $ map fst chs ++ map snd chs
+      same :: [Bool]
+      same = map allTheSame genesList
+
+almostPolymorphism :: Population -> Double
+almostPolymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
+    where
+      chs = map chromosomes $ individuals population
+      genesList = transpose $ map genes $ map fst chs ++ map snd chs
+      same :: [Bool]
+      same = map almostAllTheSame genesList
+
 
 average :: [Double] -> Double
 average [] = 0.0
@@ -123,4 +148,4 @@ computeSimulation params =
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)
     in
-        [("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ), ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]), ("Population Size", stats (fromIntegral . length . individuals))]       -- fixme
+        [("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ), ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]), ("Population Size", stats (fromIntegral . length . individuals)), ("% of polymorphic locus", stats polymorphism), ("% of locus with alela with more than 90% appearence", stats almostPolymorphism)]       -- fixme
