@@ -10,6 +10,8 @@ import Data.Random
 import qualified Data.MultiSet as MultiSet
 
 import Population
+import Phenotype
+import Genes
 
 import UnitTests.GenesSpec()
 import UnitTests.PhenotypeSpec()
@@ -93,6 +95,30 @@ spec = parallel $ do
                 in
                     survivingPopulation `shouldBe` []
             )
+
+        it "kills all members of population, that are too old" $
+            property ( \p i currentGeneration maximumAge ->
+              let survivingPopulation = fst $ sampleState (killOld maximumAge currentGeneration p) $ mkStdGen i
+                  age :: Individual -> Int
+                  age individual = currentGeneration - (birthGeneration individual)
+              in
+                    survivingPopulation `shouldSatisfy` (\survivors -> null survivors || (maximum $ map age survivors) <= maximumAge)
+            )
+
+        it "keeps young enough individuals" $
+          property ( \i ->
+              let youngling = Individual {
+                      sex=F,
+                      birthGeneration=10,
+                      chromosomes=(DnaString [], DnaString[]),
+                      phenotype=Phenotype []
+                  }
+                  population = [youngling]
+                  survivingPopulation = fst $ sampleState (killOld 5 13 population) $ mkStdGen i
+              in
+                    survivingPopulation `shouldBe` [youngling]
+            )
+
 
         it "can keep only part of the population" $
             property ( \ populationPart1 populationPart2 i g1 g2 g3 g4 macho1 macho2 ->

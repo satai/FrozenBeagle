@@ -16,7 +16,8 @@ data AnalysisParameters = AnalysisParameters {
     separatedGenerations :: Bool,
     hardSelectionTreshold :: Double,
     populationSize :: Int,
-    optimumChange :: [(Double, Double, Double)]
+    optimumChange :: [(Double, Double, Double)],
+    maxAge :: Int
     }
 
 randomPopulation :: Int -> RVar Population
@@ -104,7 +105,10 @@ params2rules params = --FIXME
                            mutation = [ pointMutation express ],
                            breeding = [ breedingStrategy ],
                            selection = [ hSelection ],
-                           deaths = [ \g -> turbidostat 0.0000001 0.1 ] --fixme
+                           deaths = [
+                                \g -> turbidostat 0.0000001 0.1,  --fixme remove constants
+                                \g -> killOld (maxAge params) g
+                           ]
                       }
 
 maxSteps :: Int

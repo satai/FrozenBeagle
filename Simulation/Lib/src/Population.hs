@@ -7,7 +7,7 @@ module Population (Population(Population, generation, individuals),
                    pointMutation,
                    panmictic, panmicticOverlap,
                    allSurvive, fittest, extinction, fairChance, hardSelection,
-                   turbidostat) where
+                   turbidostat, killOld) where
 
 import Data.List
 import Data.Hashable
@@ -146,6 +146,11 @@ turbidostat k4 k5 population = do
     let turbidostatProbability = k4 * fromIntegral (actualSize * actualSize) + k5
     shouldDie <- sequence $ map (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
     return $ map snd $ filter (not . fst) $ zip shouldDie population
+
+killOld :: Int -> Int -> PopulationChange
+killOld ageToDie currentGeneration population = do
+    let youngEnough = \i -> (birthGeneration i) + ageToDie > currentGeneration
+    return $ filter youngEnough population
 
 fittest :: Int -> Fitness -> Selection
 fittest newSize fitness is = return survivors
