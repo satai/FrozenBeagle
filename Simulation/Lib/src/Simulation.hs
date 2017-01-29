@@ -1,4 +1,4 @@
-module Simulation(computeSimulation, AnalysisParameters(AnalysisParameters)) where
+module Simulation(computeSimulation, AnalysisParameters(..), turbidostatCoefiecientsForPopulationSize) where
 
 import Evolution
 import Expression
@@ -20,7 +20,7 @@ data AnalysisParameters = AnalysisParameters {
     populationSize :: Int,
     optimumChange :: [(Double, Double, Double)],
     maxAge :: Int
-    }
+    } deriving Show
 
 randomPopulation :: Int -> RVar Population
 randomPopulation count = Population 0 <$> randomIndividuals count
@@ -118,20 +118,28 @@ express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
 
+turbidostatCoefiecientsForPopulationSize :: Double -> Int -> Double
+turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopulationSize =
+      (0.5 - accidentDeathProbability) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
+
 params2rules :: AnalysisParameters -> EvolutionRules
-params2rules params = --FIXME
+params2rules params =
     let breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
         startPopulationSize = populationSize params
 
         hSelection :: Phenotype -> Selection
         hSelection optimum = hardSelection (fitness optimum) $ hardSelectionTreshold params
+
+        maximumAge = maxAge params
+
+        accidentDeathProbability = 0.05
     in
         EvolutionRules {
                            mutation = [ pointMutation express ],
                            breeding = [ breedingStrategy ],
                            selection = [ hSelection ],
                            deaths = [
-                                \g -> turbidostat 0.0000001 0.1,  --fixme remove constants
+                                \g -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability,
                                 \g -> killOld (maxAge params) g
                            ]
                       }
