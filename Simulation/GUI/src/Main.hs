@@ -103,7 +103,7 @@ prepareWindow = do
     boxSetHomogeneous settingsSwitchesBoxLeft True
 
     nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
-    populationSizeScale <- labeledNewScale "Population Size" 10 1000 10 settingsSwitchesBoxLeft
+    populationSizeScale <- labeledNewScale "Population Size" 10 99999 10 settingsSwitchesBoxLeft
     hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
