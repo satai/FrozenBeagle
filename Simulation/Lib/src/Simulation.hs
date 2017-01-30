@@ -176,7 +176,7 @@ params2rules params =
 
         maximumAge = maxAge params
 
-        accidentDeathProbability = 0.05
+        accidentDeathProbability = 0.0
     in
         EvolutionRules {
                            mutation = [ pointMutation express ],
