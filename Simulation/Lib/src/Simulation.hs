@@ -6,13 +6,17 @@ import Schema
 import Genes
 import Phenotype
 import Population
+import Individual
 
 import Data.MultiSet(toOccurList, fromList)
 import Data.List
 import Data.Random
 import Data.Random.Extras
 import Data.Random.Distribution.Uniform
+import Data.Random.Distribution.Normal
 import System.Random
+
+import Debug.Trace
 
 data AnalysisParameters = AnalysisParameters {
     separatedGenerations :: Bool,
@@ -83,16 +87,50 @@ minFitness :: Phenotype -> Population -> Double
 minFitness optimum (Population _ is) = minimum $ (largestDouble :) $ map (fitness optimum . phenotype) is
     where largestDouble = 1.7976931348623157e308
 
-fitness :: Phenotype -> Phenotype -> Double
-fitness optimum individual = 1.0 / (individual `distance` optimum + 0.001)
 
 randomRules :: RVar [(Schema, Phenotype)]
-randomRules =  sequence $ take 100 $ repeat randomRule
+randomRules = do
+  br <- basicRules
+  pr <- pleiotropicRules
+  return (br ++ pr)
+
+pleiotropicRules = sequence $ take 20 $ repeat randomRule
+
+basicRules = concat <$> sequence (map simpleRulesForPosition [0..14])
+
+simpleRulesForPosition :: Int -> RVar [(Schema, Phenotype)]
+simpleRulesForPosition p = do
+    dimension <- integralUniform 0 3
+    g1Change <- doubleStdNormal
+    g2Change <- doubleStdNormal
+    g3Change <- doubleStdNormal
+    g4Change <- doubleStdNormal
+    g5Change <- doubleStdNormal
+
+    let g1DimChange = replicate dimension 0.0 ++ [g1Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let g2DimChange = replicate dimension 0.0 ++ [g2Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let g3DimChange = replicate dimension 0.0 ++ [g3Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let g4DimChange = replicate dimension 0.0 ++ [g4Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let g5DimChange = replicate dimension 0.0 ++ [g5Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+
+    let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (15 - p - 1) Nothing
+    let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (15 - p - 1) Nothing
+    let schema3 = replicate p Nothing ++ [Just G3] ++ replicate (15 - p - 1) Nothing
+    let schema4 = replicate p Nothing ++ [Just G4] ++ replicate (15 - p - 1) Nothing
+    let schema5 = replicate p Nothing ++ [Just G5] ++ replicate (15 - p - 1) Nothing
+
+    return [
+        (Schema schema1, Phenotype g1DimChange),
+        (Schema schema2, Phenotype g2DimChange),
+        (Schema schema3, Phenotype g3DimChange),
+        (Schema schema4, Phenotype g4DimChange)
+      ]
+
 
 randomRule :: RVar (Schema, Phenotype)
 randomRule = do
     schema <- randomSchema
-    p <- randomPhenotype
+    p <- randomPhenotypeChange
     return (schema, p)
 
 randomSchema :: RVar Schema
@@ -106,6 +144,12 @@ randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 
 
 randomPhenotype :: RVar Phenotype
 randomPhenotype = do
+        a1 <- doubleStdNormal
+        dims <- Data.Random.shuffle [a1, 0.0, 0.0, 0.0]
+        return $ Phenotype dims
+
+randomPhenotypeChange :: RVar Phenotype
+randomPhenotypeChange = do
         a1 <- doubleStdUniform
         a2 <- doubleStdUniform
         a3 <- doubleStdUniform
@@ -113,7 +157,7 @@ randomPhenotype = do
         return $ Phenotype [a1, a2, a3, a4]
 
 express :: ExpressionStrategy
-express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
+express = schemaBasedExpression $ traceShowId $ fst $ sampleState randomRules (mkStdGen 0)
 
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
@@ -145,7 +189,7 @@ params2rules params =
                       }
 
 maxSteps :: Int
-maxSteps = 500
+maxSteps = 1500
 
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =

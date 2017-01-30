@@ -13,5 +13,5 @@ spec :: Spec
 spec = parallel $ do
     describe "simulation" $ do
         it "turbidostat " $
-          property (turbidostatCoefiecientsForPopulationSize 0.1 10000 `shouldBe` 0.000000005, 0.1)
+          property (turbidostatCoefiecientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
 
