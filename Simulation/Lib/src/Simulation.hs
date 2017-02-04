@@ -10,6 +10,7 @@ import Individual
 
 import Data.MultiSet(toOccurList, fromList)
 import Data.List
+
 import Data.Random
 import Data.Random.Extras
 import Data.Random.Distribution.Uniform
@@ -56,11 +57,14 @@ randomBase = choice [G1, G2, G3, G4, G5]
 avgFitness :: Phenotype -> Population -> Double
 avgFitness optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
 
+stdDevFitness :: Phenotype -> Population -> Double
+stdDevFitness optimum (Population _ is)  = stdDev $ map (fitness optimum . phenotype) is
+
 allTheSame :: (Eq a) => [a] -> Bool
 allTheSame xs = all (== head xs) (tail xs)
 
 almostAllTheSame :: (Eq a, Ord a) => [a] -> Bool
-almostAllTheSame xs = 0.90 * fromIntegral (length xs)  > fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
+almostAllTheSame xs = 0.90 * fromIntegral (length xs)  >= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
 
 polymorphism :: Population -> Double
 polymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
@@ -78,15 +82,23 @@ almostPolymorphism population = 1.0 - (fromIntegral $ length $ filter id same) /
       same :: [Bool]
       same = map almostAllTheSame genesList
 
-
 average :: [Double] -> Double
-average [] = 0.0
 average xs = sum xs / fromIntegral (length xs)
 
-minFitness :: Phenotype -> Population -> Double
-minFitness optimum (Population _ is) = minimum $ (largestDouble :) $ map (fitness optimum . phenotype) is
-    where largestDouble = 1.7976931348623157e308
+stdDev :: [Double] -> Double
+stdDev xs = sqrt $ summedElements / count
+  where
+    avg = average xs
+    count = fromIntegral $ length xs
+    summedElements = sum (map (\x -> (x - avg) ^ 2) xs)
 
+minFitness :: Phenotype -> Population -> Double
+minFitness _       (Population _ []) = 1.0 / 0.0
+minFitness optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
+
+percentileFitness :: Double -> Phenotype -> Population -> Double
+percentileFitness _          _       (Population _ []) = 1.0 / 0.0
+percentileFitness percentile optimum (Population _ is) = (sort $ map (fitness optimum . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
 
 randomRules :: RVar [(Schema, Phenotype)]
 randomRules = do
@@ -200,4 +212,12 @@ computeSimulation params =
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)
     in
-        [("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ), ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]), ("Population Size", stats (fromIntegral . length . individuals)), ("% of polymorphic locus", stats polymorphism), ("% of locus with alela with more than 90% appearence", stats almostPolymorphism)]       -- fixme
+        [
+            ("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ),
+            ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]),
+            ("10% percentile Fitness", stats $ percentileFitness 0.1 $ Phenotype [1.0, 0.0, 0.0, 0.0]),
+            ("Ochylka Fitness", stats $ stdDevFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]),
+            ("Population Size", stats (fromIntegral . length . individuals)),
+            ("% of polymorphic locus", stats polymorphism),
+            ("% of locus with alela with more than 90% appearence", stats almostPolymorphism)
+        ]       -- fixme
