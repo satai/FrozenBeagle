@@ -169,7 +169,7 @@ randomPhenotypeChange = do
         return $ Phenotype [a1, a2, a3, a4]
 
 express :: ExpressionStrategy
-express = schemaBasedExpression $ traceShowId $ fst $ sampleState randomRules (mkStdGen 0)
+express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
 
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
