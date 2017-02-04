@@ -103,11 +103,14 @@ prepareWindow = do
     boxSetHomogeneous settingsSwitchesBoxLeft True
 
     nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
-    populationSizeScale <- labeledNewScale "Population Size" 10 99999 10 settingsSwitchesBoxLeft
+
+    populationSizeScale <- labeledNewScale "Population Size" 10 99999 50 settingsSwitchesBoxLeft
+    _ <- spinButtonSetValue populationSizeScale 300
+
     hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
-    _ <- toggleButtonSetActive separatedGenerationsSwitch True
+    _ <- toggleButtonSetActive separatedGenerationsSwitch False
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     containerSetBorderWidth settingsSwitchesBoxRight 10
@@ -224,9 +227,8 @@ resetOptions nameField parameterFields =
   do
     entrySetText nameField ""
     spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
-    spinButtonSetValue (populationSizeField parameterFields) 10
-    toggleButtonSetMode (separatedGenerationsField parameterFields) False
-    toggleButtonSetActive (separatedGenerationsField parameterFields) True
+    spinButtonSetValue (populationSizeField parameterFields) 300
+    toggleButtonSetActive (separatedGenerationsField parameterFields) False
 
     mapM_ resetOptimumMovement (optimumMovementFields parameterFields)
     return ()
