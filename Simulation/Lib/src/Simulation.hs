@@ -180,7 +180,10 @@ turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopula
 
 params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params =
-    let breedingStrategy = if separatedGenerations params then panmictic express else panmicticOverlap express
+    let breedingStrategy = if separatedGenerations params
+                                  then panmictic express
+                                  else panmicticOverlap express
+
         startPopulationSize = populationSize params
 
         hSelection :: Phenotype -> Selection
