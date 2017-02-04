@@ -71,7 +71,7 @@ randomOffspring expression generation father@(Individual M _ (mdna1, mdna2) _) m
 
 
 mate :: ExpressionStrategy -> Double -> Double -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
-mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4]
+mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
         where
             seed = hash optimum `xor` hash father `xor` hash mother `xor` g
 
@@ -79,16 +79,13 @@ mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna
             motherFitness = fitness optimum $ expression F (fdna1, fdna2)
             pairFitness = (fatherFitness + motherFitness) / 2.0
 
-            numOfOffspring =
-                  if (pairFitness < avgFitness - stdDevFitness) then 1
-                  else if (pairFitness < avgFitness) then 2
-                  else if (pairFitness < avgFitness + stdDevFitness) then 3
-                  else 4
-
+            numOfOffspring = min 6 $ floor $ pairFitness * 10
             randOffspring1 = randomOffspring expression g father mother seed
             randOffspring2 = randomOffspring expression g father mother (seed + 1)
             randOffspring3 = randomOffspring expression g father mother (seed + 2)
             randOffspring4 = randomOffspring expression g father mother (seed + 3)
+            randOffspring5 = randomOffspring expression g father mother (seed + 4)
+            randOffspring6 = randomOffspring expression g father mother (seed + 5)
 
 mate _ _ _ _ _ _ = error "Should not happen"
 
