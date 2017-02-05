@@ -30,13 +30,14 @@ before_install:
 # This line does all of the work: installs GHC if necessary, build the library,
 # executables, and test suites, and runs the test suites. --no-terminal works
 # around some quirks in Travis's terminal implementation.
-script: cd Simulation/Lib ; \
-        stack $ARGS setup --upgrade-cabal --no-terminal ; \
-        stack $ARGS solver --update-config --no-terminal ; \
-        stack $ARGS install cabal-install --no-terminal ; \
-        stack $ARGS --no-terminal --install-ghc install gtk2hs-buildtools --haddock ; \
-        stack $ARGS solver --update-config --no-terminal ; \
-        stack $ARGS --no-terminal --install-ghc test --haddock
+script: |
+    cd Simulation/Lib ;
+    stack $ARGS setup --upgrade-cabal --no-terminal ;
+    stack $ARGS solver --update-config --no-terminal ;
+    stack $ARGS install cabal-install --no-terminal ;
+    stack $ARGS --no-terminal --install-ghc install gtk2hs-buildtools --haddock ;
+    stack $ARGS solver --update-config --no-terminal ;
+    stack $ARGS --no-terminal --install-ghc test --haddock
 
 # Caching so the next build will be fast too.
 cache:
