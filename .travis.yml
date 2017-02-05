@@ -33,6 +33,8 @@ before_install:
 script: |
     cd Simulation/Lib ;
     stack $ARGS setup --upgrade-cabal --install-ghc --no-terminal ;
+    stack $ARGS install alex --no-terminal ;
+    stack $ARGS install happy --no-terminal ;
     stack $ARGS install cabal-install --no-terminal ;
     stack $ARGS --no-terminal --install-ghc install gtk2hs-buildtools --haddock ;
     stack $ARGS solver --update-config --no-terminal ;
