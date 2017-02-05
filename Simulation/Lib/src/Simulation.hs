@@ -107,7 +107,8 @@ randomRules baseCount = do
   br <- basicRules baseCount
   --er <- epistaticRules baseCount
   pr <- pleiotropicRules baseCount 20
-  return (br ++ pr)
+  cr <- complicatedRules baseCount 20
+  return (br ++ pr ++ cr)
 
 epistaticRules baseCount = [] -- sequence $ take 20 $ repeat (randomEpistaticRule baseCount)
 
@@ -132,6 +133,9 @@ randomPleiotropicRule baseCount = do
 
 basicRules :: Int -> RVar [(Schema, Phenotype)]
 basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCount) [0..(baseCount - 1)])
+
+complicatedRules :: Int -> Int -> RVar [(Schema, Phenotype)]
+complicatedRules baseCount countOfRules = sequence $ take countOfRules $ repeat (complicatedRule baseCount)
 
 simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
 simpleRulesForPosition baseCount p = do
@@ -162,8 +166,8 @@ simpleRulesForPosition baseCount p = do
         (Schema schema4, Phenotype g4DimChange)
       ]
 
-randomRule :: Int -> RVar (Schema, Phenotype)
-randomRule baseCount = do
+complicatedRule :: Int -> RVar (Schema, Phenotype)
+complicatedRule baseCount = do
     schema <- randomSchema baseCount
     p <- randomPhenotypeChange
     return (schema, p)
