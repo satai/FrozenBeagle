@@ -44,13 +44,14 @@ type Mutation = PopulationChange
 type Breeding = PopulationChange
 
 chosenPairs :: [Individual] -> [(Individual, Individual)]
-chosenPairs population = zip m f
+chosenPairs population = take numOfPairsPerGen $ zip m f
     where seed = hash population
           gen = mkStdGen seed
           m' = shuffle $ males population
           f' = shuffle $ females population
           (m, gen') = sampleState m' gen
           (f, _   ) = sampleState f' gen'
+          numOfPairsPerGen = (length population) `div` 8
 
 
 randomOffspring :: ExpressionStrategy -> Int -> Individual -> Individual -> Int -> Individual
