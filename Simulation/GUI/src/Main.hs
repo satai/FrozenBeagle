@@ -189,7 +189,14 @@ extractParameters parameterFields = do
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
     hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
     optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
-    return AnalysisParameters { separatedGenerations = separatedGen, hardSelectionTreshold =  hardSelectionTreshold, populationSize =  popSize, optimumChange = optimumMovements, maxAge = 15 }
+    return AnalysisParameters {
+          separatedGenerations = separatedGen,
+          hardSelectionTreshold =  hardSelectionTreshold,
+          populationSize =  popSize,
+          optimumChange = optimumMovements,
+          maxAge = 15,
+          countOfBases = 20
+          }
       where
         optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
         optimumChangesGetValue (period, amplitude, gradient) = do

@@ -63,8 +63,10 @@ randomOffspring expression generation father@(Individual M _ (mdna1, mdna2) _) m
 
         s = if (odd s') then M else F
 
-        (crossOverPoint1, gen'') = randomR (1, 14) gen'
-        (crossOverPoint2, _) = randomR (1, 14) gen''
+        baseCount = length $ genes mdna1
+
+        (crossOverPoint1, gen'') = randomR (1, baseCount - 1) gen'
+        (crossOverPoint2, _) = randomR (1, baseCount - 1) gen''
 
         d1 = crossover crossOverPoint1 mdna1 fdna1
         d2 = crossover crossOverPoint2 mdna2 fdna2
@@ -159,7 +161,7 @@ hardSelection fitness treshold = return . filterSurvivors
 turbidostat :: Double -> Double -> PopulationChange
 turbidostat k4 k5 population = do
     let actualSize = length population
-    let turbidostatProbability = k4 * fromIntegral (actualSize * actualSize) + k5
+    let turbidostatProbability = min 0.9 $ k4 * fromIntegral (actualSize * actualSize) + k5
     shouldDie <- sequence $ map (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
     return $ map snd $ filter (not . fst) $ zip shouldDie population
 

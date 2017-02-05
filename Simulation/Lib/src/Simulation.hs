@@ -24,32 +24,33 @@ data AnalysisParameters = AnalysisParameters {
     hardSelectionTreshold :: Double,
     populationSize :: Int,
     optimumChange :: [(Double, Double, Double)],
-    maxAge :: Int
+    maxAge :: Int,
+    countOfBases :: Int
     } deriving Show
 
-randomPopulation :: Int -> RVar Population
-randomPopulation count = Population 0 <$> randomIndividuals count
+randomPopulation :: Int -> Int -> RVar Population
+randomPopulation count baseCount = Population 0 <$> randomIndividuals count baseCount
 
-randomIndividuals :: Int -> RVar [Individual]
-randomIndividuals count = sequence $ replicate count randomIndividual
+randomIndividuals :: Int -> Int -> RVar [Individual]
+randomIndividuals count baseCount = sequence $ replicate count $ randomIndividual baseCount
 
-randomIndividual :: RVar Individual
-randomIndividual = do
+randomIndividual :: Int -> RVar Individual
+randomIndividual baseCount = do
         gender <- randomGender
-        chs <- randomChromosomes
-        return $ Individual gender 0 chs $ express gender chs
+        chs <- randomChromosomes baseCount
+        return $ Individual gender 0 chs $ express baseCount gender chs
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
 
-randomChromosomes :: RVar (DnaString, DnaString)
-randomChromosomes = do
-            dna1 <- randomDnaString
-            dna2 <- randomDnaString
+randomChromosomes :: Int -> RVar (DnaString, DnaString)
+randomChromosomes baseCount = do
+            dna1 <- randomDnaString baseCount
+            dna2 <- randomDnaString baseCount
             return (dna1, dna2)
 
-randomDnaString :: RVar DnaString
-randomDnaString = DnaString <$> sequence (replicate 15 randomBase)
+randomDnaString :: Int -> RVar DnaString
+randomDnaString baseCount = DnaString <$> sequence (replicate baseCount randomBase)
 
 randomBase :: RVar Basis
 randomBase = choice [G1, G2, G3, G4, G5]
@@ -100,18 +101,19 @@ percentileFitness :: Double -> Phenotype -> Population -> Double
 percentileFitness _          _       (Population _ []) = 1.0 / 0.0
 percentileFitness percentile optimum (Population _ is) = (sort $ map (fitness optimum . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
 
-randomRules :: RVar [(Schema, Phenotype)]
-randomRules = do
-  br <- basicRules
-  pr <- pleiotropicRules
+randomRules :: Int -> RVar [(Schema, Phenotype)]
+randomRules baseCount = do
+  br <- basicRules baseCount
+  pr <- pleiotropicRules baseCount
   return (br ++ pr)
 
-pleiotropicRules = sequence $ take 20 $ repeat randomRule
+pleiotropicRules baseCount = sequence $ take 20 $ repeat (randomRule baseCount)
 
-basicRules = concat <$> sequence (map simpleRulesForPosition [0..14])
+basicRules :: Int -> RVar [(Schema, Phenotype)]
+basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCount) [0..(baseCount - 1)])
 
-simpleRulesForPosition :: Int -> RVar [(Schema, Phenotype)]
-simpleRulesForPosition p = do
+simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
+simpleRulesForPosition baseCount p = do
     dimension <- integralUniform 0 3
     g1Change <- doubleStdNormal
     g2Change <- doubleStdNormal
@@ -125,11 +127,11 @@ simpleRulesForPosition p = do
     let g4DimChange = replicate dimension 0.0 ++ [g4Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
     let g5DimChange = replicate dimension 0.0 ++ [g5Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
 
-    let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (15 - p - 1) Nothing
-    let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (15 - p - 1) Nothing
-    let schema3 = replicate p Nothing ++ [Just G3] ++ replicate (15 - p - 1) Nothing
-    let schema4 = replicate p Nothing ++ [Just G4] ++ replicate (15 - p - 1) Nothing
-    let schema5 = replicate p Nothing ++ [Just G5] ++ replicate (15 - p - 1) Nothing
+    let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (baseCount - p - 1) Nothing
+    let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (baseCount - p - 1) Nothing
+    let schema3 = replicate p Nothing ++ [Just G3] ++ replicate (baseCount - p - 1) Nothing
+    let schema4 = replicate p Nothing ++ [Just G4] ++ replicate (baseCount - p - 1) Nothing
+    let schema5 = replicate p Nothing ++ [Just G5] ++ replicate (baseCount - p - 1) Nothing
 
     return [
         (Schema schema1, Phenotype g1DimChange),
@@ -139,17 +141,17 @@ simpleRulesForPosition p = do
       ]
 
 
-randomRule :: RVar (Schema, Phenotype)
-randomRule = do
-    schema <- randomSchema
+randomRule :: Int -> RVar (Schema, Phenotype)
+randomRule baseCount = do
+    schema <- randomSchema baseCount
     p <- randomPhenotypeChange
     return (schema, p)
 
-randomSchema :: RVar Schema
-randomSchema = Schema <$> sequence elems
+randomSchema :: Int -> RVar Schema
+randomSchema baseCount = Schema <$> sequence elems
         where
             elems :: [RVar (Maybe Basis)]
-            elems =  take 15 $ repeat randomBaseOrNot -- fixme
+            elems =  take baseCount $ repeat randomBaseOrNot -- fixme
 
 randomBaseOrNot :: RVar (Maybe Basis)
 randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 Nothing  -- fixme
@@ -168,8 +170,8 @@ randomPhenotypeChange = do
         a4 <- doubleStdUniform
         return $ Phenotype [a1, a2, a3, a4]
 
-express :: ExpressionStrategy
-express = schemaBasedExpression $ fst $ sampleState randomRules (mkStdGen 0)
+express :: Int -> ExpressionStrategy
+express baseCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount) (mkStdGen 0)
 
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
@@ -180,9 +182,11 @@ turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopula
 
 params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params =
-    let breedingStrategy = if separatedGenerations params
-                                  then panmictic express
-                                  else panmicticOverlap express
+    let baseCount = countOfBases params
+
+        breedingStrategy = if separatedGenerations params
+                                  then panmictic (express baseCount)
+                                  else panmicticOverlap (express baseCount)
 
         startPopulationSize = populationSize params
 
@@ -194,7 +198,7 @@ params2rules params =
         accidentDeathProbability = 0.0
     in
         EvolutionRules {
-                           mutation = [ pointMutation express ],
+                           mutation = [ pointMutation (express baseCount) ],
                            breeding = [ breedingStrategy ],
                            selection = [ hSelection ],
                            deaths = [
@@ -210,7 +214,7 @@ computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
     let rules = params2rules params
         startPopulationSize = populationSize params
-        initialPopulation = randomPopulation startPopulationSize
+        initialPopulation = randomPopulation startPopulationSize $ countOfBases params
         allGenerations = evolution maxSteps rules initialPopulation
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)
