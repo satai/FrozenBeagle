@@ -19,7 +19,10 @@ data AnalysisParametersFields = AnalysisParametersFields {
     hardSelectionTresholdField :: SpinButton,
     populationSizeField :: SpinButton,
     baseCountField :: SpinButton,
-    optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
+    optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)],
+    countOfPleiotropicRulesField :: SpinButton,
+    countOfEpistaticRulesField :: SpinButton,
+    countOfComplicatedRulesField :: SpinButton
     }
 
 disableButtonIfInBroadway :: Button -> IO()
@@ -103,6 +106,10 @@ prepareWindow = do
     containerSetBorderWidth settingsSwitchesBoxLeft 10
     boxSetHomogeneous settingsSwitchesBoxLeft True
 
+    settingsSwitchesBoxMiddle <- vBoxNew False 0
+    containerSetBorderWidth settingsSwitchesBoxMiddle 10
+    boxSetHomogeneous settingsSwitchesBoxMiddle True
+
     nameField <- labeledNewTextField "Description" settingsSwitchesBoxLeft
 
     populationSizeScale <- labeledNewScale "Population Size" 10 99999 50 settingsSwitchesBoxLeft
@@ -116,6 +123,10 @@ prepareWindow = do
 
     _ <- toggleButtonSetActive separatedGenerationsSwitch False
 
+    epistaticRulesScale <- labeledNewScale "Epistatic rules" 0 100 1 settingsSwitchesBoxMiddle
+    pleiotropicRulesScale <- labeledNewScale "Pleiotropic rules" 0 100 1 settingsSwitchesBoxMiddle
+    complicatedRulesScale <- labeledNewScale "Complicated rules" 0 100 1 settingsSwitchesBoxMiddle
+
     settingsSwitchesBoxRight <- vBoxNew False 0
     containerSetBorderWidth settingsSwitchesBoxRight 10
     settingsSwitchesBox <- hBoxNew False 0
@@ -124,10 +135,14 @@ prepareWindow = do
     settingsSwitchesFrameLeft <- frameNew
     containerAdd settingsSwitchesFrameLeft settingsSwitchesBoxLeft
 
+    settingsSwitchesFrameMiddle <- frameNew
+    containerAdd settingsSwitchesFrameMiddle settingsSwitchesBoxMiddle
+
     settingsSwitchesFrameRight <- frameNew
     containerAdd settingsSwitchesFrameRight settingsSwitchesBoxRight
 
     boxPackStart settingsSwitchesBox settingsSwitchesFrameLeft PackNatural 30
+    boxPackStart settingsSwitchesBox settingsSwitchesFrameMiddle PackNatural 30
     boxPackStart settingsSwitchesBox settingsSwitchesFrameRight PackNatural 30
 
     optimumMovements <- optimumMovements settingsSwitchesBoxRight
@@ -165,14 +180,17 @@ prepareWindow = do
 
     boxPackEnd quitBox quitbutton PackNatural 3
 
-    boxPackStart mainTable quitBox  PackNatural 3
+    boxPackStart mainTable quitBox PackNatural 3
 
     let inputs = AnalysisParametersFields {
-                            separatedGenerationsField =  separatedGenerationsSwitch,
+                            separatedGenerationsField = separatedGenerationsSwitch,
                             hardSelectionTresholdField = hardSelectionTresholdScale,
                             populationSizeField = populationSizeScale,
                             baseCountField = baseCountScale,
-                            optimumMovementFields = optimumMovements
+                            optimumMovementFields = optimumMovements,
+                            countOfPleiotropicRulesField = pleiotropicRulesScale,
+                            countOfEpistaticRulesField = epistaticRulesScale,
+                            countOfComplicatedRulesField = complicatedRulesScale
                       }
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
@@ -200,13 +218,21 @@ extractParameters parameterFields = do
     baseCount <- spinButtonGetValueAsInt $ baseCountField parameterFields
     hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
     optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
+
+    pleiotropicRulesCount <- spinButtonGetValueAsInt $ countOfPleiotropicRulesField parameterFields
+    epistaticRulesCount <- spinButtonGetValueAsInt $ countOfEpistaticRulesField parameterFields
+    complicatedRulesCount <- spinButtonGetValueAsInt $ countOfComplicatedRulesField parameterFields
+
     return AnalysisParameters {
           separatedGenerations = separatedGen,
           hardSelectionTreshold =  hardSelectionTreshold,
           populationSize =  popSize,
           optimumChange = optimumMovements,
           maxAge = 15,
-          countOfBases = baseCount
+          countOfBases = baseCount,
+          countOfPleiotropicRules = pleiotropicRulesCount,
+          countOfEpistaticRules = epistaticRulesCount,
+          countOfComplicatedRules = complicatedRulesCount
           }
       where
         optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)

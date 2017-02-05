@@ -1,4 +1,4 @@
-module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection, deaths), evolution) where
+module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection, deaths, expression), evolution) where
 
 import Data.Random
 import Data.Functor()
@@ -6,12 +6,14 @@ import Data.Functor()
 import Population
 import Phenotype
 import Individual
+import Expression
 
 data EvolutionRules = EvolutionRules {
     mutation :: [Mutation],
     breeding :: [Double -> Double -> Phenotype -> Int -> Breeding],
     selection :: [Phenotype -> Selection],
-    deaths :: [Int -> PopulationChange]
+    deaths :: [Int -> PopulationChange],
+    expression :: ExpressionStrategy
 }
 
 step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]

@@ -26,20 +26,23 @@ data AnalysisParameters = AnalysisParameters {
     populationSize :: Int,
     optimumChange :: [(Double, Double, Double)],
     maxAge :: Int,
-    countOfBases :: Int
+    countOfBases :: Int,
+    countOfPleiotropicRules :: Int,
+    countOfEpistaticRules :: Int,
+    countOfComplicatedRules :: Int
     } deriving Show
 
-randomPopulation :: Int -> Int -> RVar Population
-randomPopulation count baseCount = Population 0 <$> randomIndividuals count baseCount
+randomPopulation :: Int -> ExpressionStrategy -> Int -> RVar Population
+randomPopulation count expressionStrategy baseCount = Population 0 <$> randomIndividuals count expressionStrategy baseCount
 
-randomIndividuals :: Int -> Int -> RVar [Individual]
-randomIndividuals count baseCount = sequence $ replicate count $ randomIndividual baseCount
+randomIndividuals :: Int -> ExpressionStrategy -> Int -> RVar [Individual]
+randomIndividuals count expressionStrategy baseCount = sequence $ replicate count $ randomIndividual baseCount expressionStrategy
 
-randomIndividual :: Int -> RVar Individual
-randomIndividual baseCount = do
+randomIndividual :: Int -> ExpressionStrategy -> RVar Individual
+randomIndividual baseCount expressionStrategy = do
         gender <- randomGender
         chs <- randomChromosomes baseCount
-        return $ Individual gender 0 chs $ express baseCount gender chs
+        return $ Individual gender 0 chs $ expressionStrategy gender chs
 
 randomGender :: RVar Sex
 randomGender = choice [F, M]
@@ -102,15 +105,16 @@ percentileFitness :: Double -> Phenotype -> Population -> Double
 percentileFitness _          _       (Population _ []) = 1.0 / 0.0
 percentileFitness percentile optimum (Population _ is) = (sort $ map (fitness optimum . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
 
-randomRules :: Int -> RVar [(Schema, Phenotype)]
-randomRules baseCount = do
+randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
+randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
   br <- basicRules baseCount
-  --er <- epistaticRules baseCount
-  pr <- pleiotropicRules baseCount 20
-  cr <- complicatedRules baseCount 20
+  er <- epistaticRules baseCount pleiotropicRulesCount
+  pr <- pleiotropicRules baseCount epistaticRulesCount
+  cr <- complicatedRules baseCount complicatedRulesCount
   return (br ++ pr ++ cr)
 
-epistaticRules baseCount = [] -- sequence $ take 20 $ repeat (randomEpistaticRule baseCount)
+epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
+epistaticRules baseCount countOfRules = sequence $ take baseCount $ repeat (randomEpistaticRule baseCount)
 
 pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 pleiotropicRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomPleiotropicRule baseCount)
@@ -135,7 +139,7 @@ basicRules :: Int -> RVar [(Schema, Phenotype)]
 basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCount) [0..(baseCount - 1)])
 
 complicatedRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-complicatedRules baseCount countOfRules = sequence $ take countOfRules $ repeat (complicatedRule baseCount)
+complicatedRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomComplicatedRule baseCount)
 
 simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
 simpleRulesForPosition baseCount p = do
@@ -166,8 +170,18 @@ simpleRulesForPosition baseCount p = do
         (Schema schema4, Phenotype g4DimChange)
       ]
 
-complicatedRule :: Int -> RVar (Schema, Phenotype)
-complicatedRule baseCount = do
+randomEpistaticRule :: Int -> RVar (Schema, Phenotype)
+randomEpistaticRule baseCount = do
+    schema <- randomSchema baseCount
+    dimension <- integralUniform 0 3
+    gChange <- doubleStdNormal
+
+    let gDimChange = replicate dimension 0.0 ++ [gChange / 8.0] ++ replicate (4 - dimension - 1) 0.0
+
+    return (schema, Phenotype gDimChange)
+
+randomComplicatedRule :: Int -> RVar (Schema, Phenotype)
+randomComplicatedRule baseCount = do
     schema <- randomSchema baseCount
     p <- randomPhenotypeChange
     return (schema, p)
@@ -195,8 +209,8 @@ randomPhenotypeChange = do
         a4 <- doubleStdUniform
         return $ Phenotype [a1, a2, a3, a4]
 
-express :: Int -> ExpressionStrategy
-express baseCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount) (mkStdGen 0)
+express :: Int -> Int -> Int -> Int -> ExpressionStrategy
+express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount ) (mkStdGen 0)
 
 colapse :: RVar a -> a
 colapse x = fst $ sampleState x (mkStdGen 0)
@@ -207,11 +221,17 @@ turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopula
 
 params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params =
-    let baseCount = countOfBases params
+    let baseCount = countOfBases $ traceShowId params
+
+        pleiotropicRulesCount = countOfPleiotropicRules params
+        epistaticRulesCount = countOfEpistaticRules params
+        complicatedRulesCount = countOfComplicatedRules params
+
+        expression' = express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
 
         breedingStrategy = if separatedGenerations params
-                                  then panmictic (express baseCount)
-                                  else panmicticOverlap (express baseCount)
+                                  then panmictic expression'
+                                  else panmicticOverlap expression'
 
         startPopulationSize = populationSize params
 
@@ -223,13 +243,14 @@ params2rules params =
         accidentDeathProbability = 0.0
     in
         EvolutionRules {
-                           mutation = [ pointMutation (express baseCount) ],
+                           mutation = [ pointMutation expression' ],
                            breeding = [ breedingStrategy ],
                            selection = [ hSelection ],
                            deaths = [
                                 \g -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability,
                                 \g -> killOld (maxAge params) g
-                           ]
+                           ],
+                           expression = expression'
                       }
 
 maxSteps :: Int
@@ -239,7 +260,8 @@ computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
     let rules = params2rules params
         startPopulationSize = populationSize params
-        initialPopulation = randomPopulation startPopulationSize $ countOfBases params
+
+        initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
         allGenerations = evolution maxSteps rules initialPopulation
         generations = colapse allGenerations
         stats f = zip [0..] (map f generations)

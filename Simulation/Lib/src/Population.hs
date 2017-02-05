@@ -81,7 +81,7 @@ mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna
             motherFitness = fitness optimum $ expression F (fdna1, fdna2)
             pairFitness = (fatherFitness + motherFitness) / 2.0
 
-            numOfOffspring = min 6 $ floor $ pairFitness * 10
+            numOfOffspring = min 6 $ floor $ pairFitness * 5
             randOffspring1 = randomOffspring expression g father mother seed
             randOffspring2 = randomOffspring expression g father mother (seed + 1)
             randOffspring3 = randomOffspring expression g father mother (seed + 2)
