@@ -18,6 +18,7 @@ data AnalysisParametersFields = AnalysisParametersFields {
     separatedGenerationsField :: CheckButton,
     hardSelectionTresholdField :: SpinButton,
     populationSizeField :: SpinButton,
+    baseCountField :: SpinButton,
     optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
     }
 
@@ -107,6 +108,9 @@ prepareWindow = do
     populationSizeScale <- labeledNewScale "Population Size" 10 99999 50 settingsSwitchesBoxLeft
     _ <- spinButtonSetValue populationSizeScale 300
 
+    baseCountScale <- labeledNewScale "DNA String length" 5 50 5 settingsSwitchesBoxLeft
+    _ <- spinButtonSetValue baseCountScale 20
+
     hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
@@ -163,7 +167,13 @@ prepareWindow = do
 
     boxPackStart mainTable quitBox  PackNatural 3
 
-    let inputs = AnalysisParametersFields separatedGenerationsSwitch hardSelectionTresholdScale populationSizeScale optimumMovements
+    let inputs = AnalysisParametersFields {
+                            separatedGenerationsField =  separatedGenerationsSwitch,
+                            hardSelectionTresholdField = hardSelectionTresholdScale,
+                            populationSizeField = populationSizeScale,
+                            baseCountField = baseCountScale,
+                            optimumMovementFields = optimumMovements
+                      }
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
     _ <- on resetButton buttonActivated (resetOptions nameField inputs)
@@ -187,6 +197,7 @@ extractParameters :: AnalysisParametersFields -> IO AnalysisParameters
 extractParameters parameterFields = do
     separatedGen <- toggleButtonGetActive $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
+    baseCount <- spinButtonGetValueAsInt $ baseCountField parameterFields
     hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
     optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
     return AnalysisParameters {
@@ -195,7 +206,7 @@ extractParameters parameterFields = do
           populationSize =  popSize,
           optimumChange = optimumMovements,
           maxAge = 15,
-          countOfBases = 20
+          countOfBases = baseCount
           }
       where
         optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
@@ -235,6 +246,7 @@ resetOptions nameField parameterFields =
     entrySetText nameField ""
     spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
     spinButtonSetValue (populationSizeField parameterFields) 300
+    spinButtonSetValue (baseCountField parameterFields) 20
     toggleButtonSetActive (separatedGenerationsField parameterFields) False
 
     mapM_ resetOptimumMovement (optimumMovementFields parameterFields)
