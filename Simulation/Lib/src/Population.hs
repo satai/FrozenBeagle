@@ -24,8 +24,6 @@ import Individual
 import Phenotype
 import Expression
 
-import Debug.Trace
-
 data Population = Population {
       generation :: Int,
       individuals :: [Individual]
@@ -56,7 +54,7 @@ chosenPairs population = zip m f
 
 
 randomOffspring :: ExpressionStrategy -> Int -> Individual -> Individual -> Int -> Individual
-randomOffspring expression generation father@(Individual M _ (mdna1, mdna2) _) mother@(Individual F _ (fdna1, fdna2) _) seed = Individual s generation (d1, d2) $ expression s (d1, d2)
+randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (Individual F _ (fdna1, fdna2) _) seed = Individual s currentGeneration (d1, d2) $ expression s (d1, d2)
     where
         gen = mkStdGen seed
         (s', gen') = next gen
@@ -71,9 +69,11 @@ randomOffspring expression generation father@(Individual M _ (mdna1, mdna2) _) m
         d1 = crossover crossOverPoint1 mdna1 fdna1
         d2 = crossover crossOverPoint2 mdna2 fdna2
 
+randomOffspring _ _ _ _ _ = error "should not happen"
 
-mate :: ExpressionStrategy -> Double -> Double -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
-mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
+
+mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
+mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
         where
             seed = hash optimum `xor` hash father `xor` hash mother `xor` g
 
@@ -81,7 +81,7 @@ mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna
             motherFitness = fitness optimum $ expression F (fdna1, fdna2)
             pairFitness = (fatherFitness + motherFitness) / 2.0
 
-            numOfOffspring = min 6 $ floor $ pairFitness * 5
+            numOfOffspring = min 6 $ floor $ pairFitness
             randOffspring1 = randomOffspring expression g father mother seed
             randOffspring2 = randomOffspring expression g father mother (seed + 1)
             randOffspring3 = randomOffspring expression g father mother (seed + 2)
@@ -89,7 +89,7 @@ mate expression avgFitness stdDevFitness optimum g (father@(Individual M _ (mdna
             randOffspring5 = randomOffspring expression g father mother (seed + 4)
             randOffspring6 = randomOffspring expression g father mother (seed + 5)
 
-mate _ _ _ _ _ _ = error "Should not happen"
+mate _ _ _ _ = error "Should not happen"
 
 probabilityIndividualMutation :: Float
 probabilityIndividualMutation = 0.01
@@ -130,17 +130,17 @@ pointMutationIndividual expression i = do
 pointMutation :: ExpressionStrategy -> Mutation
 pointMutation expression is = sequence $ map (pointMutationIndividual expression) is
 
-panmictic :: ExpressionStrategy -> Double -> Double -> Phenotype -> Int -> Breeding
-panmictic expression avgFitness stdDevFitness optimum g population = return $ concat children
+panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
+panmictic expression optimum g population = return $ concat children
         where
           children :: [[Individual]]
-          children = map (mate expression avgFitness stdDevFitness optimum g) $ chosenPairs population
+          children = map (mate expression optimum g) $ chosenPairs population
 
-panmicticOverlap :: ExpressionStrategy -> Double -> Double -> Phenotype -> Int -> Breeding
-panmicticOverlap expression avgFitness stdDevFitness optimum g population = return $ population ++ concat children
+panmicticOverlap :: ExpressionStrategy -> Phenotype -> Int -> Breeding
+panmicticOverlap expression optimum g population = return $ population ++ concat children
         where
           children :: [[Individual]]
-          children = map (mate expression avgFitness stdDevFitness optimum g) $ chosenPairs population
+          children = map (mate expression optimum g) $ chosenPairs population
 
 type Selection = PopulationChange
 
@@ -153,10 +153,10 @@ extinction = return . const []
 type Fitness = Phenotype -> Double
 
 hardSelection :: Fitness -> Double -> Selection
-hardSelection fitness treshold = return . filterSurvivors
+hardSelection fitness' treshold = return . filterSurvivors
         where
             filterSurvivors :: [Individual] -> [Individual]
-            filterSurvivors = filter ((>treshold) . fitness . phenotype)
+            filterSurvivors = filter ((>treshold) . fitness' . phenotype)
 
 turbidostat :: Double -> Double -> PopulationChange
 turbidostat k4 k5 population = do
@@ -171,12 +171,12 @@ killOld ageToDie currentGeneration population = do
     return $ filter youngEnough population
 
 fittest :: Int -> Fitness -> Selection
-fittest newSize fitness is = return survivors
+fittest newSize fitness' is = return survivors
     where
         survivors :: [Individual]
         survivors = take newSize $ sortBy fitnessComparator is
         fitnessComparator :: Individual ->Individual -> Ordering
-        fitnessComparator i1 i2 = fitness (phenotype i2) `compare` fitness (phenotype i1)
+        fitnessComparator i1 i2 = fitness' (phenotype i2) `compare` fitness' (phenotype i1)
 
 fairChance :: Int -> Selection
 fairChance newSize is = sample newSize is

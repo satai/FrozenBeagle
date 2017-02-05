@@ -7,7 +7,6 @@ import Schema
 import Genes
 import Phenotype
 import Population
-import Individual
 
 import Data.MultiSet(toOccurList, fromList)
 import Data.List
@@ -18,7 +17,6 @@ import Data.Random.Distribution.Uniform
 import Data.Random.Distribution.Normal
 import System.Random
 
-import Debug.Trace
 
 data AnalysisParameters = AnalysisParameters {
     separatedGenerations :: Bool,
@@ -68,8 +66,8 @@ stdDevFitness optimum (Population _ is)  = stdDev $ map (fitness optimum . pheno
 allTheSame :: (Eq a) => [a] -> Bool
 allTheSame xs = all (== head xs) (tail xs)
 
-almostAllTheSame :: (Eq a, Ord a) => [a] -> Bool
-almostAllTheSame xs = 0.90 * fromIntegral (length xs)  >= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
+almostAllTheSame :: (Ord a) => [a] -> Bool
+almostAllTheSame xs = (0.90 :: Double) * fromIntegral (length xs)  >= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
 
 polymorphism :: Population -> Double
 polymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
@@ -95,7 +93,7 @@ stdDev xs = sqrt $ summedElements / count
   where
     avg = average xs
     count = fromIntegral $ length xs
-    summedElements = sum (map (\x -> (x - avg) ^ 2) xs)
+    summedElements = sum (map (\x -> (x - avg) * (x - avg)) xs)
 
 minFitness :: Phenotype -> Population -> Double
 minFitness _       (Population _ []) = 1.0 / 0.0
@@ -111,10 +109,10 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
   er <- epistaticRules baseCount pleiotropicRulesCount
   pr <- pleiotropicRules baseCount epistaticRulesCount
   cr <- complicatedRules baseCount complicatedRulesCount
-  return (br ++ pr ++ cr)
+  return (br ++ pr ++ er ++ cr)
 
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-epistaticRules baseCount countOfRules = sequence $ take baseCount $ repeat (randomEpistaticRule baseCount)
+epistaticRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomEpistaticRule baseCount)
 
 pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 pleiotropicRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomPleiotropicRule baseCount)
@@ -167,7 +165,8 @@ simpleRulesForPosition baseCount p = do
         (Schema schema1, Phenotype g1DimChange),
         (Schema schema2, Phenotype g2DimChange),
         (Schema schema3, Phenotype g3DimChange),
-        (Schema schema4, Phenotype g4DimChange)
+        (Schema schema4, Phenotype g4DimChange),
+        (Schema schema5, Phenotype g5DimChange)
       ]
 
 randomEpistaticRule :: Int -> RVar (Schema, Phenotype)
@@ -195,12 +194,6 @@ randomSchema baseCount = Schema <$> sequence elems
 randomBaseOrNot :: RVar (Maybe Basis)
 randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 Nothing  -- fixme
 
-randomPhenotype :: RVar Phenotype
-randomPhenotype = do
-        a1 <- doubleStdNormal
-        dims <- Data.Random.shuffle [a1, 0.0, 0.0, 0.0]
-        return $ Phenotype dims
-
 randomPhenotypeChange :: RVar Phenotype
 randomPhenotypeChange = do
         a1 <- doubleStdUniform
@@ -221,7 +214,7 @@ turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopula
 
 params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params =
-    let baseCount = countOfBases $ traceShowId params
+    let baseCount = countOfBases params
 
         pleiotropicRulesCount = countOfPleiotropicRules params
         epistaticRulesCount = countOfEpistaticRules params
@@ -247,8 +240,8 @@ params2rules params =
                            breeding = [ breedingStrategy ],
                            selection = [ hSelection ],
                            deaths = [
-                                \g -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability,
-                                \g -> killOld (maxAge params) g
+                                \_ -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability,
+                                \g -> killOld maximumAge g
                            ],
                            expression = expression'
                       }
