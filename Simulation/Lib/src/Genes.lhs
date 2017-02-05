@@ -10,7 +10,7 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 Bases are the abstract G1..G5
 
 > data Basis = G1 | G2 | G3 | G4 | G5
->     deriving (Eq, Ord, Generic)
+>     deriving (Eq, Ord, Generic, Enum, Bounded)
 >
 > instance Show Basis where
 >   show G1 = "1"

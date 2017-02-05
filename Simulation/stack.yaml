@@ -7,4 +7,5 @@ packages:
 extra-deps:
 - mersenne-random-pure64-0.2.0.4
 - random-extras-0.19
+- unique-0
 resolver: lts-7.19

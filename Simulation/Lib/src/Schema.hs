@@ -1,8 +1,10 @@
-module Schema(Schema(Schema), order, matches) where
+module Schema(Schema(Schema), order, matches, schemaElements) where
 
 import Genes
 
-data Schema = Schema [Maybe Basis] deriving (Eq)
+data Schema = Schema {
+      schemaElements :: [Maybe Basis]
+  } deriving (Eq)
 
 instance Show Schema where
     show (Schema elems) = "{" ++ map shortRepr elems ++ "}"

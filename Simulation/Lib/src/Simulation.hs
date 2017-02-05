@@ -1,4 +1,5 @@
-module Simulation(computeSimulation, AnalysisParameters(..), turbidostatCoefiecientsForPopulationSize) where
+module Simulation(computeSimulation, AnalysisParameters(..),
+                  pleiotropicRules, randomPleiotropicRule, turbidostatCoefiecientsForPopulationSize) where
 
 import Evolution
 import Expression
@@ -104,10 +105,30 @@ percentileFitness percentile optimum (Population _ is) = (sort $ map (fitness op
 randomRules :: Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount = do
   br <- basicRules baseCount
-  pr <- pleiotropicRules baseCount
+  --er <- epistaticRules baseCount
+  pr <- pleiotropicRules baseCount 20
   return (br ++ pr)
 
-pleiotropicRules baseCount = sequence $ take 20 $ repeat (randomRule baseCount)
+epistaticRules baseCount = [] -- sequence $ take 20 $ repeat (randomEpistaticRule baseCount)
+
+pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
+pleiotropicRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomPleiotropicRule baseCount)
+
+randomPleiotropicRule :: Int -> RVar (Schema, Phenotype)
+randomPleiotropicRule baseCount = do
+    g1Change <- doubleStdNormal
+    g2Change <- doubleStdNormal
+    g3Change <- doubleStdNormal
+    g4Change <- doubleStdNormal
+
+    position <- integralUniform 0 (baseCount - 1)
+
+    basis <- choice [G1, G2, G3, G4, G5]
+
+    let dimChange = [g1Change / 8.0, g2Change / 8.0, g3Change / 8.0, g4Change / 8.0]
+    let schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
+
+    return (Schema schema, Phenotype dimChange)
 
 basicRules :: Int -> RVar [(Schema, Phenotype)]
 basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCount) [0..(baseCount - 1)])
@@ -115,6 +136,7 @@ basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCoun
 simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
 simpleRulesForPosition baseCount p = do
     dimension <- integralUniform 0 3
+
     g1Change <- doubleStdNormal
     g2Change <- doubleStdNormal
     g3Change <- doubleStdNormal
@@ -139,7 +161,6 @@ simpleRulesForPosition baseCount p = do
         (Schema schema3, Phenotype g3DimChange),
         (Schema schema4, Phenotype g4DimChange)
       ]
-
 
 randomRule :: Int -> RVar (Schema, Phenotype)
 randomRule baseCount = do
