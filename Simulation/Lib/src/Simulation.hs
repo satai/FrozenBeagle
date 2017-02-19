@@ -57,11 +57,17 @@ randomDnaString baseCount = DnaString <$> sequence (replicate baseCount randomBa
 randomBase :: RVar Basis
 randomBase = choice [G1, G2, G3, G4, G5]
 
-avgFitness :: Phenotype -> Population -> Double
-avgFitness optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
+avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
+avgFitness optimumForGeneration generation = avgFitnessForGeneration (optimumForGeneration generation)
 
-stdDevFitness :: Phenotype -> Population -> Double
-stdDevFitness optimum (Population _ is)  = stdDev $ map (fitness optimum . phenotype) is
+avgFitnessForGeneration :: Phenotype -> Population -> Double
+avgFitnessForGeneration optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
+
+stdDevFitness :: (Int -> Phenotype) -> Int -> Population -> Double
+stdDevFitness optimumForGeneration generation = stdDevFitnessForGeneration (optimumForGeneration generation)
+
+stdDevFitnessForGeneration :: Phenotype -> Population -> Double
+stdDevFitnessForGeneration optimum (Population _ is)  = stdDev $ map (fitness optimum . phenotype) is
 
 allTheSame :: (Eq a) => [a] -> Bool
 allTheSame xs = all (== head xs) (tail xs)
@@ -95,9 +101,12 @@ stdDev xs = sqrt $ summedElements / count
     count = fromIntegral $ length xs
     summedElements = sum (map (\x -> (x - avg) * (x - avg)) xs)
 
-minFitness :: Phenotype -> Population -> Double
-minFitness _       (Population _ []) = 1.0 / 0.0
-minFitness optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
+minFitness :: (Int -> Phenotype) -> Int -> Population -> Double
+minFitness optimumForGeneration generation = minFitnessForGeneration (optimumForGeneration generation)
+
+minFitnessForGeneration :: Phenotype -> Population -> Double
+minFitnessForGeneration _       (Population _ []) = 1.0 / 0.0
+minFitnessForGeneration optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
 
 percentileFitness :: Double -> Phenotype -> Population -> Double
 percentileFitness _          _       (Population _ []) = 1.0 / 0.0
@@ -243,11 +252,13 @@ params2rules params =
                                 \_ -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability,
                                 \g -> killOld maximumAge g
                            ],
-                           expression = expression'
+                           expression = expression',
+                           optimumForGeneration = \g -> if (g < 1200) then Phenotype [1.0, 0.0, 0.0, 0.0] else Phenotype [0.8, 0.2, 0.0, 0.0]
                       }
 
 maxSteps :: Int
 maxSteps = 1500
+
 
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
@@ -257,13 +268,15 @@ computeSimulation params =
         initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
         allGenerations = evolution maxSteps rules initialPopulation
         generations = colapse allGenerations
-        stats f = zip [0..] (map f generations)
+
+        stats f = zip [0..] (zipWith f [0..] generations)
+
     in
         [
-            ("Avg Fitness", stats $ avgFitness $ Phenotype [1.0, 0.0, 0.0, 0.0] ),
-            ("Min Fitness", stats $ minFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]),
-            ("10% percentile Fitness", stats $ percentileFitness 0.1 $ Phenotype [1.0, 0.0, 0.0, 0.0]),
-            ("Ochylka Fitness", stats $ stdDevFitness $ Phenotype [1.0, 0.0, 0.0, 0.0]),
+            ("Avg Fitness", stats $ avgFitness $ optimumForGeneration rules),
+            ("Min Fitness", stats $ minFitness $ optimumForGeneration rules),
+            ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules),
+            ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules),
             ("Population Size", stats (fromIntegral . length . individuals)),
             ("% of polymorphic locus", stats polymorphism),
             ("% of locus with alela with more than 90% appearence", stats almostPolymorphism)

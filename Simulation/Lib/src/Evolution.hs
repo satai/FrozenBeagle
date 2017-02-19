@@ -1,4 +1,4 @@
-module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection, deaths, expression), evolution) where
+module Evolution(EvolutionRules(EvolutionRules, mutation, breeding, selection, deaths, expression, optimumForGeneration), evolution) where
 
 import Data.Random
 import Data.Functor()
@@ -12,14 +12,12 @@ data EvolutionRules = EvolutionRules {
     breeding :: [Phenotype -> Int -> Breeding],
     selection :: [Phenotype -> Selection],
     deaths :: [Int -> PopulationChange],
-    expression :: ExpressionStrategy
+    expression :: ExpressionStrategy,
+    optimumForGeneration :: Int -> Phenotype
 }
 
 step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]
 step changes population = foldl (>>=) population changes
-
-optimumForGeneration :: Int -> Phenotype
-optimumForGeneration _ = Phenotype [1.0, 0.0, 0.0, 0.0] --fixme
 
 evolution :: Int -> EvolutionRules -> RVar Population -> RVar [Population]
 evolution 0 _ _ = return []
@@ -27,7 +25,7 @@ evolution genToGen spec population = do
       p <- population
 
       let g = 1 + generation p
-      let todaysOptimum = optimumForGeneration g
+      let todaysOptimum = optimumForGeneration spec g
 
       let breedingForGeneration = map (\f -> f todaysOptimum g) $ breeding spec
       let mutationForGeneration = mutation spec
