@@ -1,4 +1,5 @@
 dist/
+tags
 .hpc/
 *.tix
 cabal.config
