@@ -4,6 +4,7 @@ tags
 *.tix
 cabal.config
 cabal.sandbox.config
+stack.yaml
 
 .idea
 *.iml
