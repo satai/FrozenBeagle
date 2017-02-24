@@ -108,9 +108,9 @@ minFitnessForGeneration :: Phenotype -> Population -> Double
 minFitnessForGeneration _       (Population _ []) = 1.0 / 0.0
 minFitnessForGeneration optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
 
-percentileFitness :: Double -> Phenotype -> Population -> Double
-percentileFitness _          _       (Population _ []) = 1.0 / 0.0
-percentileFitness percentile optimum (Population _ is) = (sort $ map (fitness optimum . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
+percentileFitness :: Double -> (Int -> Phenotype) -> Int -> Population -> Double
+percentileFitness _          _                    _           (Population _ []) = 1.0 / 0.0
+percentileFitness percentile optimumForGeneration generation  (Population _ is) = (sort $ map (fitness (optimumForGeneration generation) . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
 
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
@@ -274,10 +274,10 @@ computeSimulation params =
     in
         [
             ("Avg Fitness", stats $ avgFitness $ optimumForGeneration rules)
-          --, ("Min Fitness", stats $ minFitness $ optimumForGeneration rules)
-          --, ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
-         -- , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
-        --  , ("Population Size", stats (fromIntegral . length . individuals))
-      --    , ("% of polymorphic locus", stats polymorphism)
-    --      , ("% of locus with alela with more than 90% appearence", stats almostPolymorphism)
+          , ("Min Fitness", stats $ minFitness $ optimumForGeneration rules)
+          , ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
+          , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
+          , ("Population Size", stats (\_ -> fromIntegral . length . individuals))
+          , ("% of polymorphic locus", stats (\_ -> polymorphism) )
+          , ("% of locus with alela with more than 90% appearence", stats (\_ -> almostPolymorphism))
         ]       -- fixme
