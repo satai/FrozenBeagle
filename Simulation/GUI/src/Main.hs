@@ -115,8 +115,8 @@ prepareWindow = do
     populationSizeScale <- labeledNewScale "Population Size" 10 99999 50 settingsSwitchesBoxLeft
     _ <- spinButtonSetValue populationSizeScale 300
 
-    baseCountScale <- labeledNewScale "DNA String length" 5 50 5 settingsSwitchesBoxLeft
-    _ <- spinButtonSetValue baseCountScale 20
+    baseCountScale <- labeledNewScale "DNA String length" 5 250 5 settingsSwitchesBoxLeft
+    _ <- spinButtonSetValue baseCountScale 50
 
     hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
