@@ -4,3 +4,4 @@ packages:
 - GUI/
 - CLI/
 - Lib/
+resolver: lts
