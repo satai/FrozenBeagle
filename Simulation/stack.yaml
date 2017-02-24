@@ -1,7 +1,11 @@
 flags: {}
 extra-package-dbs: []
 packages:
-- GUI/
-- CLI/
-- Lib/
+  - GUI/
+  - CLI/
+  - Lib/
 resolver: lts-8.2
+extra-deps:
+  - mersenne-random-pure64-0.2.0.4
+  - random-extras-0.19
+
