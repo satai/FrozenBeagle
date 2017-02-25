@@ -27,7 +27,8 @@ data AnalysisParameters = AnalysisParameters {
     countOfBases :: Int,
     countOfPleiotropicRules :: Int,
     countOfEpistaticRules :: Int,
-    countOfComplicatedRules :: Int
+    countOfComplicatedRules :: Int,
+    seed :: Int
     } deriving Show
 
 randomPopulation :: Int -> ExpressionStrategy -> Int -> RVar Population
@@ -214,8 +215,8 @@ randomPhenotypeChange = do
 express :: Int -> Int -> Int -> Int -> ExpressionStrategy
 express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount ) (mkStdGen 0)
 
-colapse :: RVar a -> a
-colapse x = fst $ sampleState x (mkStdGen 0)
+colapse :: Int -> RVar a -> a
+colapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
 
 turbidostatCoefiecientsForPopulationSize :: Double -> Int -> Double
 turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopulationSize =
@@ -266,7 +267,7 @@ computeSimulation params =
 
         initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
         allGenerations = evolution maxSteps rules initialPopulation
-        generations = colapse allGenerations
+        generations = colapse (seed params) allGenerations
 
         stats f = zip [0..] (zipWith f [0..] generations)
 

@@ -232,7 +232,8 @@ extractParameters parameterFields = do
           countOfBases = baseCount,
           countOfPleiotropicRules = pleiotropicRulesCount,
           countOfEpistaticRules = epistaticRulesCount,
-          countOfComplicatedRules = complicatedRulesCount
+          countOfComplicatedRules = complicatedRulesCount,
+          seed = 0
           }
       where
         optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)

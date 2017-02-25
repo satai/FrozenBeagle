@@ -7,13 +7,13 @@ main = do
     putStr "]"
 
 runSimWithSeed :: Int -> IO ()
-runSimWithSeed seed = do
-    parameters <- extractParams
+runSimWithSeed seedValue = do
+    parameters <- extractParams seedValue
     let simResults = computeSimulation parameters
     print simResults
 
-extractParams :: IO AnalysisParameters
-extractParams =
+extractParams :: Int -> IO AnalysisParameters
+extractParams seedValue =
     return AnalysisParameters {
            separatedGenerations = False
          , hardSelectionTreshold =  0.0
@@ -24,4 +24,5 @@ extractParams =
          , countOfPleiotropicRules = 0
          , countOfEpistaticRules = 0
          , countOfComplicatedRules = 0
+         , seed = seedValue
       }
