@@ -62,6 +62,7 @@ executable fbeagle
   build-depends:       base >=4.8 && <5,
                        random-fu, random-extras, random-source,
                        Chart >= 1.4, Chart-cairo,
+                       optparse-applicative,
                        FrozenBeagle,
                        directory
 
