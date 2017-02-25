@@ -257,8 +257,7 @@ params2rules params =
                       }
 
 maxSteps :: Int
-maxSteps = 1500
-
+maxSteps = 2500
 
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
