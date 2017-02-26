@@ -5,9 +5,10 @@ import Data.Semigroup ((<>))
 
 main :: IO ()
 main = do
+    simCount = 5
     putStr "["
     runSimWithSeed False 0
-    mapM_ (runSimWithSeed True) [1..5]
+    mapM_ (runSimWithSeed True) [1..(simCount - 1)]
     putStr "]"
 
 runSimWithSeed :: Bool -> Int -> IO ()
