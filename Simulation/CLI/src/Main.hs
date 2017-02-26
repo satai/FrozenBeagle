@@ -6,14 +6,16 @@ import Data.Semigroup ((<>))
 main :: IO ()
 main = do
     putStr "["
-    mapM_ runSimWithSeed [1..5]
+    runSimWithSeed False 0
+    mapM_ (runSimWithSeed True) [1..5]
     putStr "]"
 
-runSimWithSeed :: Int -> IO ()
-runSimWithSeed seedValue = do
+runSimWithSeed :: Bool -> Int -> IO ()
+runSimWithSeed prepend seedValue = do
+    putStr $ if prepend then "," else ""
     parameters <- execParser (info (extractParams seedValue) mempty)
     let simResults = computeSimulation parameters
-    print simResults
+    putStr $ show simResults
 
 extractParams :: Int -> Parser AnalysisParameters
 extractParams seedValue = AnalysisParameters
