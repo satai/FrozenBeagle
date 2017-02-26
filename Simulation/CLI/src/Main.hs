@@ -1,9 +1,7 @@
 import Simulation
 
-import Options.Applicative
+import Options.Applicative hiding ((<>))
 import Data.Semigroup ((<>))
-
-
 
 main :: IO ()
 main = do
