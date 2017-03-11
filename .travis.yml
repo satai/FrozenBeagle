@@ -18,7 +18,6 @@ addons:
 # change flags or use --stack-yaml to point to a different file.
 env:
 - ARGS=""
-- ARGS="--resolver lts-7"
 - ARGS="--resolver lts-8"
 - ARGS="--resolver lts"
 
