@@ -5,7 +5,7 @@ import Data.Semigroup ((<>))
 
 main :: IO ()
 main = do
-    simCount = 5
+    let simCount = 5
     putStr "["
     runSimWithSeed False 0
     mapM_ (runSimWithSeed True) [1..(simCount - 1)]
