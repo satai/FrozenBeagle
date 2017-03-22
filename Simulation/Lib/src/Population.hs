@@ -1,32 +1,47 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Population (Population(Population, generation, individuals),
-                   PopulationChange, Selection, Breeding, Mutation, Fitness,
-                   Individual(Individual, birthGeneration, sex, chromosomes, phenotype), Sex(F,M),DnaString,
-                   males, females,
-                   pointMutation,
-                   panmictic, panmicticOverlap,
-                   allSurvive, fittest, extinction, fairChance, hardSelection,
-                   turbidostat, killOld) where
+module Population
+    ( Population (Population, generation, individuals)
+    , PopulationChange
+    , Selection
+    , Breeding
+    , Mutation
+    , Fitness
+    , Individual (Individual, birthGeneration, sex, chromosomes, phenotype)
+    , Sex(F, M)
+    , DnaString
+    , males
+    , females
+    , pointMutation
+    , panmictic
+    , panmicticOverlap
+    , allSurvive
+    , fittest
+    , extinction
+    , fairChance
+    , hardSelection
+    , turbidostat
+    , killOld
+    ) where
 
-import Data.List
-import Data.Hashable
-import Data.Bits
-import GHC.Generics (Generic)
-import Data.Random.Extras
-import Data.Random(sampleState)
-import Data.Random.RVar
-import Data.Random.Distribution.Bernoulli
-import System.Random
-import Genes
-import Sex
-import Individual
-import Phenotype
-import Expression
+import           Data.Bits
+import           Data.Hashable
+import           Data.List
+import           Data.Random (sampleState)
+import           Data.Random.Distribution.Bernoulli
+import           Data.Random.Extras
+import           Data.Random.RVar
+import           Expression
+import           Genes
+import           GHC.Generics (Generic)
+import           Individual
+import           Phenotype
+import           Sex
+import           System.Random
 
-data Population = Population {
-      generation :: Int,
-      individuals :: [Individual]
+data Population = Population
+    { generation  :: Int
+    , individuals :: [Individual]
 } deriving (Eq, Show, Generic)
 
 instance Hashable Population
@@ -45,50 +60,51 @@ type Breeding = PopulationChange
 
 chosenPairs :: [Individual] -> [(Individual, Individual)]
 chosenPairs population = take numOfPairsPerGen $ zip m f
-    where seed = hash population
-          gen = mkStdGen seed
-          m' = shuffle $ males population
-          f' = shuffle $ females population
-          (m, gen') = sampleState m' gen
-          (f, _   ) = sampleState f' gen'
-          numOfPairsPerGen = (length population) `div` 8
+  where
+    seed = hash population
+    gen = mkStdGen seed
+    m' = shuffle $ males population
+    f' = shuffle $ females population
+    (m, gen') = sampleState m' gen
+    (f, _   ) = sampleState f' gen'
+    numOfPairsPerGen = length population `div` 8
 
 
 randomOffspring :: ExpressionStrategy -> Int -> Individual -> Individual -> Int -> Individual
 randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (Individual F _ (fdna1, fdna2) _) seed = Individual s currentGeneration (d1, d2) $ expression s (d1, d2)
-    where
-        gen = mkStdGen seed
-        (s', gen') = next gen
+ where
+    gen = mkStdGen seed
+    (s', gen') = next gen
 
-        s = if (odd s') then M else F
+    s = if odd s' then M else F
 
-        baseCount = length $ genes mdna1
+    baseCount = length $ genes mdna1
 
-        (crossOverPoint1, gen'') = randomR (1, baseCount - 1) gen'
-        (crossOverPoint2, _) = randomR (1, baseCount - 1) gen''
+    (crossOverPoint1, gen'') = randomR (1, baseCount - 1) gen'
+    (crossOverPoint2, _) = randomR (1, baseCount - 1) gen''
 
-        d1 = crossover crossOverPoint1 mdna1 fdna1
-        d2 = crossover crossOverPoint2 mdna2 fdna2
+    d1 = crossover crossOverPoint1 mdna1 fdna1
+    d2 = crossover crossOverPoint2 mdna2 fdna2
 
 randomOffspring _ _ _ _ _ = error "should not happen"
 
 
 mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
 mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
-        where
-            seed = hash optimum `xor` hash father `xor` hash mother `xor` g
+  where
+    seed = hash optimum `xor` hash father `xor` hash mother `xor` g
 
-            fatherFitness = fitness optimum $ expression M (mdna1, mdna2)
-            motherFitness = fitness optimum $ expression F (fdna1, fdna2)
-            pairFitness = (fatherFitness + motherFitness) / 2.0
+    fatherFitness = fitness optimum $ expression M (mdna1, mdna2)
+    motherFitness = fitness optimum $ expression F (fdna1, fdna2)
+    pairFitness = (fatherFitness + motherFitness) / 2.0
 
-            numOfOffspring = min 6 $ floor $ log $ 10 * pairFitness
-            randOffspring1 = randomOffspring expression g father mother seed
-            randOffspring2 = randomOffspring expression g father mother (seed + 1)
-            randOffspring3 = randomOffspring expression g father mother (seed + 2)
-            randOffspring4 = randomOffspring expression g father mother (seed + 3)
-            randOffspring5 = randomOffspring expression g father mother (seed + 4)
-            randOffspring6 = randomOffspring expression g father mother (seed + 5)
+    numOfOffspring = min 6 $ floor $ log $ 10 * pairFitness
+    randOffspring1 = randomOffspring expression g father mother seed
+    randOffspring2 = randomOffspring expression g father mother (seed + 1)
+    randOffspring3 = randomOffspring expression g father mother (seed + 2)
+    randOffspring4 = randomOffspring expression g father mother (seed + 3)
+    randOffspring5 = randomOffspring expression g father mother (seed + 4)
+    randOffspring6 = randomOffspring expression g father mother (seed + 5)
 
 mate _ _ _ _ = error "Should not happen"
 
@@ -100,12 +116,11 @@ probabilityBasisMutation = 0.04
 
 pointMutationBasis :: Basis -> RVar Basis
 pointMutationBasis b = do
-      shouldMutateBasis <- boolBernoulli probabilityBasisMutation
+    shouldMutateBasis <- boolBernoulli probabilityBasisMutation
 
-      if shouldMutateBasis then
-          choice [G1, G2, G3, G4, G5]
-      else
-          return b
+    if shouldMutateBasis
+        then choice [G1, G2, G3, G4, G5]
+        else return b
 
 pointMutationDnaString :: DnaString -> RVar DnaString
 pointMutationDnaString  (DnaString s) = do
@@ -117,31 +132,31 @@ pointMutationIndividual expression i = do
 
         shoudMutateIndividual <- boolBernoulli probabilityIndividualMutation
 
-        if shoudMutateIndividual then do
+        if shoudMutateIndividual
+            then do
+                let (d1, d2) = chromosomes i
 
-            let (d1, d2) = chromosomes i
+                d1' <- pointMutationDnaString d1
+                d2' <- pointMutationDnaString d2
 
-            d1' <- pointMutationDnaString d1
-            d2' <- pointMutationDnaString d2
-
-            return $ Individual (sex i) (birthGeneration i) (d1', d2') $ expression (sex i) (d1', d2')
-        else
-            return i
+                return $ Individual (sex i) (birthGeneration i) (d1', d2') $ expression (sex i) (d1', d2')
+            else
+                return i
 
 pointMutation :: ExpressionStrategy -> Mutation
-pointMutation expression is = sequence $ map (pointMutationIndividual expression) is
+pointMutation expression is = mapM (pointMutationIndividual expression) is
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmictic expression optimum g population = return $ concat children
-        where
-          children :: [[Individual]]
-          children = map (mate expression optimum g) $ chosenPairs population
+  where
+    children :: [[Individual]]
+    children = map (mate expression optimum g) $ chosenPairs population
 
 panmicticOverlap :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmicticOverlap expression optimum g population = return $ population ++ concat children
-        where
-          children :: [[Individual]]
-          children = map (mate expression optimum g) $ chosenPairs population
+  where
+    children :: [[Individual]]
+    children = map (mate expression optimum g) $ chosenPairs population
 
 type Selection = PopulationChange
 
@@ -155,9 +170,9 @@ type Fitness = Phenotype -> Double
 
 hardSelection :: Fitness -> Double -> Selection
 hardSelection fitness' treshold = return . filterSurvivors
-        where
-            filterSurvivors :: [Individual] -> [Individual]
-            filterSurvivors = filter ((>treshold) . fitness' . phenotype)
+  where
+    filterSurvivors :: [Individual] -> [Individual]
+    filterSurvivors = filter ((>treshold) . fitness' . phenotype)
 
 turbidostat :: Double -> Double -> PopulationChange
 turbidostat k4 k5 population = do
@@ -173,11 +188,11 @@ killOld ageToDie currentGeneration population = do
 
 fittest :: Int -> Fitness -> Selection
 fittest newSize fitness' is = return survivors
-    where
-        survivors :: [Individual]
-        survivors = take newSize $ sortBy fitnessComparator is
-        fitnessComparator :: Individual ->Individual -> Ordering
-        fitnessComparator i1 i2 = fitness' (phenotype i2) `compare` fitness' (phenotype i1)
+  where
+    survivors :: [Individual]
+    survivors = take newSize $ sortBy fitnessComparator is
+    fitnessComparator :: Individual ->Individual -> Ordering
+    fitnessComparator i1 i2 = fitness' (phenotype i2) `compare` fitness' (phenotype i1)
 
 fairChance :: Int -> Selection
 fairChance newSize is = sample newSize is

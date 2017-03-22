@@ -1,9 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Sex(Sex(M,F)) where
+module Sex
+    ( Sex (M, F)
+    ) where
 
-import GHC.Generics (Generic)
-import Data.Hashable
+import           Data.Hashable
+import           GHC.Generics  (Generic)
 
 data Sex = M | F deriving (Eq, Show, Ord, Enum, Generic)
 

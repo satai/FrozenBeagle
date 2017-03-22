@@ -14,15 +14,15 @@ import System.Directory
 
 import Simulation
 
-data AnalysisParametersFields = AnalysisParametersFields {
-    separatedGenerationsField :: CheckButton,
-    hardSelectionTresholdField :: SpinButton,
-    populationSizeField :: SpinButton,
-    baseCountField :: SpinButton,
-    optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)],
-    countOfPleiotropicRulesField :: SpinButton,
-    countOfEpistaticRulesField :: SpinButton,
-    countOfComplicatedRulesField :: SpinButton
+data AnalysisParametersFields = AnalysisParametersFields
+    { separatedGenerationsField :: CheckButton
+    , hardSelectionTresholdField :: SpinButton
+    , populationSizeField :: SpinButton
+    , baseCountField :: SpinButton
+    , optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
+    , countOfPleiotropicRulesField :: SpinButton
+    , countOfEpistaticRulesField :: SpinButton
+    , countOfComplicatedRulesField :: SpinButton
     }
 
 disableButtonIfInBroadway :: Button -> IO()
@@ -30,8 +30,8 @@ disableButtonIfInBroadway button = do
     environment <- getEnvironment
     widgetSetSensitivity button (not $ runningInBroadway environment)
     return ()
-    where
-        runningInBroadway environment = ("GDK_BACKEND", "broadway") `elem` environment
+  where
+    runningInBroadway environment = ("GDK_BACKEND", "broadway") `elem` environment
 
 labeledNewTextField :: String -> VBox -> IO Entry
 labeledNewTextField description container = do
@@ -60,39 +60,39 @@ insertIntoBoxWithLabel control description container = do
     boxPackStart container box PackNatural 0
 
 placeAndSizeWindow window mainTable = do
-    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600,
-                                 windowDefaultHeight := 1200,
-                                 containerBorderWidth := 10,
-                                 containerChild := mainTable ]
+    Graphics.UI.Gtk.set window [ windowDefaultWidth := 1600
+                               , windowDefaultHeight := 1200
+                               , containerBorderWidth := 10
+                               , containerChild := mainTable ]
 
     Graphics.UI.Gtk.windowFullscreen window
 
 optimumMovement row container = do
-  hbox <- hBoxNew False 10
+    hbox <- hBoxNew False 10
 
-  label <- labelNew $ Just $ "Dimension " ++ show row
-  boxPackStart hbox label PackNatural 3
+    label <- labelNew $ Just $ "Dimension " ++ show row
+    boxPackStart hbox label PackNatural 3
 
-  period <- spinButtonNewWithRange 0 200 1
-  spinButtonSetValue period 200
-  boxPackStart hbox period PackNatural 3
-  widgetSetTooltipText period (Just "Period in generations")
+    period <- spinButtonNewWithRange 0 200 1
+    spinButtonSetValue period 200
+    boxPackStart hbox period PackNatural 3
+    widgetSetTooltipText period (Just "Period in generations")
 
-  amplitude <- spinButtonNewWithRange 0 10.0 0.001
-  spinButtonSetValue amplitude 0.0
-  boxPackStart hbox amplitude PackNatural 3
-  widgetSetTooltipText amplitude (Just "Amplitude")
+    amplitude <- spinButtonNewWithRange 0 10.0 0.001
+    spinButtonSetValue amplitude 0.0
+    boxPackStart hbox amplitude PackNatural 3
+    widgetSetTooltipText amplitude (Just "Amplitude")
 
-  gradient <- spinButtonNewWithRange 0 1.0 0.001
-  spinButtonSetValue gradient 0.0
-  boxPackStart hbox gradient PackNatural 3
-  widgetSetTooltipText gradient (Just "Gradient of change - change per generation")
+    gradient <- spinButtonNewWithRange 0 1.0 0.001
+    spinButtonSetValue gradient 0.0
+    boxPackStart hbox gradient PackNatural 3
+    widgetSetTooltipText gradient (Just "Gradient of change - change per generation")
 
-  boxPackStart container hbox PackNatural 3
-  return (period, amplitude, gradient)
+    boxPackStart container hbox PackNatural 3
+    return (period, amplitude, gradient)
 
 optimumMovements container =
-   mapM (`optimumMovement` container) [1..4]
+    mapM (`optimumMovement` container) [1..4]
 
 prepareWindow :: IO Window
 prepareWindow = do
@@ -182,16 +182,16 @@ prepareWindow = do
 
     boxPackStart mainTable quitBox PackNatural 3
 
-    let inputs = AnalysisParametersFields {
-                            separatedGenerationsField = separatedGenerationsSwitch,
-                            hardSelectionTresholdField = hardSelectionTresholdScale,
-                            populationSizeField = populationSizeScale,
-                            baseCountField = baseCountScale,
-                            optimumMovementFields = optimumMovements,
-                            countOfPleiotropicRulesField = pleiotropicRulesScale,
-                            countOfEpistaticRulesField = epistaticRulesScale,
-                            countOfComplicatedRulesField = complicatedRulesScale
-                      }
+    let inputs = AnalysisParametersFields
+                  { separatedGenerationsField = separatedGenerationsSwitch
+                  , hardSelectionTresholdField = hardSelectionTresholdScale
+                  , populationSizeField = populationSizeScale
+                  , baseCountField = baseCountScale
+                  , optimumMovementFields = optimumMovements
+                  , countOfPleiotropicRulesField = pleiotropicRulesScale
+                  , countOfEpistaticRulesField = epistaticRulesScale
+                  , countOfComplicatedRulesField = complicatedRulesScale
+                  }
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
     _ <- on resetButton buttonActivated (resetOptions nameField inputs)
@@ -207,7 +207,7 @@ main :: IO ()
 main = do
     _ <- initGUI
 
-    window <- prepareWindow
+    _ <- prepareWindow
 
     mainGUI
 
@@ -223,49 +223,48 @@ extractParameters parameterFields = do
     epistaticRulesCount <- spinButtonGetValueAsInt $ countOfEpistaticRulesField parameterFields
     complicatedRulesCount <- spinButtonGetValueAsInt $ countOfComplicatedRulesField parameterFields
 
-    return AnalysisParameters {
-          separatedGenerations = separatedGen,
-          hardSelectionTreshold =  hardSelectionTreshold,
-          populationSize =  popSize,
-          optimumChange = optimumMovements,
-          maxAge = 64,
-          countOfBases = baseCount,
-          countOfPleiotropicRules = pleiotropicRulesCount,
-          countOfEpistaticRules = epistaticRulesCount,
-          countOfComplicatedRules = complicatedRulesCount,
-          seed = 0
-          }
-      where
-        optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
-        optimumChangesGetValue (period, amplitude, gradient) = do
-            period' <- spinButtonGetValue period
-            amplitude' <- spinButtonGetValue amplitude
-            gradient' <- spinButtonGetValue gradient
-            return (period', amplitude', gradient')
+    return AnalysisParameters
+               { separatedGenerations = separatedGen
+               , hardSelectionTreshold =  hardSelectionTreshold
+               , populationSize =  popSize
+               , optimumChange = optimumMovements
+               , maxAge = 64
+               , countOfBases = baseCount
+               , countOfPleiotropicRules = pleiotropicRulesCount
+               , countOfEpistaticRules = epistaticRulesCount
+               , countOfComplicatedRules = complicatedRulesCount
+               , seed = 0
+               }
+  where
+    optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
+    optimumChangesGetValue (period, amplitude, gradient) = do
+        period' <- spinButtonGetValue period
+        amplitude' <- spinButtonGetValue amplitude
+        gradient' <- spinButtonGetValue gradient
+        return (period', amplitude', gradient')
 
 presentationMode :: CursorType -> Window -> IO()
 presentationMode cursorType window = do
-      display <- fromJust <$> displayGetDefault
-      waitCursor <- cursorNewForDisplay display cursorType
-      drawWindow <- widgetGetWindow window
-      drawWindowSetCursor (fromJust drawWindow) $ Just waitCursor
+    display <- fromJust <$> displayGetDefault
+    waitCursor <- cursorNewForDisplay display cursorType
+    drawWindow <- widgetGetWindow window
+    drawWindowSetCursor (fromJust drawWindow) $ Just waitCursor
 
 runSimulation :: Entry -> AnalysisParametersFields -> Notebook -> Window -> IO()
-runSimulation nameField parameterFields resultNotebook window =
-    do
-        parameters <- extractParameters parameterFields
-        _ <- presentationMode Watch window
-        name <- entryGetText nameField
-        _ <- forkIO $ do
-            let simResults = computeSimulation parameters
-            print simResults
-            mapM_ (showResult resultNotebook name) simResults
+runSimulation nameField parameterFields resultNotebook window = do
+    parameters <- extractParameters parameterFields
+    _ <- presentationMode Watch window
+    name <- entryGetText nameField
+    _ <- forkIO $ do
+        let simResults = computeSimulation parameters
+        print simResults
+        mapM_ (showResult resultNotebook name) simResults
 
-            postGUIAsync $ do
-                _ <- presentationMode LeftPtr window
-                widgetShowAll window
-                return ()
-        return ()
+        postGUIAsync $ do
+            _ <- presentationMode LeftPtr window
+            widgetShowAll window
+            return ()
+    return ()
 
 resetOptions :: Entry -> AnalysisParametersFields -> IO()
 resetOptions nameField parameterFields =
@@ -291,30 +290,31 @@ closeTab notebook widget =
     notebookRemovePage notebook page
     return ()
 
+showResult :: (PlotValue y, PlotValue x) => Notebook -> String -> (String, [(x, y)]) -> IO ()
 showResult resultNotebook name (resultName, resultValue) = do
-            let fileName = "/tmp/img_" ++ name ++ "_" ++ resultName ++ ".png"
+    let fileName = "/tmp/img_" ++ name ++ "_" ++ resultName ++ ".png"
 
-            toFile def fileName $ do
-                layout_title .= (name ++ "/" ++ resultName)
-                layout_all_font_styles . font_size %= (*1.5)
-                plot $ points resultName resultValue
+    toFile def fileName $ do
+        layout_title .= (name ++ "/" ++ resultName)
+        layout_all_font_styles . font_size %= (*1.5)
+        plot $ points resultName resultValue
 
-            putStrLn $ "Ploted to " ++ fileName
-            postGUIAsync $ do
-                drawingArea <- imageNew
-                imageSetFromFile drawingArea fileName
-                tabLabel <- labelNew $ Just (name ++ "/" ++ resultName)
-                tabClose <- buttonNew
-                closeImage <- imageNewFromStock stockClose IconSizeMenu
-                containerAdd tabClose closeImage
-                on tabClose buttonActivated (closeTab resultNotebook $ castToWidget drawingArea)
-                tabTop <- hBoxNew False 1
-                boxPackEnd tabTop tabClose PackNatural 1
-                boxPackEnd tabTop tabLabel PackNatural 1
-                widgetShowAll tabTop
-                tabMenu <- labelNew $ Just "xxxx"
-                _ <- notebookPrependPageMenu resultNotebook drawingArea tabTop tabMenu
-                removeFile fileName
-                widgetShowAll resultNotebook
-                _ <- notebookSetCurrentPage resultNotebook 0
-                return ()
+    putStrLn $ "Ploted to " ++ fileName
+    postGUIAsync $ do
+        drawingArea <- imageNew
+        imageSetFromFile drawingArea fileName
+        tabLabel <- labelNew $ Just (name ++ "/" ++ resultName)
+        tabClose <- buttonNew
+        closeImage <- imageNewFromStock stockClose IconSizeMenu
+        containerAdd tabClose closeImage
+        _ <- on tabClose buttonActivated (closeTab resultNotebook $ castToWidget drawingArea)
+        tabTop <- hBoxNew False 1
+        boxPackEnd tabTop tabClose PackNatural 1
+        boxPackEnd tabTop tabLabel PackNatural 1
+        widgetShowAll tabTop
+        tabMenu <- labelNew $ Just "xxxx"
+        _ <- notebookPrependPageMenu resultNotebook drawingArea tabTop tabMenu
+        removeFile fileName
+        widgetShowAll resultNotebook
+        _ <- notebookSetCurrentPage resultNotebook 0
+        return ()

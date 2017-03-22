@@ -1,6 +1,10 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Phenotype(Phenotype(Phenotype), distance, phenotypeToVector, fitness) where
+module Phenotype
+    ( Phenotype (Phenotype)
+    , distance
+    , phenotypeToVector
+    , fitness) where
 
 import Data.Hashable
 
