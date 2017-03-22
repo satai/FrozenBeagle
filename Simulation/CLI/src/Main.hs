@@ -21,7 +21,7 @@ runSimWithSeed prepend seedValue = do
 extractParams :: Int -> Parser AnalysisParameters
 extractParams seedValue = AnalysisParameters
                       <$> switch (long "separatedGenerations")
-                      <*> option auto (long "hardSelectionTreshold" <> value 0.0)
+                      <*> option auto (long "hardSelectionThreshold" <> value 0.0)
                       <*> option auto (long "populationSize" <> value 300)
                       <*> option auto (long "optimumChange" <> value [])
                       <*> option auto (long "maxAge" <> value 64)

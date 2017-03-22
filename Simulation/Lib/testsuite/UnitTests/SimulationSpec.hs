@@ -5,21 +5,18 @@ import Test.QuickCheck
 import Data.Random
 import Data.Maybe
 import Data.List
-import Data.Unique
 import System.Random
 
 import UnitTests.PopulationSpec()
 
 import Simulation
-import Phenotype
-import Genes
 import Schema
 
 spec :: Spec
 spec = parallel $ do
     describe "Simulation" $ do
         it "turbidostat constants" $
-          property (turbidostatCoefiecientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
+          property (turbidostatCoefficientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
 
         it "random pleiotropic rule should have schema of expected length" $
           property (\i ->

@@ -16,7 +16,7 @@ import Simulation
 
 data AnalysisParametersFields = AnalysisParametersFields
     { separatedGenerationsField :: CheckButton
-    , hardSelectionTresholdField :: SpinButton
+    , hardSelectionThresholdField :: SpinButton
     , populationSizeField :: SpinButton
     , baseCountField :: SpinButton
     , optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
@@ -118,7 +118,7 @@ prepareWindow = do
     baseCountScale <- labeledNewScale "DNA String length" 5 250 5 settingsSwitchesBoxLeft
     _ <- spinButtonSetValue baseCountScale 50
 
-    hardSelectionTresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
+    hardSelectionThresholdScale <- labeledNewScale "Hard Selection Treshold" 0.0 1000.0 0.01 settingsSwitchesBoxLeft
     separatedGenerationsSwitch <- checkBoxNewWithLabel "Separated Generations" settingsSwitchesBoxLeft
 
     _ <- toggleButtonSetActive separatedGenerationsSwitch False
@@ -184,7 +184,7 @@ prepareWindow = do
 
     let inputs = AnalysisParametersFields
                   { separatedGenerationsField = separatedGenerationsSwitch
-                  , hardSelectionTresholdField = hardSelectionTresholdScale
+                  , hardSelectionThresholdField = hardSelectionThresholdScale
                   , populationSizeField = populationSizeScale
                   , baseCountField = baseCountScale
                   , optimumMovementFields = optimumMovements
@@ -216,7 +216,7 @@ extractParameters parameterFields = do
     separatedGen <- toggleButtonGetActive $ separatedGenerationsField parameterFields
     popSize <- spinButtonGetValueAsInt $ populationSizeField parameterFields
     baseCount <- spinButtonGetValueAsInt $ baseCountField parameterFields
-    hardSelectionTreshold <- spinButtonGetValue $ hardSelectionTresholdField parameterFields
+    hardSelectionThresholdValue <- spinButtonGetValue $ hardSelectionThresholdField parameterFields
     optimumMovements <- mapM optimumChangesGetValue $ optimumMovementFields parameterFields
 
     pleiotropicRulesCount <- spinButtonGetValueAsInt $ countOfPleiotropicRulesField parameterFields
@@ -225,7 +225,7 @@ extractParameters parameterFields = do
 
     return AnalysisParameters
                { separatedGenerations = separatedGen
-               , hardSelectionTreshold =  hardSelectionTreshold
+               , hardSelectionThreshold = hardSelectionThresholdValue
                , populationSize =  popSize
                , optimumChange = optimumMovements
                , maxAge = 64
@@ -270,7 +270,7 @@ resetOptions :: Entry -> AnalysisParametersFields -> IO()
 resetOptions nameField parameterFields =
   do
     entrySetText nameField ""
-    spinButtonSetValue (hardSelectionTresholdField parameterFields) 0.0
+    spinButtonSetValue (hardSelectionThresholdField parameterFields) 0.0
     spinButtonSetValue (populationSizeField parameterFields) 300
     spinButtonSetValue (baseCountField parameterFields) 20
     toggleButtonSetActive (separatedGenerationsField parameterFields) False

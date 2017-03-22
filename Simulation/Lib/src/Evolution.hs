@@ -45,4 +45,4 @@ evolution genToGen spec population = do
     newIndividuals <- step stepAlgo $ individuals <$> population
 
     rest <- evolution (genToGen - 1) spec <$> return $ Population g newIndividuals
-    return $ (p : rest)
+    return (p : rest)

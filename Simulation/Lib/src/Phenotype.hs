@@ -8,7 +8,7 @@ module Phenotype
 
 import Data.Hashable
 
-data Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
+newtype Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
 
 instance Hashable Phenotype where
     hashWithSalt salt (Phenotype p) = hashWithSalt salt p

@@ -23,7 +23,7 @@ Bases are the abstract G1..G5
 
 DnaString is defined by the list of bases.
 
-> data DnaString = DnaString {genes :: [Basis]} deriving(Eq, Generic)
+> newtype DnaString = DnaString {genes :: [Basis]} deriving(Eq, Generic)
 >
 > instance Hashable DnaString
 

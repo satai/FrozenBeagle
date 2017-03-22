@@ -124,7 +124,7 @@ pointMutationBasis b = do
 
 pointMutationDnaString :: DnaString -> RVar DnaString
 pointMutationDnaString  (DnaString s) = do
-    bases <- sequence $ map pointMutationBasis s
+    bases <- mapM pointMutationBasis s
     return $ DnaString bases
 
 pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual
@@ -144,7 +144,7 @@ pointMutationIndividual expression i = do
                 return i
 
 pointMutation :: ExpressionStrategy -> Mutation
-pointMutation expression is = mapM (pointMutationIndividual expression) is
+pointMutation expression = mapM (pointMutationIndividual expression)
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmictic expression optimum g population = return $ concat children
@@ -178,12 +178,12 @@ turbidostat :: Double -> Double -> PopulationChange
 turbidostat k4 k5 population = do
     let actualSize = length population
     let turbidostatProbability = min 0.9 $ k4 * fromIntegral (actualSize * actualSize) + k5
-    shouldDie <- sequence $ map (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
+    shouldDie <- mapM (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
     return $ map snd $ filter (not . fst) $ zip shouldDie population
 
 killOld :: Int -> Int -> PopulationChange
 killOld ageToDie currentGeneration population = do
-    let youngEnough = \i -> (birthGeneration i) + ageToDie > currentGeneration
+    let youngEnough i = birthGeneration i + ageToDie > currentGeneration
     return $ filter youngEnough population
 
 fittest :: Int -> Fitness -> Selection
@@ -195,4 +195,4 @@ fittest newSize fitness' is = return survivors
     fitnessComparator i1 i2 = fitness' (phenotype i2) `compare` fitness' (phenotype i1)
 
 fairChance :: Int -> Selection
-fairChance newSize is = sample newSize is
+fairChance = sample

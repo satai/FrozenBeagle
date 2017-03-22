@@ -3,7 +3,7 @@ module Simulation
     , AnalysisParameters(..)
     , pleiotropicRules
     , randomPleiotropicRule
-    , turbidostatCoefiecientsForPopulationSize
+    , turbidostatCoefficientsForPopulationSize
     ) where
 
 import           Evolution
@@ -13,6 +13,7 @@ import           Phenotype
 import           Population
 import           Schema
 
+import           Control.Monad
 import           Data.List
 import           Data.MultiSet                    (fromList, toOccurList)
 
@@ -25,7 +26,7 @@ import           System.Random
 
 data AnalysisParameters = AnalysisParameters
     { separatedGenerations    :: Bool
-    , hardSelectionTreshold   :: Double
+    , hardSelectionThreshold  :: Double
     , populationSize          :: Int
     , optimumChange           :: [(Double, Double, Double)]
     , maxAge                  :: Int
@@ -58,19 +59,19 @@ randomChromosomes baseCount = do
     return (dna1, dna2)
 
 randomDnaString :: Int -> RVar DnaString
-randomDnaString baseCount = DnaString <$> sequence (replicate baseCount randomBase)
+randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase
 
 randomBase :: RVar Basis
 randomBase = choice [G1, G2, G3, G4, G5]
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
-avgFitness optimumForGeneration generation = avgFitnessForGeneration (optimumForGeneration generation)
+avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
 
 avgFitnessForGeneration :: Phenotype -> Population -> Double
 avgFitnessForGeneration optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
 
 stdDevFitness :: (Int -> Phenotype) -> Int -> Population -> Double
-stdDevFitness optimumForGeneration generation = stdDevFitnessForGeneration (optimumForGeneration generation)
+stdDevFitness generationOptimum generationNumber = stdDevFitnessForGeneration (generationOptimum generationNumber)
 
 stdDevFitnessForGeneration :: Phenotype -> Population -> Double
 stdDevFitnessForGeneration optimum (Population _ is)  = stdDev $ map (fitness optimum . phenotype) is
@@ -82,7 +83,7 @@ almostAllTheSame :: (Ord a) => [a] -> Bool
 almostAllTheSame xs = (0.90 :: Double) * fromIntegral (length xs)  >= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
 
 polymorphism :: Population -> Double
-polymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
+polymorphism population = 1.0 - fromIntegral (length $ filter id same) / fromIntegral (length same)
   where
     chs = map chromosomes $ individuals population
     genesList = transpose $ map genes $ map fst chs ++ map snd chs
@@ -90,7 +91,7 @@ polymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (from
     same = map allTheSame genesList
 
 almostPolymorphism :: Population -> Double
-almostPolymorphism population = 1.0 - (fromIntegral $ length $ filter id same) / (fromIntegral $ length same)
+almostPolymorphism population = 1.0 - fromIntegral (length $ filter id same) / fromIntegral (length same)
   where
     chs = map chromosomes $ individuals population
     genesList = transpose $ map genes $ map fst chs ++ map snd chs
@@ -108,7 +109,7 @@ stdDev xs = sqrt $ summedElements / count
     summedElements = sum (map (\x -> (x - avg) * (x - avg)) xs)
 
 minFitness :: (Int -> Phenotype) -> Int -> Population -> Double
-minFitness optimumForGeneration generation = minFitnessForGeneration (optimumForGeneration generation)
+minFitness generationOptimum generationNumber = minFitnessForGeneration (generationOptimum generationNumber)
 
 minFitnessForGeneration :: Phenotype -> Population -> Double
 minFitnessForGeneration _       (Population _ []) = 1.0 / 0.0
@@ -116,7 +117,7 @@ minFitnessForGeneration optimum (Population _ is) = minimum $ map (fitness optim
 
 percentileFitness :: Double -> (Int -> Phenotype) -> Int -> Population -> Double
 percentileFitness _          _                    _           (Population _ []) = 1.0 / 0.0
-percentileFitness percentile optimumForGeneration generation  (Population _ is) = (sort $ map (fitness (optimumForGeneration generation) . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
+percentileFitness percentile generationOptimum generationNumber  (Population _ is) = (sort $ map (fitness (generationOptimum generationNumber) . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
 
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
@@ -127,10 +128,10 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
     return (br ++ pr ++ er ++ cr)
 
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-epistaticRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomEpistaticRule baseCount)
+epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
 
 pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-pleiotropicRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomPleiotropicRule baseCount)
+pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotropicRule baseCount)
 
 randomPleiotropicRule :: Int -> RVar (Schema, Phenotype)
 randomPleiotropicRule baseCount = do
@@ -149,10 +150,10 @@ randomPleiotropicRule baseCount = do
     return (Schema schema, Phenotype dimChange)
 
 basicRules :: Int -> RVar [(Schema, Phenotype)]
-basicRules baseCount = concat <$> sequence (map (simpleRulesForPosition baseCount) [0..(baseCount - 1)])
+basicRules baseCount = concat <$> mapM (simpleRulesForPosition baseCount) [0..(baseCount - 1)]
 
 complicatedRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-complicatedRules baseCount countOfRules = sequence $ take countOfRules $ repeat (randomComplicatedRule baseCount)
+complicatedRules baseCount countOfRules = replicateM countOfRules (randomComplicatedRule baseCount)
 
 simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
 simpleRulesForPosition baseCount p = do
@@ -203,7 +204,7 @@ randomSchema :: Int -> RVar Schema
 randomSchema baseCount = Schema <$> sequence elems
   where
     elems :: [RVar (Maybe Basis)]
-    elems =  take baseCount $ repeat randomBaseOrNot -- fixme
+    elems =  replicate baseCount randomBaseOrNot
 
 randomBaseOrNot :: RVar (Maybe Basis)
 randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 Nothing  -- fixme
@@ -219,11 +220,11 @@ randomPhenotypeChange = do
 express :: Int -> Int -> Int -> Int -> ExpressionStrategy
 express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount ) (mkStdGen 0)
 
-colapse :: Int -> RVar a -> a
-colapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
+collapse :: Int -> RVar a -> a
+collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
 
-turbidostatCoefiecientsForPopulationSize :: Double -> Int -> Double
-turbidostatCoefiecientsForPopulationSize accidentDeathProbability expectedPopulationSize =
+turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
+turbidostatCoefficientsForPopulationSize accidentDeathProbability expectedPopulationSize =
       (0.5 - accidentDeathProbability) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
 params2rules :: AnalysisParameters -> EvolutionRules
@@ -238,13 +239,13 @@ params2rules params =
     expression' = express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
 
     breedingStrategy = if separatedGenerations params
-                              then panmictic expression'
-                              else panmicticOverlap expression'
+                           then panmictic expression'
+                           else panmicticOverlap expression'
 
     startPopulationSize = populationSize params
 
     hSelection :: Phenotype -> Selection
-    hSelection optimum = hardSelection (fitness optimum) $ hardSelectionTreshold params
+    hSelection optimum = hardSelection (fitness optimum) $ hardSelectionThreshold params
 
     maximumAge = maxAge params
 
@@ -254,11 +255,11 @@ params2rules params =
                    , breeding = [ breedingStrategy ]
                    , selection = [ hSelection ]
                    , deaths =
-                       [ \_ -> turbidostat (turbidostatCoefiecientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability
-                       , \g -> killOld maximumAge g
+                       [ \_ -> turbidostat (turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability
+                       , killOld maximumAge
                        ]
                    , expression = expression'
-                   , optimumForGeneration = \g -> if (g < 1200) then Phenotype [1.0, 0.0, 0.0, 0.0] else Phenotype [0.8, 0.2, 0.0, 0.0]
+                   , optimumForGeneration = \g -> if g < 1200 then Phenotype [1.0, 0.0, 0.0, 0.0] else Phenotype [0.8, 0.2, 0.0, 0.0]
                    }
 
 maxSteps :: Int
@@ -272,7 +273,7 @@ computeSimulation params =
 
     initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
     allGenerations = evolution maxSteps rules initialPopulation
-    generations = colapse (seed params) allGenerations
+    generations = collapse (seed params) allGenerations
 
     stats f = zip [0..] (zipWith f [0..] generations)
 
