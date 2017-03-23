@@ -7,7 +7,7 @@ cabal.sandbox.config
 
 .idea
 *.iml
-ideaHaskellLib
+.ideaHaskellLib
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
