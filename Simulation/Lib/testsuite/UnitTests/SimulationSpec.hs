@@ -11,6 +11,7 @@ import UnitTests.PopulationSpec()
 
 import Simulation
 import Schema
+import Phenotype
 
 spec :: Spec
 spec = parallel $
@@ -34,8 +35,15 @@ spec = parallel $
 
         it "plenty of random pleiotropic rules should have fixed all posible positions in some rule" $
           property (\i ->
-            length (nub $ map fromJust $ map (findIndex isJust) $ map schemaElements $ map fst $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
+            length (nub $ map (fromJust . findIndex isJust . schemaElements . fst) $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
                `shouldBe`
             10
           )
+
+        it "optimum calculation produces constant" $
+            property (\i ->
+                optimumCalculation (Phenotype [1.0, 0, 0, 0]) (Phenotype [1.0, 0, 0, 0]) i
+                `shouldBe`
+                Phenotype [1.0, 0, 0, 0]
+            )
 

@@ -4,6 +4,9 @@ module Simulation
     , pleiotropicRules
     , randomPleiotropicRule
     , turbidostatCoefficientsForPopulationSize
+    , optimumCalculation
+    , randomPhenotypeChange
+    , randomOptimum
     ) where
 
 import           Evolution
@@ -235,6 +238,15 @@ turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
 turbidostatCoefficientsForPopulationSize accidentDeathProbability expectedPopulationSize =
       (0.5 - accidentDeathProbability) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
+optimumChangeGeneration :: Int
+optimumChangeGeneration = 1200
+
+optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
+optimumCalculation optimum1 optimum2 g =
+    if g < optimumChangeGeneration
+        then optimum1
+        else optimum2
+
 params2rules :: AnalysisParameters -> EvolutionRules
 params2rules params =
   let
@@ -258,6 +270,10 @@ params2rules params =
     maximumAge = maxAge params
 
     accidentDeathProbability = 0.0
+
+    optimum1 = collapse (seed params) randomOptimum
+    optimum2 = collapse (seed params + 1) randomOptimum
+
   in
     EvolutionRules { mutation = [ pointMutation expression' ]
                    , breeding = [ breedingStrategy ]
@@ -267,7 +283,7 @@ params2rules params =
                        , killOld maximumAge
                        ]
                    , expression = expression'
-                   , optimumForGeneration = \g -> if g < 1200 then Phenotype [1.0, 0.0, 0.0, 0.0] else Phenotype [0.8, 0.2, 0.0, 0.0]
+                   , optimumForGeneration = optimumCalculation optimum1 optimum2
                    }
 
 maxSteps :: Int
