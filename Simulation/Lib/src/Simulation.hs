@@ -144,7 +144,7 @@ randomPleiotropicRule baseCount = do
 
     basis <- choice [G1, G2, G3, G4, G5]
 
-    let dimChange = [g1Change / 8.0, g2Change / 8.0, g3Change / 8.0, g4Change / 8.0]
+    let dimChange = [g1Change, g2Change, g3Change, g4Change]
     let schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
 
     return (Schema schema, Phenotype dimChange)
@@ -165,11 +165,11 @@ simpleRulesForPosition baseCount p = do
     g4Change <- doubleStdNormal
     g5Change <- doubleStdNormal
 
-    let g1DimChange = replicate dimension 0.0 ++ [g1Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
-    let g2DimChange = replicate dimension 0.0 ++ [g2Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
-    let g3DimChange = replicate dimension 0.0 ++ [g3Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
-    let g4DimChange = replicate dimension 0.0 ++ [g4Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
-    let g5DimChange = replicate dimension 0.0 ++ [g5Change / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let g1DimChange = replicate dimension 0.0 ++ [g1Change] ++ replicate (4 - dimension - 1) 0.0
+    let g2DimChange = replicate dimension 0.0 ++ [g2Change] ++ replicate (4 - dimension - 1) 0.0
+    let g3DimChange = replicate dimension 0.0 ++ [g3Change] ++ replicate (4 - dimension - 1) 0.0
+    let g4DimChange = replicate dimension 0.0 ++ [g4Change] ++ replicate (4 - dimension - 1) 0.0
+    let g5DimChange = replicate dimension 0.0 ++ [g5Change] ++ replicate (4 - dimension - 1) 0.0
 
     let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (baseCount - p - 1) Nothing
     let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (baseCount - p - 1) Nothing
@@ -190,7 +190,7 @@ randomEpistaticRule baseCount = do
     dimension <- integralUniform 0 3
     gChange <- doubleStdNormal
 
-    let gDimChange = replicate dimension 0.0 ++ [gChange / 8.0] ++ replicate (4 - dimension - 1) 0.0
+    let gDimChange = replicate dimension 0.0 ++ [gChange] ++ replicate (4 - dimension - 1) 0.0
 
     return (schema, Phenotype gDimChange)
 
@@ -211,11 +211,19 @@ randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 
 
 randomPhenotypeChange :: RVar Phenotype
 randomPhenotypeChange = do
-    a1 <- doubleStdUniform
-    a2 <- doubleStdUniform
-    a3 <- doubleStdUniform
-    a4 <- doubleStdUniform
+    a1 <- doubleStdNormal
+    a2 <- doubleStdNormal
+    a3 <- doubleStdNormal
+    a4 <- doubleStdNormal
     return $ Phenotype [a1, a2, a3, a4]
+
+randomOptimum :: RVar Phenotype
+randomOptimum = do
+    a1 <- doubleStdNormal
+    a2 <- doubleStdNormal
+    a3 <- doubleStdNormal
+    a4 <- doubleStdNormal
+    return $ Phenotype [a1 * 4.0, a2 * 4.0, a3 * 4.0, a4 * 4.0]
 
 express :: Int -> Int -> Int -> Int -> ExpressionStrategy
 express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount ) (mkStdGen 0)

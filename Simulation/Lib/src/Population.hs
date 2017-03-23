@@ -88,6 +88,8 @@ randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (
 
 randomOffspring _ _ _ _ _ = error "should not happen"
 
+maximumCountOfOffspring :: Int
+maximumCountOfOffspring = 6
 
 mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
 mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
@@ -98,7 +100,7 @@ mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Ind
     motherFitness = fitness optimum $ expression F (fdna1, fdna2)
     pairFitness = (fatherFitness + motherFitness) / 2.0
 
-    numOfOffspring = min 6 $ floor $ log $ 10 * pairFitness
+    numOfOffspring = min maximumCountOfOffspring $ floor $ log $ 60 * pairFitness
     randOffspring1 = randomOffspring expression g father mother seed
     randOffspring2 = randomOffspring expression g father mother (seed + 1)
     randOffspring3 = randomOffspring expression g father mother (seed + 2)
