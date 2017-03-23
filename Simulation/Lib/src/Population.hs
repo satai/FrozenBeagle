@@ -40,8 +40,8 @@ import           Sex
 import           System.Random
 
 data Population = Population
-    { generation  :: Int
-    , individuals :: [Individual]
+    { generation  :: !Int
+    , individuals :: ![Individual]
 } deriving (Eq, Show, Generic)
 
 instance Hashable Population

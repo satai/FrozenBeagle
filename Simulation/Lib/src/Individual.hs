@@ -14,10 +14,10 @@ import Data.Hashable
 import Data.Bits
 
 data Individual = Individual
-    { sex :: Sex
-    , birthGeneration :: Int
-    , chromosomes :: (DnaString, DnaString)
-    , phenotype :: Phenotype
+    { sex             :: !Sex
+    , birthGeneration :: !Int
+    , chromosomes     :: !(DnaString, DnaString)
+    , phenotype       :: !Phenotype
     } deriving (Eq, Show, Ord, Generic)
 
 instance Hashable Individual

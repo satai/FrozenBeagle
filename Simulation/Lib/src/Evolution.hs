@@ -13,12 +13,12 @@ import           Expression
 
 data EvolutionRules =
        EvolutionRules
-           { mutation             :: [Mutation]
-           , breeding             :: [Phenotype -> Int -> Breeding]
-           , selection            :: [Phenotype -> Selection]
-           , deaths               :: [Int -> PopulationChange]
-           , expression           :: ExpressionStrategy
-           , optimumForGeneration :: Int -> Phenotype
+           { mutation             :: ![Mutation]
+           , breeding             :: ![Phenotype -> Int -> Breeding]
+           , selection            :: ![Phenotype -> Selection]
+           , deaths               :: ![Int -> PopulationChange]
+           , expression           :: !ExpressionStrategy
+           , optimumForGeneration :: !(Int -> Phenotype)
            }
 
 step :: [PopulationChange] -> RVar [Individual] -> RVar [Individual]
