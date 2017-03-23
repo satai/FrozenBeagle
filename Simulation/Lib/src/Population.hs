@@ -169,10 +169,10 @@ extinction = return . const []
 type Fitness = Phenotype -> Double
 
 hardSelection :: Fitness -> Double -> Selection
-hardSelection fitness' treshold = return . filterSurvivors
+hardSelection fitness' threshold = return . filterSurvivors
   where
     filterSurvivors :: [Individual] -> [Individual]
-    filterSurvivors = filter ((>treshold) . fitness' . phenotype)
+    filterSurvivors = filter ((> threshold) . fitness' . phenotype)
 
 turbidostat :: Double -> Double -> PopulationChange
 turbidostat k4 k5 population = do
