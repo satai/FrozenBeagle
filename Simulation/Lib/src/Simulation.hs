@@ -281,7 +281,7 @@ computeSimulation params =
 
     initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
     allGenerations = evolution maxSteps rules initialPopulation
-    generations = collapse (seed params) allGenerations
+    generations = collapse (seed params + 2) allGenerations
 
     stats f = zip [0..] (zipWith f [0..] generations)
 
