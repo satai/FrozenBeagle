@@ -41,7 +41,7 @@ randomPopulation :: Int -> ExpressionStrategy -> Int -> RVar Population
 randomPopulation count expressionStrategy baseCount = Population 0 <$> randomIndividuals count expressionStrategy baseCount
 
 randomIndividuals :: Int -> ExpressionStrategy -> Int -> RVar [Individual]
-randomIndividuals count expressionStrategy baseCount = sequence $ replicate count $ randomIndividual baseCount expressionStrategy
+randomIndividuals count expressionStrategy baseCount = replicateM count $ randomIndividual baseCount expressionStrategy
 
 randomIndividual :: Int -> ExpressionStrategy -> RVar Individual
 randomIndividual baseCount expressionStrategy = do
