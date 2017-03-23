@@ -257,7 +257,7 @@ runSimulation nameField parameterFields resultNotebook window = do
     name <- entryGetText nameField
     _ <- forkIO $ do
         let simResults = computeSimulation parameters
-        print simResults
+        -- print simResults
         mapM_ (showResult resultNotebook name) simResults
 
         postGUIAsync $ do
