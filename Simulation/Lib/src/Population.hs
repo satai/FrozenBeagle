@@ -132,9 +132,9 @@ pointMutationDnaString  (DnaString s) = do
 pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual
 pointMutationIndividual expression i = do
 
-        shoudMutateIndividual <- boolBernoulli probabilityIndividualMutation
+        shouldMutateIndividual <- boolBernoulli probabilityIndividualMutation
 
-        if shoudMutateIndividual
+        if shouldMutateIndividual
             then do
                 let (d1, d2) = chromosomes i
 
