@@ -273,13 +273,14 @@ params2rules params =
 
     optimum1 = collapse (seed params) randomOptimum
     optimum2 = collapse (seed params + 1) randomOptimum
+    turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 
   in
     EvolutionRules { mutation = [ pointMutation expression' ]
                    , breeding = [ breedingStrategy ]
                    , selection = [ hSelection ]
                    , deaths =
-                       [ \_ -> turbidostat (turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)) accidentDeathProbability
+                       [ \_ -> turbidostat turbidostatCoefficients accidentDeathProbability
                        , killOld maximumAge
                        ]
                    , expression = expression'
