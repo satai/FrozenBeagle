@@ -130,7 +130,6 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
     er <- epistaticRules baseCount epistaticRulesCount
     pr <- pleiotropicRules baseCount pleiotropicRulesCount
     cr <- complicatedRules baseCount complicatedRulesCount
-    return (br ++ pr ++ er ++ cr)
 
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
@@ -206,32 +205,30 @@ randomComplicatedRule baseCount = do
     return (schema, p)
 
 randomSchema :: Int -> RVar Schema
-randomSchema baseCount = Schema <$> sequence elems
-  where
-    elems :: [RVar (Maybe Basis)]
-    elems =  replicate baseCount randomBaseOrNot
+randomSchema baseCount = do
+    b1 <- randomBase
+    b2 <- randomBase
+    b3 <- randomBase
+    let
+       a = take baseCount $ [Just b1, Just b2, Just b3] ++ repeat Nothing
+    Schema <$> shuffle a
 
-randomBaseOrNot :: RVar (Maybe Basis)
-randomBaseOrNot = choice $ [Just G1, Just G2, Just G3, Just G4] ++ replicate 20 Nothing  -- fixme
+randomPhenotypeFraction :: Double -> RVar Phenotype
+randomPhenotypeFraction d = do
+    a1 <- doubleStdNormal
+    a2 <- doubleStdNormal
+    a3 <- doubleStdNormal
+    a4 <- doubleStdNormal
+    return $ Phenotype [a1 * d, a2 * d, a3 * d, a4 * d]
 
 randomPhenotypeChange :: RVar Phenotype
-randomPhenotypeChange = do
-    a1 <- doubleStdNormal
-    a2 <- doubleStdNormal
-    a3 <- doubleStdNormal
-    a4 <- doubleStdNormal
-    return $ Phenotype [a1, a2, a3, a4]
+randomPhenotypeChange = randomPhenotypeFraction 1.0
 
 randomOptimum :: RVar Phenotype
-randomOptimum = do
-    a1 <- doubleStdNormal
-    a2 <- doubleStdNormal
-    a3 <- doubleStdNormal
-    a4 <- doubleStdNormal
-    return $ Phenotype [a1 * 4.0, a2 * 4.0, a3 * 4.0, a4 * 4.0]
+randomOptimum = randomPhenotypeFraction 8.0
 
-express :: Int -> Int -> Int -> Int -> ExpressionStrategy
-express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression $ fst $ sampleState (randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount ) (mkStdGen 0)
+express :: Int -> Int -> Int -> Int -> RVar ExpressionStrategy
+express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression <$> randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
 
 collapse :: Int -> RVar a -> a
 collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
@@ -273,8 +270,10 @@ params2rules params =
 
     accidentDeathProbability = 0.0
 
-    optimum1 = collapse (seed params) randomOptimum
-    optimum2 = collapse (seed params + 1) randomOptimum
+    optimum1 = collapse (seed params + 1) randomOptimum
+    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 4.0
+    optimum2 = Phenotype $ zipWith (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
+
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 
   in
