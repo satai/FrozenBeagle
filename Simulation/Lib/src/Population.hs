@@ -100,13 +100,13 @@ mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Ind
     motherFitness = fitness optimum $ expression F (fdna1, fdna2)
     pairFitness = (fatherFitness + motherFitness) / 2.0
 
-    numOfOffspring = min maximumCountOfOffspring $ floor $ log $ 60 * pairFitness
     randOffspring1 = randomOffspring expression g father mother seed
     randOffspring2 = randomOffspring expression g father mother (seed + 1)
     randOffspring3 = randomOffspring expression g father mother (seed + 2)
     randOffspring4 = randomOffspring expression g father mother (seed + 3)
     randOffspring5 = randomOffspring expression g father mother (seed + 4)
     randOffspring6 = randomOffspring expression g father mother (seed + 5)
+        numOfOffspring = min maximumCountOfOffspring $ floor $ pairFitness
 
 mate _ _ _ _ = error "Should not happen"
 
