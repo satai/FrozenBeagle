@@ -40,7 +40,7 @@ spec = parallel $
             10
           )
 
-        it "optimum calculation produces constant" $
+        it "optimum calculation produces constant " $
             property (\i ->
                 optimumCalculation (Phenotype [1.0, 0, 0, 0]) (Phenotype [1.0, 0, 0, 0]) i
                 `shouldBe`
