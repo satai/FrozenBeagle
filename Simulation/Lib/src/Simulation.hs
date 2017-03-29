@@ -307,7 +307,7 @@ computeSimulation params =
      , ("Min Fitness", stats $ minFitness $ optimumForGeneration rules)
      , ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
      , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
-     , ("Population Size", stats (\_ -> fromIntegral . length . individuals))
-     , ("% of polymorphic locus", stats (\_ -> polymorphism) )
-     , ("% of locus with alela with more than 90% appearence", stats (\_ -> almostPolymorphism))
+     , ("Population Size", stats (const $ fromIntegral . length . individuals))
+     , ("% of polymorphic locus", stats (const polymorphism) )
+     , ("% of locus with alela with more than 90% appearence", stats (const almostPolymorphism))
      ]       -- fixme
