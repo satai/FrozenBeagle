@@ -9,6 +9,11 @@ cabal.sandbox.config
 *.iml
 .ideaHaskellLib
 
+*png
+result*
+aws
+out
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
