@@ -237,8 +237,11 @@ turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
 turbidostatCoefficientsForPopulationSize accidentDeathProbability expectedPopulationSize =
       (0.5 - accidentDeathProbability) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
+maxSteps :: Int
+maxSteps = 6000
+
 optimumChangeGeneration :: Int
-optimumChangeGeneration = 1200
+optimumChangeGeneration = maxSteps `div` 2
 
 optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
 optimumCalculation optimum1 optimum2 g =
@@ -287,9 +290,6 @@ params2rules params =
                    , expression = expression'
                    , optimumForGeneration = optimumCalculation optimum1 optimum2
                    }
-
-maxSteps :: Int
-maxSteps = 2500
 
 computeSimulation :: AnalysisParameters -> [(String, [(Integer, Double)])]
 computeSimulation params =
