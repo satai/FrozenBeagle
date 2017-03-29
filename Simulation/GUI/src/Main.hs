@@ -123,9 +123,9 @@ prepareWindow = do
 
     _ <- toggleButtonSetActive separatedGenerationsSwitch False
 
-    epistaticRulesScale <- labeledNewScale "Epistatic rules" 0 100 1 settingsSwitchesBoxMiddle
-    pleiotropicRulesScale <- labeledNewScale "Pleiotropic rules" 0 100 1 settingsSwitchesBoxMiddle
-    complicatedRulesScale <- labeledNewScale "Complicated rules" 0 100 1 settingsSwitchesBoxMiddle
+    epistaticRulesScale <- labeledNewScale "Epistatic rules" 0 256 1 settingsSwitchesBoxMiddle
+    pleiotropicRulesScale <- labeledNewScale "Pleiotropic rules" 0 256 1 settingsSwitchesBoxMiddle
+    complicatedRulesScale <- labeledNewScale "Complicated rules" 0 256 1 settingsSwitchesBoxMiddle
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     containerSetBorderWidth settingsSwitchesBoxRight 10
