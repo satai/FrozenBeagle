@@ -2,7 +2,13 @@
 
 This module exports Genes as lists of bases, bases names and crossover and mutation operations.
 
-> module Genes(DnaString(DnaString), genes, Basis(G1, G2, G3, G4, G5), crossover, mutate) where
+> module Genes
+>          ( DnaString(DnaString)
+>          , genes
+>          , Basis(..)
+>          , crossover
+>          , mutate
+>          ) where
 >
 > import Data.Hashable
 > import GHC.Generics (Generic)
