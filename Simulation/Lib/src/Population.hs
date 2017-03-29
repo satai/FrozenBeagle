@@ -24,11 +24,11 @@ module Population
     , killOld
     ) where
 
-import           Data.Bits
 import           Data.Hashable
 import           Data.List
-import           Data.Random (sampleState)
+import           Data.Random (randomElement)
 import           Data.Random.Distribution.Bernoulli
+import           Data.Random.Distribution.Uniform (integralUniform)
 import           Data.Random.Extras
 import           Data.Random.RVar
 import           Expression
@@ -37,7 +37,6 @@ import           GHC.Generics (Generic)
 import           Individual
 import           Phenotype
 import           Sex
-import           System.Random
 
 data Population = Population
     { generation  :: !Int
@@ -58,57 +57,56 @@ type Mutation = PopulationChange
 
 type Breeding = PopulationChange
 
-chosenPairs :: [Individual] -> [(Individual, Individual)]
-chosenPairs population = take numOfPairsPerGen $ zip m f
-  where
-    seed = hash population
-    gen = mkStdGen seed
-    m' = shuffle $ males population
-    f' = shuffle $ females population
-    (m, gen') = sampleState m' gen
-    (f, _   ) = sampleState f' gen'
-    numOfPairsPerGen = length population `div` 8
+chosenPairs :: Int -> [Individual] -> RVar [(Individual, Individual)]
+chosenPairs fraction population = do
+    let numOfPairsPerGen = length population `div` fraction
+
+    m <- shuffle $ males population
+    f <- shuffle $ females population
+
+    return $ take numOfPairsPerGen $ zip m f
 
 
-randomOffspring :: ExpressionStrategy -> Int -> Individual -> Individual -> Int -> Individual
-randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (Individual F _ (fdna1, fdna2) _) seed = Individual s currentGeneration (d1, d2) $ expression s (d1, d2)
- where
-    gen = mkStdGen seed
-    (s', gen') = next gen
+randomOffspring :: ExpressionStrategy -> Int -> Individual -> Individual -> RVar Individual
+randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (Individual F _ (fdna1, fdna2) _) = do
+    s <- randomElement [M, F]
 
-    s = if odd s' then M else F
+    let baseCount = length $ genes mdna1
 
-    baseCount = length $ genes mdna1
+    crossOverPoint1 <- integralUniform 1 (baseCount - 1)
+    crossOverPoint2 <- integralUniform 1 (baseCount - 1)
 
-    (crossOverPoint1, gen'') = randomR (1, baseCount - 1) gen'
-    (crossOverPoint2, _) = randomR (1, baseCount - 1) gen''
+    let
+        d1 = crossover crossOverPoint1 mdna1 fdna1
+        d2 = crossover crossOverPoint2 mdna2 fdna2
+        offspringPhenotype = expression s (d1, d2)
 
-    d1 = crossover crossOverPoint1 mdna1 fdna1
-    d2 = crossover crossOverPoint2 mdna2 fdna2
+    return $ Individual s currentGeneration (d1, d2) offspringPhenotype
 
-randomOffspring _ _ _ _ _ = error "should not happen"
+randomOffspring _ _ _ _ = error "should not happen - only a M and F can be parents in this order"
 
 maximumCountOfOffspring :: Int
 maximumCountOfOffspring = 6
 
-mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> [Individual]
-mate expression optimum g (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
-  where
-    seed = hash optimum `xor` hash father `xor` hash mother `xor` g
+mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> RVar [Individual]
+mate expression optimum g parents = do
 
-    fatherFitness = fitness optimum $ expression M (mdna1, mdna2)
-    motherFitness = fitness optimum $ expression F (fdna1, fdna2)
-    pairFitness = (fatherFitness + motherFitness) / 2.0
+    let
+        (father@(Individual M _ (mdna1, mdna2) _), mother@(Individual F _ (fdna1, fdna2) _)) = parents
+        fatherFitness = fitness optimum $ expression M (mdna1, mdna2)
+        motherFitness = fitness optimum $ expression F (fdna1, fdna2)
+        pairFitness = (fatherFitness + motherFitness) / 2.0
 
-    randOffspring1 = randomOffspring expression g father mother seed
-    randOffspring2 = randomOffspring expression g father mother (seed + 1)
-    randOffspring3 = randomOffspring expression g father mother (seed + 2)
-    randOffspring4 = randomOffspring expression g father mother (seed + 3)
-    randOffspring5 = randomOffspring expression g father mother (seed + 4)
-    randOffspring6 = randomOffspring expression g father mother (seed + 5)
         numOfOffspring = min maximumCountOfOffspring $ floor $ pairFitness
 
-mate _ _ _ _ = error "Should not happen"
+    randOffspring1 <- randomOffspring expression g father mother
+    randOffspring2 <- randomOffspring expression g father mother
+    randOffspring3 <- randomOffspring expression g father mother
+    randOffspring4 <- randomOffspring expression g father mother
+    randOffspring5 <- randomOffspring expression g father mother
+    randOffspring6 <- randomOffspring expression g father mother
+
+    return $ take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
 
 probabilityIndividualMutation :: Float
 probabilityIndividualMutation = 0.01
@@ -141,7 +139,9 @@ pointMutationIndividual expression i = do
                 d1' <- pointMutationDnaString d1
                 d2' <- pointMutationDnaString d2
 
-                return $ Individual (sex i) (birthGeneration i) (d1', d2') $ expression (sex i) (d1', d2')
+                let offspringPhenotype = expression (sex i) (d1', d2')
+
+                return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
             else
                 return i
 
@@ -149,16 +149,16 @@ pointMutation :: ExpressionStrategy -> Mutation
 pointMutation expression = mapM (pointMutationIndividual expression)
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
-panmictic expression optimum g population = return $ concat children
-  where
-    children :: [[Individual]]
-    children = map (mate expression optimum g) $ chosenPairs population
+panmictic expression optimum g population = do
+    pairs <- chosenPairs 1 population
+    children <- mapM (mate expression optimum g) pairs
+    return $ concat children
 
 panmicticOverlap :: ExpressionStrategy -> Phenotype -> Int -> Breeding
-panmicticOverlap expression optimum g population = return $ population ++ concat children
-  where
-    children :: [[Individual]]
-    children = map (mate expression optimum g) $ chosenPairs population
+panmicticOverlap expression optimum g population = do
+   pairs <- chosenPairs 8 population
+   children <- mapM (mate expression optimum g) pairs
+   return $ population ++ concat children
 
 type Selection = PopulationChange
 

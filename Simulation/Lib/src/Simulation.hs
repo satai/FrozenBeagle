@@ -7,6 +7,7 @@ module Simulation
     , optimumCalculation
     , randomPhenotypeChange
     , randomOptimum
+    ,collapse
     ) where
 
 import           Evolution
@@ -23,9 +24,10 @@ import           Data.MultiSet                    (fromList, toOccurList)
 import           Data.Random
 import           Data.Random.Distribution.Normal
 import           Data.Random.Distribution.Uniform
-import           Data.Random.Extras
+import           Data.Random.Extras hiding (shuffle)
 import           System.Random
 
+import Debug.Trace
 
 data AnalysisParameters = AnalysisParameters
     { separatedGenerations    :: Bool
@@ -125,8 +127,8 @@ percentileFitness percentile generationOptimum generationNumber  (Population _ i
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
     br <- basicRules baseCount
-    er <- epistaticRules baseCount pleiotropicRulesCount
-    pr <- pleiotropicRules baseCount epistaticRulesCount
+    er <- epistaticRules baseCount epistaticRulesCount
+    pr <- pleiotropicRules baseCount pleiotropicRulesCount
     cr <- complicatedRules baseCount complicatedRulesCount
     return (br ++ pr ++ er ++ cr)
 
@@ -145,7 +147,7 @@ randomPleiotropicRule baseCount = do
 
     position <- integralUniform 0 (baseCount - 1)
 
-    basis <- choice [G1, G2, G3, G4, G5]
+    basis <- randomBase
 
     let dimChange = [g1Change, g2Change, g3Change, g4Change]
     let schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
@@ -256,7 +258,7 @@ params2rules params =
     epistaticRulesCount = countOfEpistaticRules params
     complicatedRulesCount = countOfComplicatedRules params
 
-    expression' = express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+    expression' = collapse (seed params) $ express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
 
     breedingStrategy = if separatedGenerations params
                            then panmictic expression'
