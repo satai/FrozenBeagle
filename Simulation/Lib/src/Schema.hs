@@ -22,11 +22,11 @@ instance Show Schema
 order :: Schema -> Int
 order (Schema elems) =  length $ filter (/= Nothing) elems
 
-matches :: Schema -> DnaString -> Bool
-matches (Schema s) (DnaString d) = matches' s d
+matches :: Schema -> DnaString -> DnaString -> Bool
+matches (Schema s) (DnaString d1) (DnaString d2) = matches' s d1 d2
   where
-    matches' :: [Maybe Basis] -> [Basis] -> Bool
-    matches' [] []                     = True
-    matches' (Nothing : b1s) (_ : b2s) = matches' b1s b2s
-    matches' (Just b1: b1s) (b2:b2s)   = b1 == b2 && matches' b1s b2s
-    matches' _ _                       = error "Incopatible Schema and DNA"
+    matches' :: [Maybe Basis] -> [Basis] -> [Basis] -> Bool
+    matches' [] [] []                             = True
+    matches' (Nothing : bs) (_  : b1s) (_  : b2s) = matches' bs b1s b2s
+    matches' (Just b  : bs) (b1 : b1s) (b2 : b2s) = (b == b1 || b == b2) && matches' bs b1s b2s
+    matches' _ _ _                                = error "Incompatible Schema and DNA"

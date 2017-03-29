@@ -32,12 +32,14 @@ spec = parallel $
 
         it "schema matches dna if they have same content" $
             property (
-                \(DnaString elems)  ->
-                    matches (Schema $ map Just elems) (DnaString elems)
+                \(DnaString elems) (DnaString otherElems) ->
+                    matches (Schema $ map Just elems) (DnaString elems) (DnaString otherElems) &&
+                    matches (Schema $ map Just elems) (DnaString otherElems) (DnaString elems)
             )
 
-        it "schema doesn't match dna with different content"
-            (not $ matches (Schema [Just G1, Just G1]) (DnaString [G1, G2]))
+        it "schema doesn't match dna with different content" $
+            not (matches (Schema [Just G1, Just G1]) (DnaString [G1, G2]) (DnaString [G2, G2])) &&
+            not (matches (Schema [Just G1, Just G1]) (DnaString [G2, G2]) (DnaString [G1, G2]))
 
         it "schema does match dna with different same same content on specified places"
-            (matches (Schema [Just G2, Nothing]) (DnaString [G2, G1]))
+            (matches (Schema [Nothing, Just G2, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G2, G2]))

@@ -15,7 +15,7 @@ schemaBasedExpression xs _ chromosomes = Phenotype $ foldl sumVec [0, 0, 0, 0] $
   where
     (chromosome1, chromosome2) = chromosomes
     sumVec = zipWith (+)
-    match schema = matches schema chromosome1 || matches schema chromosome2
+    match schema = matches schema chromosome1 chromosome2
     matchingPairs = filter (match . fst) xs
     phenotypeChanges :: [Phenotype]
     phenotypeChanges = map snd matchingPairs
