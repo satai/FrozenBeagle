@@ -130,6 +130,7 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
     er <- epistaticRules baseCount epistaticRulesCount
     pr <- pleiotropicRules baseCount pleiotropicRulesCount
     cr <- complicatedRules baseCount complicatedRulesCount
+    return (br ++ pr ++ er ++ cr)
 
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
