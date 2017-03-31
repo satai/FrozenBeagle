@@ -29,4 +29,5 @@ extractParams seedValue = AnalysisParameters
                       <*> option auto (long "countOfPleiotropicRules" <> value 0)
                       <*> option auto (long "countOfEpistaticRules" <> value 0)
                       <*> option auto (long "countOfComplicatedRules" <> value 0)
+                      <*> option auto (long "countOfDominantRules" <> value 0)
                       <*> option auto (long "dont_use" <> value seedValue)

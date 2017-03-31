@@ -39,6 +39,7 @@ data AnalysisParameters = AnalysisParameters
     , countOfPleiotropicRules :: Int
     , countOfEpistaticRules   :: Int
     , countOfComplicatedRules :: Int
+    , countOfDominantRules    :: Int
     , seed                    :: Int
     } deriving Show
 
@@ -135,6 +136,9 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
 
+dominantRules :: Int -> Int -> RVar [(DominantSchema, Phenotype)]
+dominantRules baseCount countOfRules = replicateM countOfRules (randomDominantRule baseCount)
+
 pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotropicRule baseCount)
 
@@ -205,6 +209,12 @@ randomComplicatedRule baseCount = do
     p <- randomPhenotypeChange
     return (schema, p)
 
+randomDominantRule :: Int -> RVar (DominantSchema, Phenotype)
+randomDominantRule baseCount = do
+    schema <- randomDominantSchema baseCount
+    p <- randomPhenotypeChange
+    return (schema, p)
+
 randomSchema :: Int -> RVar Schema
 randomSchema baseCount = do
     b1 <- randomBase
@@ -213,6 +223,14 @@ randomSchema baseCount = do
     let
        a = take baseCount $ [Just b1, Just b2, Just b3] ++ repeat Nothing
     Schema <$> shuffle a
+
+
+randomDominantSchema :: Int -> RVar DominantSchema
+randomDominantSchema baseCount = do
+    b1 <- randomBase
+    let
+       a = take baseCount $ [Just b1] ++ repeat Nothing
+    DominantSchema <$> shuffle a
 
 randomPhenotypeFraction :: Double -> RVar Phenotype
 randomPhenotypeFraction d = do
@@ -226,14 +244,16 @@ randomPhenotypeChange :: RVar Phenotype
 randomPhenotypeChange = randomPhenotypeFraction 1.0
 
 randomOptimum :: RVar Phenotype
-randomOptimum = randomPhenotypeFraction 8.0
+randomOptimum = randomPhenotypeFraction 4.0
 
-express :: Int -> Int -> Int -> Int -> RVar ExpressionStrategy
-express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
+express :: Int -> Int -> Int -> Int -> Int -> RVar ExpressionStrategy
+express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount dominantRulesCount = do
     rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+    domRules <- dominantRules baseCount dominantRulesCount
+
     let
-        matchers = map (matches . fst) rules
-        changes = map snd rules
+        matchers = map (matches . fst) rules ++ map (matches . fst) domRules
+        changes = map snd rules ++ map snd domRules
 
     return $ schemaBasedExpression $ zip matchers changes
 
@@ -264,8 +284,14 @@ params2rules params =
     pleiotropicRulesCount = countOfPleiotropicRules params
     epistaticRulesCount = countOfEpistaticRules params
     complicatedRulesCount = countOfComplicatedRules params
+    dominantRulesCount = countOfDominantRules params
 
-    expression' = collapse (seed params) $ express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+    expression' = collapse (seed params + 20) $ express
+                                                   baseCount
+                                                   pleiotropicRulesCount
+                                                   epistaticRulesCount
+                                                   complicatedRulesCount
+                                                   dominantRulesCount
 
     breedingStrategy = if separatedGenerations params
                            then panmictic expression'

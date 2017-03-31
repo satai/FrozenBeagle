@@ -22,7 +22,7 @@ data AnalysisParametersFields = AnalysisParametersFields
     , optimumMovementFields :: [(SpinButton, SpinButton, SpinButton)]
     , countOfPleiotropicRulesField :: SpinButton
     , countOfEpistaticRulesField :: SpinButton
-    , countOfComplicatedRulesField :: SpinButton
+    , countOfDominantRulesField :: SpinButton
     }
 
 disableButtonIfInBroadway :: Button -> IO()
@@ -125,7 +125,7 @@ prepareWindow = do
 
     epistaticRulesScale <- labeledNewScale "Epistatic rules" 0 256 1 settingsSwitchesBoxMiddle
     pleiotropicRulesScale <- labeledNewScale "Pleiotropic rules" 0 256 1 settingsSwitchesBoxMiddle
-    complicatedRulesScale <- labeledNewScale "Complicated rules" 0 256 1 settingsSwitchesBoxMiddle
+    dominantRulesScale <- labeledNewScale "dominant rules" 0 256 1 settingsSwitchesBoxMiddle
 
     settingsSwitchesBoxRight <- vBoxNew False 0
     containerSetBorderWidth settingsSwitchesBoxRight 10
@@ -190,7 +190,7 @@ prepareWindow = do
                   , optimumMovementFields = optimumMovements
                   , countOfPleiotropicRulesField = pleiotropicRulesScale
                   , countOfEpistaticRulesField = epistaticRulesScale
-                  , countOfComplicatedRulesField = complicatedRulesScale
+                  , countOfDominantRulesField = dominantRulesScale
                   }
 
     _ <- on runButton buttonActivated (runSimulation nameField inputs resultNotebook window)
@@ -221,7 +221,7 @@ extractParameters parameterFields = do
 
     pleiotropicRulesCount <- spinButtonGetValueAsInt $ countOfPleiotropicRulesField parameterFields
     epistaticRulesCount <- spinButtonGetValueAsInt $ countOfEpistaticRulesField parameterFields
-    complicatedRulesCount <- spinButtonGetValueAsInt $ countOfComplicatedRulesField parameterFields
+    dominantRulesCount <- spinButtonGetValueAsInt $ countOfDominantRulesField parameterFields
 
     return AnalysisParameters
                { separatedGenerations = separatedGen
@@ -232,7 +232,8 @@ extractParameters parameterFields = do
                , countOfBases = baseCount
                , countOfPleiotropicRules = pleiotropicRulesCount
                , countOfEpistaticRules = epistaticRulesCount
-               , countOfComplicatedRules = complicatedRulesCount
+               , countOfComplicatedRules = 0
+               , countOfDominantRules = dominantRulesCount
                , seed = 0
                }
   where
