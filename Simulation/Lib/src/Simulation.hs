@@ -229,7 +229,13 @@ randomOptimum :: RVar Phenotype
 randomOptimum = randomPhenotypeFraction 8.0
 
 express :: Int -> Int -> Int -> Int -> RVar ExpressionStrategy
-express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = schemaBasedExpression <$> randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
+    rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+    let
+        matchers = map (matches . fst) rules
+        changes = map snd rules
+
+    return $ schemaBasedExpression $ zip matchers changes
 
 collapse :: Int -> RVar a -> a
 collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)

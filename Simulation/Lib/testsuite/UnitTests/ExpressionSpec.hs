@@ -24,15 +24,15 @@ spec = parallel $ do
 
         it "Is zero vector when no matching schema" $
             property (\ phenotypeChange ->
-                schemaBasedExpression [(Schema $ replicate 10 $ Just G1, phenotypeChange)] M (DnaString $ replicate 10 G2, DnaString $ replicate 10 G3) `shouldBe` Phenotype [0, 0, 0, 0]
+                schemaBasedExpression [(matches $ Schema $ replicate 10 $ Just G1, phenotypeChange)] M (DnaString $ replicate 10 G2, DnaString $ replicate 10 G2) `shouldBe` Phenotype [0, 0, 0, 0]
             )
 
         it "Moves phenotype if matches" $
             property (\ phenotypeChange s chs ->
-                schemaBasedExpression [(allMatchingSchema, phenotypeChange)] s chs `shouldBe` phenotypeChange
+                schemaBasedExpression [(matches allMatchingSchema, phenotypeChange)] s chs `shouldBe` phenotypeChange
             )
 
         it "Moves phenotype for each matching schema" $
             property (\ s chs ->
-                schemaBasedExpression [(allMatchingSchema, Phenotype [1, 0, 0, 1]), (allMatchingSchema, Phenotype [0, 1, 0, 1])] s chs `shouldBe` Phenotype [1, 1, 0, 2]
+                schemaBasedExpression [(matches allMatchingSchema, Phenotype [1, 0, 0, 1]), (matches allMatchingSchema, Phenotype [0, 1, 0, 1])] s chs `shouldBe` Phenotype [1, 1, 0, 2]
             )
