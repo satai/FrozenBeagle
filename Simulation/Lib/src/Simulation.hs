@@ -260,14 +260,8 @@ collapse :: Int -> RVar a -> a
 collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
 
 turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
-turbidostatCoefficientsForPopulationSize accidentDeathProbability expectedPopulationSize =
-      (0.5 - accidentDeathProbability) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
-
-maxSteps :: Int
-maxSteps = 6000
-
-optimumChangeGeneration :: Int
-optimumChangeGeneration = maxSteps `div` 2
+turbidostatCoefficientsForPopulationSize accidentDeathProbability' expectedPopulationSize =
+      (0.5 - accidentDeathProbability') / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
 optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
 optimumCalculation optimum1 optimum2 g =
@@ -285,7 +279,7 @@ params2rules params =
     complicatedRulesCount = countOfComplicatedRules params
     dominantRulesCount = countOfDominantRules params
 
-    expression' = collapse (seed params + 20) $ express
+    expression' = collapse (seed params) $ express
                                                    baseCount
                                                    pleiotropicRulesCount
                                                    epistaticRulesCount
@@ -302,8 +296,6 @@ params2rules params =
     hSelection optimum = hardSelection (fitness optimum) $ hardSelectionThreshold params
 
     maximumAge = maxAge params
-
-    accidentDeathProbability = 0.0
 
     optimum1 = collapse (seed params + 1) randomOptimum
     optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 4.0
