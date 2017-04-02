@@ -14,7 +14,7 @@ main = do
 runSimWithSeed :: Bool -> Int -> IO ()
 runSimWithSeed prepend seedValue = do
     putStr $ if prepend then "," else ""
-    parameters <- execParser (info (extractParams seedValue) mempty)
+    parameters <- execParser (info (extractParams $ 1024 * seedValue) mempty)
     let simResults = computeSimulation parameters
     putStr $ show simResults
 
