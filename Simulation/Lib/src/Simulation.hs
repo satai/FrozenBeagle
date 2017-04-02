@@ -10,6 +10,7 @@ module Simulation
     ,collapse
     ) where
 
+import           SimulationConstants
 import           Evolution
 import           Expression
 import           Genes
@@ -166,7 +167,7 @@ complicatedRules baseCount countOfRules = replicateM countOfRules (randomComplic
 
 simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
 simpleRulesForPosition baseCount p = do
-    dimension <- integralUniform 0 3
+    dimension <- integralUniform 0 (dimensionCount - 1)
 
     g1Change <- doubleStdNormal
     g2Change <- doubleStdNormal
@@ -196,10 +197,10 @@ simpleRulesForPosition baseCount p = do
 randomEpistaticRule :: Int -> RVar (Schema, Phenotype)
 randomEpistaticRule baseCount = do
     schema <- randomSchema baseCount
-    dimension <- integralUniform 0 3
+    dimension <- integralUniform 0 (dimensionCount - 1)
     gChange <- doubleStdNormal
 
-    let gDimChange = replicate dimension 0.0 ++ [gChange] ++ replicate (4 - dimension - 1) 0.0
+    let gDimChange = replicate dimension 0.0 ++ [gChange] ++ replicate (dimensionCount - dimension - 1) 0.0
 
     return (schema, Phenotype gDimChange)
 
@@ -215,7 +216,7 @@ randomDominantRule baseCount = do
     g1Change <- doubleStdNormal
 
     let
-        dimChange = g1Change : replicate 3 0.0
+        dimChange = g1Change : replicate (dimensionCount - 1) 0.0
 
     p <- shuffle dimChange
 

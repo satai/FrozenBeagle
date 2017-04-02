@@ -4,10 +4,12 @@ module UnitTests.PhenotypeSpec (spec, Phenotype, Arbitrary) where
 
 import Test.Hspec
 import Test.QuickCheck
+
+import SimulationConstants
 import Phenotype
 
 instance Arbitrary Phenotype where
-     arbitrary = Phenotype <$> vector 4
+     arbitrary = Phenotype <$> vector dimensionCount
 
 spec :: Spec
 spec = parallel $ do
