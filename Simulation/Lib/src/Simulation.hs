@@ -7,7 +7,7 @@ module Simulation
     , optimumCalculation
     , randomPhenotypeChange
     , randomOptimum
-    ,collapse
+    , collapse
     ) where
 
 import           SimulationConstants
