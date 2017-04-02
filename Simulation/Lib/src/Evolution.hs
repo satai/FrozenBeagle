@@ -1,6 +1,13 @@
 module Evolution
-    (
-       EvolutionRules (EvolutionRules, mutation, breeding, selection, deaths, expression, optimumForGeneration)
+    ( EvolutionRules
+        ( EvolutionRules
+        , mutation
+        , breeding
+        , selection
+        , deaths
+        , expression
+        , optimumForGeneration
+        )
     , evolution
     ) where
 
