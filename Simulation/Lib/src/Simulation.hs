@@ -229,7 +229,7 @@ randomDominantSchema :: Int -> RVar DominantSchema
 randomDominantSchema baseCount = do
     b1 <- randomBase
     let
-       a = take baseCount $ [Just b1] ++ repeat Nothing
+       a = take baseCount $ Just b1 : repeat Nothing
     DominantSchema <$> shuffle a
 
 randomPhenotypeFraction :: Double -> RVar Phenotype
