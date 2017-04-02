@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Sex
-    ( Sex (M, F)
+    ( Sex (..)
     ) where
 
 import           Data.Hashable
