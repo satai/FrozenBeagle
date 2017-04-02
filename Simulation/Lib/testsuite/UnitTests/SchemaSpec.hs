@@ -28,6 +28,16 @@ spec = parallel $ do
                 (2 + length elems) == length (show $ Schema elems)
             )
 
+        it "schema equals itself" $
+            property  ( \schema ->
+                (schema :: Schema) == schema
+            )
+
+        it "schema equals an other schema with iff they have the same content" $
+            property  ( \elems1 elems2 ->
+                (elems1 == elems2) == (Schema elems1 == Schema elems2)
+            )
+
         it "show schema string looks like {13*5*}"
             (show (Schema [Just G1, Just G2, Nothing,  Just G1, Nothing]) `shouldBe` "{12*1*}" )
 
@@ -54,6 +64,16 @@ spec = parallel $ do
         it "show dominant schema string has the same length as schema + 2" $
             property  ( \(DominantSchema elems) ->
                 (2 + length elems) == length (show $ DominantSchema elems)
+            )
+
+        it "dominant schema equals itself" $
+            property  ( \schema ->
+                (schema :: DominantSchema) == schema
+            )
+
+        it "dominant schema equals an other dominant schema with iff they have the same content" $
+            property  ( \elems1 elems2 ->
+                (elems1 == elems2) == (DominantSchema elems1 == DominantSchema elems2)
             )
 
         it "show dominant schema string looks like (13*5*)"

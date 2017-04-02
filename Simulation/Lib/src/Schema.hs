@@ -36,11 +36,11 @@ instance Show DominantSchema
 
 instance HasOrder Schema
   where
-    order (Schema elems) =  length $ filter (/= Nothing) elems
+    order = length . filter (/= Nothing) . schemaElements
 
 instance HasOrder DominantSchema
   where
-    order (DominantSchema elems) =  length $ filter (/= Nothing) elems
+    order = length . filter (/= Nothing) . dominantSchemaElements
 
 instance MatchesGenes Schema
   where

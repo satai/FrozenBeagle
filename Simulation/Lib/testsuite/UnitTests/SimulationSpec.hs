@@ -12,6 +12,7 @@ import UnitTests.PopulationSpec()
 import Simulation
 import Schema
 import Phenotype
+import SimulationConstants
 
 spec :: Spec
 spec = parallel $
@@ -40,10 +41,19 @@ spec = parallel $
             10
           )
 
-        it "optimum calculation produces constant " $
-            property (\i ->
-                optimumCalculation (Phenotype [1.0, 0, 0, 0]) (Phenotype [1.0, 0, 0, 0]) i
-                `shouldBe`
-                Phenotype [1.0, 0, 0, 0]
-            )
+        it "optimum calculation produces constant for first couple of generations" $
+            property $
+                forAll ( choose (0, optimumChangeGeneration  - 1)) ( \i ->
+                    optimumCalculation (Phenotype [1.0, 0.1, 0, 0]) (Phenotype [2.0, 0, 0, 0]) i
+                    `shouldBe`
+                    Phenotype [1.0, 0.1, 0, 0]
+                )
+
+        it "optimum calculation produces an other constant after" $
+            property $
+                forAll ( choose (optimumChangeGeneration, optimumChangeGeneration * 10)) ( \i ->
+                    optimumCalculation (Phenotype [1.0, 0.1, 0, 0]) (Phenotype [2.0, 0, 0, 0]) i
+                    `shouldBe`
+                    Phenotype [2.0, 0, 0, 0]
+                )
 

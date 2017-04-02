@@ -71,6 +71,23 @@ spec = parallel $ do
                     [] == survivingPopulation
             )
 
+    describe "chosenPairs" $ do
+        it "there are no chosen pairs when chosing from empty population" $
+            property $ forAll (choose (1, 33)) (\fraction i ->
+                let chosen = fst $ sampleState (chosenPairs fraction []) $ mkStdGen i
+                in
+                    [] == chosen
+                )
+
+        it "there is less chosen pairs when choosing a smaller fraction from a population" $
+            property $ forAll (choose (3, 33)) (\fraction i p ->
+            let
+                chosen1 = fst $ sampleState (chosenPairs fraction p) $ mkStdGen i
+                chosen2 = fst $ sampleState (chosenPairs 2        p) $ mkStdGen i
+            in
+                length chosen1 <= length chosen2
+            )
+
     describe "fittest" $
         it "produces population of limited size" $
             property ( \p i ->

@@ -22,6 +22,7 @@ module Population
     , hardSelection
     , turbidostat
     , killOld
+    , chosenPairs
     ) where
 
 import           Data.List
