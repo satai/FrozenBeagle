@@ -72,8 +72,6 @@ randomBase :: RVar Basis
 randomBase = choice [ G1
                     , G2
                     , G3
-                    -- , G4
-                    -- , G5
                     ]
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
