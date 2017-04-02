@@ -252,14 +252,18 @@ randomPhenotypeChange = randomPhenotypeFraction 1.0
 randomOptimum :: RVar Phenotype
 randomOptimum = randomPhenotypeFraction 4.0
 
+negativeDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
+negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -2.0 * d) ph)
+
 express :: Int -> Int -> Int -> Int -> Int -> RVar ExpressionStrategy
 express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount dominantRulesCount = do
     rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
-    domRules <- dominantRules baseCount dominantRulesCount
+    -- domRules <- dominantRules baseCount dominantRulesCount
+    domRules <- take dominantRulesCount . map negativeDominantRule <$> shuffle rules
 
     let
         matchers = map (matches . fst) rules ++ map (matches . fst) domRules
-        changes = map snd rules ++ map snd domRules
+        changes = map snd (traceShowId rules) ++ map snd (traceShowId domRules)
 
     return $ schemaBasedExpression $ zip matchers changes
 
