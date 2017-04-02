@@ -212,8 +212,14 @@ randomComplicatedRule baseCount = do
 randomDominantRule :: Int -> RVar (DominantSchema, Phenotype)
 randomDominantRule baseCount = do
     schema <- randomDominantSchema baseCount
-    p <- randomPhenotypeChange
-    return (schema, p)
+    g1Change <- doubleStdNormal
+
+    let
+        dimChange = g1Change : replicate 3 0.0
+
+    p <- shuffle dimChange
+
+    return (schema, Phenotype p)
 
 randomSchema :: Int -> RVar Schema
 randomSchema baseCount = do
