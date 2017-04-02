@@ -37,23 +37,20 @@ spec = parallel $ do
 
         it "individual has two different dna strings" $
             property ( \(Individual _ _ (dna1, dna2) _) ->
-                dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is 1Mi combinations
+                dna1 /= dna2    --if these are equal, there is something wrong in our random generation, there is lots of combinations
             )
 
         it "consist of males and females" $
             property ( \p ->
-                (MultiSet.fromList p) == (MultiSet.fromList $ (males p) ++ (females p))
+                MultiSet.fromList p == MultiSet.fromList (males p ++ females p)
             )
 
         it "males are all males" $
-            property ( \p ->
-                all (\i -> (sex i) == M) $ males p
-            )
+            property $ all (\i -> sex i == M) .  males
 
         it "females are all females" $
-            property ( \p ->
-                all (\i -> (sex i) == F) $ females p
-            )
+            property $ all (\i -> sex i == F) . females
+
 
     describe "allSurvive selection" $
         it "doesn't change the population" $
@@ -63,6 +60,7 @@ spec = parallel $ do
                         p == survivors
                 )
 
+
     describe "extinction" $
         it "has no surviors" $
             property ( \p i ->
@@ -70,6 +68,7 @@ spec = parallel $ do
                 in
                     [] == survivingPopulation
             )
+
 
     describe "chosenPairs" $ do
         it "there are no chosen pairs when chosing from empty population" $
@@ -88,6 +87,7 @@ spec = parallel $ do
                 length chosen1 <= length chosen2
             )
 
+
     describe "fittest" $
         it "produces population of limited size" $
             property ( \p i ->
@@ -95,6 +95,7 @@ spec = parallel $ do
                 in
                     3 >= length survivingPopulation
             )
+
 
     describe "hard selection" $ do
         it "keeps all members of population, that have fitness greater than treshold" $
