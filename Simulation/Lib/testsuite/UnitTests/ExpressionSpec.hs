@@ -6,6 +6,7 @@ import Test.QuickCheck
 import Genes
 import Population
 import Phenotype
+import SimulationConstants
 import Schema
 import Expression
 
@@ -14,12 +15,12 @@ import UnitTests.PhenotypeSpec()
 import UnitTests.SchemaSpec(allMatchingSchema)
 
 spec :: Spec
-spec = parallel $ do
+spec = parallel $
     describe "Schema based Expression" $ do
 
         it "Is zero vector for no schema" $
             property (\ s chs ->
-                schemaBasedExpression [] s chs `shouldBe` Phenotype [0, 0, 0, 0]
+                schemaBasedExpression [] s chs `shouldBe` (Phenotype $ replicate dimensionCount 0.0)
             )
 
         it "Is zero vector when no matching schema" $
