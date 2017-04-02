@@ -119,7 +119,10 @@ pointMutationBasis b = do
     shouldMutateBasis <- boolBernoulli probabilityBasisMutation
 
     if shouldMutateBasis
-        then choice [G1, G2, G3, G4, G5]
+        then choice [ G1
+                    , G2
+                    , G3
+                    ]
         else return b
 
 pointMutationDnaString :: DnaString -> RVar DnaString

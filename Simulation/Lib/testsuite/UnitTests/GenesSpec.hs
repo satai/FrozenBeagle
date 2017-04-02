@@ -9,8 +9,11 @@ import Data.List
 import Genes
 
 instance Arbitrary Basis where
-  arbitrary = do
-       elements [G1, G2, G3, G4, G5]
+  arbitrary =
+       elements [ G1
+                , G2
+                , G3
+                ]
 
 instance Arbitrary DnaString where
      arbitrary = DnaString <$> vector 10
