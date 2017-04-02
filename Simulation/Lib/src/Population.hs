@@ -24,7 +24,6 @@ module Population
     , killOld
     ) where
 
-import           Data.Hashable
 import           Data.List
 import           Data.Random (randomElement)
 import           Data.Random.Distribution.Bernoulli
@@ -42,8 +41,6 @@ data Population = Population
     { generation  :: !Int
     , individuals :: ![Individual]
 } deriving (Eq, Show, Generic)
-
-instance Hashable Population
 
 males :: [Individual] -> [Individual]
 males = filter ( (== M) . sex)

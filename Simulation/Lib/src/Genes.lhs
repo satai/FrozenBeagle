@@ -10,7 +10,6 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >          , mutate
 >          ) where
 >
-> import Data.Hashable
 > import GHC.Generics (Generic)
 
 Bases are the abstract G1..G3
@@ -23,13 +22,11 @@ Bases are the abstract G1..G3
 >   show G2 = "2"
 >   show G3 = "3"
 >
-> instance Hashable Basis
 
 DnaString is defined by the list of bases.
 
 > newtype DnaString = DnaString {genes :: [Basis]} deriving(Eq, Generic)
 >
-> instance Hashable DnaString
 
 DnaStrings have a common lexicographic ordering. It's handy for constructing data structure but not used any other way.
 

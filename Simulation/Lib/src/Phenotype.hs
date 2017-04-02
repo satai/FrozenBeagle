@@ -6,12 +6,8 @@ module Phenotype
     , phenotypeToVector
     , fitness) where
 
-import Data.Hashable
-
 newtype Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
 
-instance Hashable Phenotype where
-    hashWithSalt salt (Phenotype p) = hashWithSalt salt p
 
 phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs
