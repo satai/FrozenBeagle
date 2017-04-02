@@ -52,12 +52,12 @@ randomIndividuals count expressionStrategy baseCount = replicateM count $ random
 
 randomIndividual :: Int -> ExpressionStrategy -> RVar Individual
 randomIndividual baseCount expressionStrategy = do
-    gender <- randomGender
+    individualsSex <- randomSex
     chs <- randomChromosomes baseCount
-    return $ Individual gender 0 chs $ expressionStrategy gender chs
+    return $ Individual individualsSex 0 chs $ expressionStrategy individualsSex chs
 
-randomGender :: RVar Sex
-randomGender = choice [F, M]
+randomSex :: RVar Sex
+randomSex = choice [F, M]
 
 randomChromosomes :: Int -> RVar (DnaString, DnaString)
 randomChromosomes baseCount = do
@@ -123,8 +123,9 @@ minFitnessForGeneration _       (Population _ []) = 1.0 / 0.0
 minFitnessForGeneration optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
 
 percentileFitness :: Double -> (Int -> Phenotype) -> Int -> Population -> Double
-percentileFitness _          _                    _           (Population _ []) = 1.0 / 0.0
-percentileFitness percentile generationOptimum generationNumber  (Population _ is) = (sort $ map (fitness (generationOptimum generationNumber) . phenotype) is) !! (floor $ percentile * (fromIntegral $ length is))
+percentileFitness _          _                    _              (Population _ []) = 1.0 / 0.0
+percentileFitness percentile generationOptimum generationNumber  (Population _ is) =
+    sort (map (fitness (generationOptimum generationNumber) . phenotype) is) !! floor (percentile * fromIntegral (length is))
 
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
@@ -145,19 +146,14 @@ pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotr
 
 randomPleiotropicRule :: Int -> RVar (Schema, Phenotype)
 randomPleiotropicRule baseCount = do
-    g1Change <- doubleStdNormal
-    g2Change <- doubleStdNormal
-    g3Change <- doubleStdNormal
-    g4Change <- doubleStdNormal
-
     position <- integralUniform 0 (baseCount - 1)
-
     basis <- randomBase
+    dimChange <- randomPhenotypeChange
 
-    let dimChange = [g1Change, g2Change, g3Change, g4Change]
-    let schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
+    let
+        schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
 
-    return (Schema schema, Phenotype dimChange)
+    return (Schema schema, dimChange)
 
 basicRules :: Int -> RVar [(Schema, Phenotype)]
 basicRules baseCount = concat <$> mapM (simpleRulesForPosition baseCount) [0..(baseCount - 1)]
@@ -236,16 +232,11 @@ randomDominantSchema :: Int -> RVar DominantSchema
 randomDominantSchema baseCount = do
     b1 <- randomBase
     let
-       a = take baseCount $ Just b1 : repeat Nothing
+       a = Just b1 : replicate (baseCount - 1) Nothing
     DominantSchema <$> shuffle a
 
 randomPhenotypeFraction :: Double -> RVar Phenotype
-randomPhenotypeFraction d = do
-    a1 <- doubleStdNormal
-    a2 <- doubleStdNormal
-    a3 <- doubleStdNormal
-    a4 <- doubleStdNormal
-    return $ Phenotype [a1 * d, a2 * d, a3 * d, a4 * d]
+randomPhenotypeFraction d = Phenotype . map (* d) <$> replicateM dimensionCount doubleStdNormal
 
 randomPhenotypeChange :: RVar Phenotype
 randomPhenotypeChange = randomPhenotypeFraction 1.0
