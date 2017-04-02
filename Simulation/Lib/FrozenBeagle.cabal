@@ -68,5 +68,6 @@ test-suite tests
                        array, containers, multiset, hashable,
                        random-fu, random-extras, random-source, random,
                        QuickCheck > 2.5, hspec >= 2.1,
+                       HUnit-approx,
                        FrozenBeagle
   default-language:    Haskell2010

@@ -8,7 +8,6 @@ module Phenotype
 
 newtype Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
 
-
 phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs
 

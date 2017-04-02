@@ -3,6 +3,7 @@
 module UnitTests.PhenotypeSpec (spec, Phenotype, Arbitrary) where
 
 import Test.Hspec
+import Test.HUnit.Approx
 import Test.QuickCheck
 
 import SimulationConstants
@@ -27,6 +28,14 @@ spec = parallel $
 
         it "Distance is not negative" $
             property (\p1 p2 -> distance p1 p2 >= 0.0)
+
+        it "Distance is a linear form" $
+            property (\p1 p2 q ->
+                assertApproxEqual
+                    "should equalequal"
+                    0.001
+                    (p1 `distance` p2 * abs q)
+                    (Phenotype (map (* q) $ phenotypeToVector p1) `distance` Phenotype (map (* q) $ phenotypeToVector p2)))
 
         it "Phenotype has sane text representation" $
             show (Phenotype [0, 0, 1]) `shouldBe` "Phenotype [0.0,0.0,1.0]"
