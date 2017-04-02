@@ -51,7 +51,7 @@ cabal-version:       >=1.22
 library
   ghc-options:         -Wall -O2 -rtsopts -auto-all -fforce-recomp
   exposed-modules:     Genes, Sex, Individual, Population, Schema, Phenotype,
-                       Evolution, Expression, Simulation
+                       Evolution, Expression, Simulation, SimulationConstants
 
   build-depends:       base >= 4.8 && <5,
                        containers, hashable, multiset,
