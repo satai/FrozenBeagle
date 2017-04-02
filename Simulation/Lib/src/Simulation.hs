@@ -69,7 +69,12 @@ randomDnaString :: Int -> RVar DnaString
 randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase
 
 randomBase :: RVar Basis
-randomBase = choice [G1, G2, G3, G4, G5]
+randomBase = choice [ G1
+                    , G2
+                    , G3
+                    -- , G4
+                    -- , G5
+                    ]
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
@@ -168,26 +173,18 @@ simpleRulesForPosition baseCount p = do
     g1Change <- doubleStdNormal
     g2Change <- doubleStdNormal
     g3Change <- doubleStdNormal
-    g4Change <- doubleStdNormal
-    g5Change <- doubleStdNormal
 
-    let g1DimChange = replicate dimension 0.0 ++ [g1Change] ++ replicate (4 - dimension - 1) 0.0
-    let g2DimChange = replicate dimension 0.0 ++ [g2Change] ++ replicate (4 - dimension - 1) 0.0
-    let g3DimChange = replicate dimension 0.0 ++ [g3Change] ++ replicate (4 - dimension - 1) 0.0
-    let g4DimChange = replicate dimension 0.0 ++ [g4Change] ++ replicate (4 - dimension - 1) 0.0
-    let g5DimChange = replicate dimension 0.0 ++ [g5Change] ++ replicate (4 - dimension - 1) 0.0
+    let g1DimChange = replicate dimension 0.0 ++ [g1Change] ++ replicate (dimensionCount - dimension - 1) 0.0
+    let g2DimChange = replicate dimension 0.0 ++ [g2Change] ++ replicate (dimensionCount - dimension - 1) 0.0
+    let g3DimChange = replicate dimension 0.0 ++ [g3Change] ++ replicate (dimensionCount - dimension - 1) 0.0
 
     let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (baseCount - p - 1) Nothing
     let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (baseCount - p - 1) Nothing
     let schema3 = replicate p Nothing ++ [Just G3] ++ replicate (baseCount - p - 1) Nothing
-    let schema4 = replicate p Nothing ++ [Just G4] ++ replicate (baseCount - p - 1) Nothing
-    let schema5 = replicate p Nothing ++ [Just G5] ++ replicate (baseCount - p - 1) Nothing
 
     return [ (Schema schema1, Phenotype g1DimChange)
            , (Schema schema2, Phenotype g2DimChange)
            , (Schema schema3, Phenotype g3DimChange)
-           , (Schema schema4, Phenotype g4DimChange)
-           , (Schema schema5, Phenotype g5DimChange)
            ]
 
 randomEpistaticRule :: Int -> RVar (Schema, Phenotype)

@@ -32,8 +32,8 @@ spec :: Spec
 spec = parallel $ do
     describe "Genes" $ do
 
-        it "show DNA string looks like '[13332]'" $
-            (show (DnaString [G1, G3, G3, G3, G2]) `shouldBe` "[13332]" )
+        it "show DNA string looks like '[12212]'" $
+            show (DnaString [G1, G2, G2, G1, G2]) `shouldBe` "[12212]"
 
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) -> \(DnaString dna2)  ->
