@@ -6,11 +6,12 @@ module Expression
 import Genes
 import Phenotype
 import Sex
+import SimulationConstants
 
 type ExpressionStrategy = Sex -> (DnaString, DnaString) -> Phenotype
 
 schemaBasedExpression :: [(DnaString -> DnaString -> Bool, Phenotype)] -> ExpressionStrategy
-schemaBasedExpression xs _ chromosomes = Phenotype $ foldl sumVec [0, 0, 0, 0] $ map phenotypeToVector phenotypeChanges
+schemaBasedExpression xs _ chromosomes = Phenotype $ foldl sumVec zeroPhenotypeVec $ map phenotypeToVector phenotypeChanges
   where
     (chromosome1, chromosome2) = chromosomes
     sumVec = zipWith (+)
