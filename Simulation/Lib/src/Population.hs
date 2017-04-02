@@ -112,7 +112,7 @@ probabilityIndividualMutation :: Float
 probabilityIndividualMutation = 0.01
 
 probabilityBasisMutation :: Float
-probabilityBasisMutation = 0.04
+probabilityBasisMutation = 0.02
 
 pointMutationBasis :: Basis -> RVar Basis
 pointMutationBasis b = do
