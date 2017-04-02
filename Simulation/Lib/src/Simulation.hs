@@ -141,8 +141,9 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
 epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
 
-dominantRules :: Int -> Int -> RVar [(DominantSchema, Phenotype)]
-dominantRules baseCount countOfRules = replicateM countOfRules (randomDominantRule baseCount)
+-- FIXME use it
+-- dominantRules :: Int -> Int -> RVar [(DominantSchema, Phenotype)]
+-- dominantRules baseCount countOfRules = replicateM countOfRules (randomDominantRule baseCount)
 
 pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
 pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotropicRule baseCount)
@@ -201,17 +202,18 @@ randomComplicatedRule baseCount = do
     p <- randomPhenotypeChange
     return (schema, p)
 
-randomDominantRule :: Int -> RVar (DominantSchema, Phenotype)
-randomDominantRule baseCount = do
-    schema <- randomDominantSchema baseCount
-    g1Change <- doubleStdNormal
-
-    let
-        dimChange = g1Change : replicate (dimensionCount - 1) 0.0
-
-    p <- shuffle dimChange
-
-    return (schema, Phenotype p)
+--FIXME use it
+-- randomDominantRule :: Int -> RVar (DominantSchema, Phenotype)
+-- randomDominantRule baseCount = do
+--     schema <- randomDominantSchema baseCount
+--     g1Change <- doubleStdNormal
+--
+--     let
+--         dimChange = g1Change : replicate (dimensionCount - 1) 0.0
+--
+--     p <- shuffle dimChange
+--
+--     return (schema, Phenotype p)
 
 randomSchema :: Int -> RVar Schema
 randomSchema baseCount = do
@@ -222,13 +224,13 @@ randomSchema baseCount = do
        a = take baseCount $ [Just b1, Just b2, Just b3] ++ repeat Nothing
     Schema <$> shuffle a
 
-
-randomDominantSchema :: Int -> RVar DominantSchema
-randomDominantSchema baseCount = do
-    b1 <- randomBase
-    let
-       a = Just b1 : replicate (baseCount - 1) Nothing
-    DominantSchema <$> shuffle a
+-- FIXME use it
+-- randomDominantSchema :: Int -> RVar DominantSchema
+-- randomDominantSchema baseCount = do
+--     b1 <- randomBase
+--     let
+--        a = Just b1 : replicate (baseCount - 1) Nothing
+--     DominantSchema <$> shuffle a
 
 randomPhenotypeFraction :: Double -> RVar Phenotype
 randomPhenotypeFraction d = Phenotype . map (* d) <$> replicateM dimensionCount doubleStdNormal
@@ -329,15 +331,18 @@ computeSimulation params =
 
     initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
     allGenerations = evolution maxSteps rules initialPopulation
+
+    generations :: [Population]
     generations = collapse (seed params + 3) allGenerations
 
+    stats :: (Int -> Population -> Double) -> [(Integer, Double)]
     stats f = zip [0..] (zipWith f [0..] generations)
 
   in [ ("Avg Fitness", stats $ avgFitness $ optimumForGeneration rules)
      , ("Min Fitness", stats $ minFitness $ optimumForGeneration rules)
      , ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
      , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
-     , ("Population Size", stats (const $ fromIntegral . length . individuals))
-     , ("% of polymorphic locus", stats (const polymorphism) )
-     , ("% of locus with alela with more than 90% appearence", stats (const almostPolymorphism))
+     , ("Population Size", stats $ const $ fromIntegral . length . individuals)
+     , ("% of polymorphic locus", stats $ const polymorphism)
+     , ("% of locus with alela with more than 90% appearence", stats $ const almostPolymorphism)
      ]       -- fixme
