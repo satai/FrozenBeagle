@@ -88,3 +88,20 @@ spec = parallel $
                 fromList [F, M]
             )
 
+        it "big enough random population contains both Males and Females in about the same count" $
+            -- https://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair#Examples
+            property (\i (Positive count) ->
+                 let
+                     n :: Int
+                     n = count + 3000
+                     is = individuals $ fst $ sampleState (randomPopulation n (\_ _ -> Phenotype []) 33) (mkStdGen i)
+                     femCount :: Int
+                     femCount = length $ filter (== F) $ map sex is
+                     p :: Double
+                     p = fromIntegral femCount / fromIntegral n
+                     r = 0.5
+                     e :: Double
+                     e = 4.4172 / 2.0 / sqrt (fromIntegral n)
+                 in
+                     (p - e < r) && (r < p + e)
+            )
