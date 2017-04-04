@@ -3,6 +3,9 @@ module SimulationConstants ( dimensionCount
                            , maxSteps
                            , optimumChangeGeneration
                            , accidentDeathProbability
+                           , probabilityIndividualMutation
+                           , probabilityBasisMutation
+                           , maximumCountOfOffspring
                            ) where
 
 dimensionCount :: Int
@@ -20,4 +23,12 @@ optimumChangeGeneration = maxSteps `div` 2
 accidentDeathProbability :: Double
 accidentDeathProbability = 0.0
 
+probabilityIndividualMutation :: Float
+probabilityIndividualMutation = 0.01
+
+probabilityBasisMutation :: Float
+probabilityBasisMutation = 0.02
+
+maximumCountOfOffspring :: Int
+maximumCountOfOffspring = 6
 

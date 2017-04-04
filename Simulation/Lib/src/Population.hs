@@ -31,12 +31,14 @@ import           Data.Random.Distribution.Bernoulli
 import           Data.Random.Distribution.Uniform (integralUniform)
 import           Data.Random.Extras
 import           Data.Random.RVar
+import           GHC.Generics (Generic)
+
 import           Expression
 import           Genes
-import           GHC.Generics (Generic)
 import           Individual
 import           Phenotype
 import           Sex
+import           SimulationConstants
 
 data Population = Population
     { generation  :: !Int
@@ -83,9 +85,6 @@ randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (
 
 randomOffspring _ _ _ _ = error "should not happen - only a M and F can be parents in this order"
 
-maximumCountOfOffspring :: Int
-maximumCountOfOffspring = 6
-
 mate :: ExpressionStrategy -> Phenotype -> Int -> (Individual, Individual) -> RVar [Individual]
 mate expression optimum g parents = do
 
@@ -105,12 +104,6 @@ mate expression optimum g parents = do
     randOffspring6 <- randomOffspring expression g father mother
 
     return $ take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
-
-probabilityIndividualMutation :: Float
-probabilityIndividualMutation = 0.01
-
-probabilityBasisMutation :: Float
-probabilityBasisMutation = 0.02
 
 pointMutationBasis :: Basis -> RVar Basis
 pointMutationBasis b = do
