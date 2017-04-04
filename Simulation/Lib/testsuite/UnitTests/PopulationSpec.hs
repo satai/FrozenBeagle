@@ -9,7 +9,7 @@ import System.Random
 import Data.Random
 import qualified Data.MultiSet as MultiSet
 
-import Population
+import Population.Internal
 import Phenotype
 import Genes
 

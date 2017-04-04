@@ -12,7 +12,7 @@ import UnitTests.PopulationSpec()
 
 import Genes
 import Simulation
-import Population
+import Population.Internal
 import Schema
 import Phenotype
 import SimulationConstants

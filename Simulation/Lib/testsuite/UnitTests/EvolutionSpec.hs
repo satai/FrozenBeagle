@@ -9,7 +9,7 @@ import UnitTests.PopulationSpec()
 
 import Evolution
 import Phenotype
-import Population
+import Population.Internal
 
 spec :: Spec
 spec = parallel $

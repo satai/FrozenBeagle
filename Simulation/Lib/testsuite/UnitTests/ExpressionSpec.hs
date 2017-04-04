@@ -4,7 +4,7 @@ import Test.Hspec
 import Test.QuickCheck
 
 import Genes
-import Population
+import Population.Internal
 import Phenotype
 import SimulationConstants
 import Schema
