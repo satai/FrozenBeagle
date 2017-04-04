@@ -10,6 +10,7 @@ import System.Random
 
 import UnitTests.PopulationSpec()
 
+import Genes
 import Simulation
 import Population
 import Schema
@@ -106,4 +107,14 @@ spec = parallel $
                      e = 4.4172 / 2.0 / sqrt (fromIntegral n)
                  in
                      (p - e < r) && (r < p + e)
+            )
+
+        it "random population has all the chromosomes of the expected length" $
+            property (\i (Positive count) (Positive geneCount) ->
+                all (== (geneCount, geneCount))
+                   $ map (\ch -> (length $ genes $ fst ch, length $ genes $ snd ch))
+                   $ map chromosomes
+                   $ individuals
+                   $ fst
+                   $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) geneCount) (mkStdGen i)
             )
