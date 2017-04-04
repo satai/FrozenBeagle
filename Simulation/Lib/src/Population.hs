@@ -95,7 +95,7 @@ mate expression optimum g parents = do
         motherFitness = fitness optimum $ expression F (fdna1, fdna2)
         pairFitness = (fatherFitness + motherFitness) / 2.0
 
-        numOfOffspring = min maximumCountOfOffspring $ floor $ pairFitness
+        numOfOffspring = min maximumCountOfOffspring $ floor pairFitness
 
     randOffspring1 <- randomOffspring expression g father mother
     randOffspring2 <- randomOffspring expression g father mother
