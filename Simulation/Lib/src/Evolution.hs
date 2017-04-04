@@ -14,6 +14,7 @@ module Evolution
 import           Data.Random
 import           Data.Functor ()
 
+import           Individual
 import           Population
 import           Phenotype
 import           Expression

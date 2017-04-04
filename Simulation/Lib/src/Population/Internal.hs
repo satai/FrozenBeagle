@@ -7,7 +7,6 @@ module Population.Internal
     , Breeding
     , Mutation
     , Fitness
-    , Individual (Individual, birthGeneration, sex, chromosomes, phenotype)
     , Sex(F, M)
     , DnaString
     , males

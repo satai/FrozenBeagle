@@ -15,6 +15,7 @@ import           SimulationConstants
 import           Evolution
 import           Expression
 import           Genes
+import           Individual
 import           Phenotype
 import           Population
 import           Schema
