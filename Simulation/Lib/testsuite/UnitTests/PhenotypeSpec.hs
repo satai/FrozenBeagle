@@ -7,7 +7,7 @@ import Test.HUnit.Approx
 import Test.QuickCheck
 
 import SimulationConstants
-import Phenotype
+import Phenotype.Internal
 
 instance Arbitrary Phenotype where
      arbitrary = Phenotype <$> vector dimensionCount

@@ -1,8 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Individual
-    ( Sex
-    , Individual (Individual, sex, birthGeneration, chromosomes, phenotype)
+    ( Individual (..)
     ) where
 
 import GHC.Generics (Generic)
