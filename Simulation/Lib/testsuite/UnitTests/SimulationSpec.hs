@@ -11,6 +11,7 @@ import System.Random
 import UnitTests.PopulationSpec()
 
 import Genes
+import Individual
 import Simulation
 import Population.Internal
 import Schema

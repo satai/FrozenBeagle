@@ -9,9 +9,10 @@ import System.Random
 import Data.Random
 import qualified Data.MultiSet as MultiSet
 
+import Genes
+import Individual
 import Population.Internal
 import Phenotype
-import Genes
 
 import UnitTests.GenesSpec()
 import UnitTests.PhenotypeSpec()
