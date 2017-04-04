@@ -16,18 +16,18 @@ spec :: Spec
 spec = parallel $
     describe "Phenotype" $ do
         it "Phenotype distance is euklidean one" $
-           distance (Phenotype [0, 0, 1]) (Phenotype [1, 0, 2]) `shouldBe` sqrt 2
+            Phenotype [0, 0, 1] `distance` Phenotype [1, 0, 2] `shouldBe` sqrt 2
 
         it "Distance of phenotype to itself is zero" $
             property (
-                \p -> 0.0 == distance p p
+                \p -> 0.0 == p `distance` p
             )
 
         it "Distance is symetric" $
-            property (\p1 p2 -> distance p1 p2 == distance p2 p1)
+            property (\p1 p2 -> p1 `distance` p2 == p2 `distance` p1)
 
         it "Distance is not negative" $
-            property (\p1 p2 -> distance p1 p2 >= 0.0)
+            property (\p1 p2 -> p1 `distance` p2 >= 0.0)
 
         it "Distance is a linear form" $
             property (\p1 p2 q ->
