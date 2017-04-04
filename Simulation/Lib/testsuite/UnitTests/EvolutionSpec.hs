@@ -7,7 +7,7 @@ import System.Random
 
 import UnitTests.PopulationSpec()
 
-import Evolution
+import Evolution.Internal
 import Phenotype
 import Population.Internal
 

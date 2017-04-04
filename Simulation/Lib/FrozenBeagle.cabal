@@ -52,7 +52,7 @@ library
   ghc-options:         -Wall -Werror -O2 -rtsopts -auto-all -fforce-recomp
   exposed-modules:     Genes, Sex, Individual, Population, Schema, Phenotype,
                        Evolution, Expression, Simulation, SimulationConstants,
-                       Population.Internal
+                       Population.Internal, Evolution.Internal
 
   build-depends:       base >= 4.8 && <5,
                        containers, multiset,
