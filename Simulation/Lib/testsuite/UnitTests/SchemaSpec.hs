@@ -29,9 +29,12 @@ spec = parallel $ do
             )
 
         it "schema equals itself" $
-            property  ( \schema ->
+            property ( \schema ->
                 (schema :: Schema) == schema
             )
+
+        it "different schemas don't equal" $
+            property  $ Schema [Just G2] /= Schema [Just G1]
 
         it "schema equals an other schema with iff they have the same content" $
             property  ( \elems1 elems2 ->
@@ -70,6 +73,11 @@ spec = parallel $ do
             property  ( \schema ->
                 (schema :: DominantSchema) == schema
             )
+
+
+        it "different domainant schemas don't equal" $
+            property  $ DominantSchema [Just G2] /= DominantSchema [Just G1]
+
 
         it "dominant schema equals an other dominant schema with iff they have the same content" $
             property  ( \elems1 elems2 ->
