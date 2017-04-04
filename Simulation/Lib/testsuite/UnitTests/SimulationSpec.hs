@@ -5,11 +5,13 @@ import Test.QuickCheck
 import Data.Random
 import Data.Maybe
 import Data.List
+import Data.Set(fromList)
 import System.Random
 
 import UnitTests.PopulationSpec()
 
 import Simulation
+import Population
 import Schema
 import Phenotype
 import SimulationConstants
@@ -56,4 +58,33 @@ spec = parallel $
                     `shouldBe`
                     Phenotype [2.0, 0, 0, 0]
                 )
+
+
+        it "random population contains required number of individuals" $
+            property (\i (Positive count) ->
+                length (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 33) (mkStdGen i))
+                    `shouldBe`
+                count
+             )
+
+        it "random population generation is 0" $
+            property (\i (Positive count) ->
+                generation (fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 33) (mkStdGen i))
+                    `shouldBe`
+                0
+            )
+
+        it "random population has only individuals of generation 0" $
+            property (\i (Positive count) ->
+                map birthGeneration (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 23) (mkStdGen i))
+                    `shouldBe`
+                replicate count 0
+            )
+
+        it "big enough random population contains both Males and Females" $
+            property (\i (Positive count) ->
+                fromList (map sex $ individuals $ fst $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) 13) (mkStdGen i))
+                    `shouldBe`
+                fromList [F, M]
+            )
 

@@ -8,6 +8,7 @@ module Simulation
     , randomPhenotypeChange
     , randomOptimum
     , collapse
+    , randomPopulation
     ) where
 
 import           SimulationConstants
