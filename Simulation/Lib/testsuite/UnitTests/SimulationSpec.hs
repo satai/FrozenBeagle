@@ -63,21 +63,21 @@ spec = parallel $
 
 
         it "random population contains required number of individuals" $
-            property (\i (Positive count) ->
+            property (\i (NonNegative count) ->
                 length (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 33) (mkStdGen i))
                     `shouldBe`
                 count
              )
 
         it "random population generation is 0" $
-            property (\i (Positive count) ->
+            property (\i (NonNegative count) ->
                 generation (fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 33) (mkStdGen i))
                     `shouldBe`
                 0
             )
 
         it "random population has only individuals of generation 0" $
-            property (\i (Positive count) ->
+            property (\i (NonNegative count) ->
                 map birthGeneration (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) 23) (mkStdGen i))
                     `shouldBe`
                 replicate count 0
@@ -118,4 +118,11 @@ spec = parallel $
                    $ individuals
                    $ fst
                    $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) geneCount) (mkStdGen i)
+            )
+
+        it "random rules have expected count of rules" $
+            property (\i (Positive baseCount') (NonNegative pleiotropicRulesCount') (NonNegative epistaticRulesCount') (NonNegative complicatedRulesCount') ->
+                length (fst $ sampleState (randomRules baseCount' pleiotropicRulesCount' epistaticRulesCount' complicatedRulesCount') (mkStdGen i))
+                    `shouldBe`
+                3 * baseCount' + pleiotropicRulesCount' + epistaticRulesCount' + complicatedRulesCount'
             )

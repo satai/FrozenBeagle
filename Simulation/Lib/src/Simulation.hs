@@ -9,6 +9,7 @@ module Simulation
     , randomOptimum
     , collapse
     , randomPopulation
+    , randomRules
     ) where
 
 import           SimulationConstants
