@@ -94,7 +94,9 @@ spec = parallel $
                  let
                      n :: Int
                      n = count + 3000
-                     is = individuals $ fst $ sampleState (randomPopulation n (\_ _ -> Phenotype []) 33) (mkStdGen i)
+                     is = individuals
+                            $ fst
+                            $ sampleState (randomPopulation n (\_ _ -> Phenotype []) 33) (mkStdGen i)
                      femCount :: Int
                      femCount = length $ filter (== F) $ map sex is
                      p :: Double
