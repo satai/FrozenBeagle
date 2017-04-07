@@ -17,6 +17,7 @@ import           Evolution
 import           Expression
 import           Genes
 import           Individual
+import           ListUtils
 import           Phenotype
 import           Population
 import           Schema
@@ -302,7 +303,7 @@ params2rules params =
 
     optimum1 = collapse (seed params + 1) randomOptimum
     optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 4.0
-    optimum2 = Phenotype $ zipWith (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
+    optimum2 = Phenotype $ zipWithCheck (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
 
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 

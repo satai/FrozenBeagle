@@ -7,6 +7,7 @@ import Test.QuickCheck
 import Data.List
 
 import Genes
+import ListUtils
 
 instance Arbitrary Basis where
   arbitrary =
@@ -75,5 +76,5 @@ spec = parallel $
 
         it "mutated dna doesn't differ from original one with exception of point of mutation" $
             property ( \(IndexInString n) b (DnaString dna ) ->
-                 1 >= length (elemIndices True $ zipWith (/=) dna (genes $ mutate n b (DnaString dna)) )
+                 1 >= length (elemIndices True $ zipWithCheck (/=) dna (genes $ mutate n b (DnaString dna)) )
             )

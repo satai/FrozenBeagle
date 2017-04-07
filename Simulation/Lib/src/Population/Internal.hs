@@ -35,6 +35,7 @@ import           GHC.Generics (Generic)
 import           Expression
 import           Genes
 import           Individual
+import           ListUtils
 import           Phenotype
 import           Sex
 import           SimulationConstants
@@ -174,7 +175,7 @@ turbidostat k4 k5 population = do
     let actualSize = length population
     let turbidostatProbability = min 0.9 $ k4 * fromIntegral (actualSize * actualSize) + k5
     shouldDie <- mapM (\_ -> boolBernoulli turbidostatProbability) [1 .. actualSize]
-    return $ map snd $ filter (not . fst) $ zip shouldDie population
+    return $ map snd $ filter (not . fst) $ zipCheck shouldDie population
 
 killOld :: Int -> Int -> PopulationChange
 killOld ageToDie currentGeneration population = do
