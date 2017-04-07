@@ -6,8 +6,13 @@ import Test.Hspec
 import Test.HUnit.Approx
 import Test.QuickCheck
 
+import Control.Exception.Base
+
+import Debug.Trace
+
 import SimulationConstants
 import Phenotype.Internal
+
 
 instance Arbitrary Phenotype where
      arbitrary = Phenotype <$> vector dimensionCount
@@ -36,6 +41,13 @@ spec = parallel $
                     0.001
                     (p1 `distance` p2 * abs q)
                     (Phenotype (map (* q) $ phenotypeToVector p1) `distance` Phenotype (map (* q) $ phenotypeToVector p2)))
+
+        it "euclidean distance fails in runtime for vectors of different dimensions" $
+            property ( \(NonEmpty p) ->
+                evaluate (traceShowId $ Phenotype p `distance` Phenotype [])
+                   `shouldThrow`
+                anyErrorCall
+            )
 
         it "Phenotype has sane text representation" $
             show (Phenotype [0, 0, 1]) `shouldBe` "Phenotype [0.0,0.0,1.0]"
