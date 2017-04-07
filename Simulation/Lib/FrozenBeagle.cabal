@@ -53,7 +53,8 @@ library
   exposed-modules:     Genes, Sex, Individual, Population, Schema, Phenotype,
                        Evolution, Expression, Simulation, SimulationConstants,
                        Population.Internal, Evolution.Internal, Simulation.Internal,
-                       Phenotype.Internal
+                       Phenotype.Internal,
+                       ListUtils
 
   build-depends:       base >= 4.8 && <5,
                        containers, multiset,
