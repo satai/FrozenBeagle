@@ -23,10 +23,10 @@ optimumChangeGeneration = maxSteps `div` 2
 accidentDeathProbability :: Double
 accidentDeathProbability = 0.0
 
-probabilityIndividualMutation :: Float
+probabilityIndividualMutation :: Double
 probabilityIndividualMutation = 0.01
 
-probabilityBasisMutation :: Float
+probabilityBasisMutation :: Double
 probabilityBasisMutation = 0.02
 
 maximumCountOfOffspring :: Int
