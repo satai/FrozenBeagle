@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Phenotype.Internal
     ( Phenotype (Phenotype)
     , distance

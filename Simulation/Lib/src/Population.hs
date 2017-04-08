@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Population
     ( Population (Population, generation, individuals)
     , PopulationChange

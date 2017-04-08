@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Population.Internal
     ( Population (Population, generation, individuals)
     , PopulationChange
@@ -30,7 +28,6 @@ import           Data.Random.Distribution.Bernoulli
 import           Data.Random.Distribution.Uniform (integralUniform)
 import           Data.Random.Extras
 import           Data.Random.RVar
-import           GHC.Generics (Generic)
 
 import           Expression
 import           Genes
@@ -43,7 +40,7 @@ import           SimulationConstants
 data Population = Population
     { generation  :: !Int
     , individuals :: ![Individual]
-} deriving (Eq, Show, Generic)
+} deriving (Eq, Show)
 
 males :: [Individual] -> [Individual]
 males = filter ( (== M) . sex)

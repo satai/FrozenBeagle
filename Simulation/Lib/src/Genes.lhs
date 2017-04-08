@@ -1,5 +1,3 @@
-> {-# LANGUAGE DeriveGeneric #-}
-
 This module exports Genes as lists of bases, bases names and crossover and mutation operations.
 
 > module Genes
@@ -10,12 +8,11 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >          , mutate
 >          ) where
 >
-> import GHC.Generics (Generic)
 
 Bases are the abstract G1..G3
 
 > data Basis = G1 | G2 | G3
->     deriving (Eq, Ord, Generic, Enum, Bounded)
+>     deriving (Eq, Ord)
 >
 > instance Show Basis where
 >   show G1 = "1"
@@ -25,7 +22,7 @@ Bases are the abstract G1..G3
 
 DnaString is defined by the list of bases.
 
-> newtype DnaString = DnaString {genes :: [Basis]} deriving(Eq, Generic)
+> newtype DnaString = DnaString {genes :: [Basis]} deriving(Eq)
 >
 
 DnaStrings have a common lexicographic ordering. It's handy for constructing data structure but not used any other way.
