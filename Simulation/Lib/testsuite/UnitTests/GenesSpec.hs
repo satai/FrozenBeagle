@@ -34,6 +34,11 @@ spec = parallel $
         it "show DNA string looks like '[12213]'" $
             show (DnaString [G1, G2, G2, G1, G3]) `shouldBe` "[12213]"
 
+        it "show DNA strings are lexicographicaly ordered" $
+            DnaString [G1, G2, G2, G1, G3] `compare` DnaString [G1, G2, G3, G1, G3]
+                `shouldBe`
+            LT
+
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) (DnaString dna2)  ->
                 length dna1
