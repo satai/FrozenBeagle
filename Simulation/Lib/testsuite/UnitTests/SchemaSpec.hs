@@ -5,6 +5,9 @@ module UnitTests.SchemaSpec(spec, Arbitrary, allMatchingSchema) where
 import Test.Hspec
 import Test.QuickCheck
 
+import Control.Exception.Base
+import Debug.Trace
+
 import Genes
 import Schema
 import UnitTests.GenesSpec()
@@ -62,6 +65,36 @@ spec = parallel $ do
             matches (Schema [Nothing, Just G2, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G1, G2]) &&
             matches (Schema [Nothing, Just G2, Nothing]) (DnaString [G1, G1, G1]) (DnaString [G2, G2, G2])
 
+        it "match fails in runtime when schema list longer then first dna" $
+            evaluate (traceShowId $ matches (Schema [Just G3, Just G2, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G2]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
+        it "match fails in runtime when schema list longer then second dna" $
+            evaluate (traceShowId $ matches (Schema [Nothing, Nothing, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
+        it "match fails in runtime when schema list longer then both dnas" $
+            evaluate (traceShowId $ matches (Schema [Nothing, Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
+        it "match fails in runtime when schema list shorter then first dna" $
+            evaluate (traceShowId $ matches (Schema [Nothing, Just G2]) (DnaString [G1, G2, G1]) (DnaString [G2, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
+        it "match fails in runtime when schema list shorter then second dna" $
+            evaluate (traceShowId $ matches (Schema [Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G3]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
+        it "match fails in runtime when schema list shorter then both dnas" $
+            evaluate (traceShowId $ matches (Schema [Nothing, Nothing]) (DnaString [G1, G2, G3]) (DnaString [G2, G1, G3]) )
+               `shouldThrow`
+            errorCall "Incompatible Schema and DNA"
+
     describe "DominantSchema" $ do
 
         it "show dominant schema string has the same length as schema + 2" $
@@ -100,3 +133,33 @@ spec = parallel $ do
 
         it "schema does match dna with different same same content on specified places"
             (matches (DominantSchema [Nothing, Just G2, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G2, G2]))
+
+        it "match fails in runtime when DominantSchema list longer then first dna" $
+            evaluate (traceShowId $ matches (DominantSchema [Just G3, Just G2, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G2]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"
+
+        it "match fails in runtime when DominantSchema list longer then second dna" $
+            evaluate (traceShowId $ matches (DominantSchema [Just G1, Nothing, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G1, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"
+
+        it "match fails in runtime when DominantSchema list longer then both dnas" $
+            evaluate (traceShowId $ matches (DominantSchema [Nothing, Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"
+
+        it "match fails in runtime when DominantSchema list shorter then first dna" $
+            evaluate (traceShowId $ matches (DominantSchema [Nothing, Just G2]) (DnaString [G1, G2, G1]) (DnaString [G2, G1]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"
+
+        it "match fails in runtime when DominantSchema list shorter then second dna" $
+            evaluate (traceShowId $ matches (DominantSchema [Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G3]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"
+
+        it "match fails in runtime when DominantSchema list shorter then both dnas" $
+            evaluate (traceShowId $ matches (DominantSchema [Nothing, Nothing]) (DnaString [G1, G2, G3]) (DnaString [G2, G1, G3]) )
+               `shouldThrow`
+            errorCall "Incompatible DominantSchema and DNA"

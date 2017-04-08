@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Schema
     ( MatchesGenes
     , Schema (..)
@@ -44,20 +46,24 @@ instance HasOrder DominantSchema
 
 instance MatchesGenes Schema
   where
-    matches (Schema s) (DnaString d1) (DnaString d2) = matches' s d1 d2
+    matches (Schema s) (DnaString d1) (DnaString d2) =
+      if length s == length d1 && length d1 == length d2
+      then matches' s d1 d2
+      else error "Incompatible Schema and DNA"
       where
         matches' :: [Maybe Basis] -> [Basis] -> [Basis] -> Bool
         matches' [] [] []                             = True
         matches' (Nothing : bs) (_  : b1s) (_  : b2s) = matches' bs b1s b2s
         matches' (Just b  : bs) (b1 : b1s) (b2 : b2s) = (b == b1 || b == b2) && matches' bs b1s b2s
-        matches' _ _ _                                = error "Incompatible Schema and DNA"
 
 instance MatchesGenes DominantSchema
   where
-    matches (DominantSchema s) (DnaString d1) (DnaString d2) = matches' s d1 d2
+    matches (DominantSchema s) (DnaString d1) (DnaString d2) =
+      if length s == length d1 && length d1 == length d2
+      then matches' s d1 d2
+      else error "Incompatible DominantSchema and DNA"
       where
         matches' :: [Maybe Basis] -> [Basis] -> [Basis] -> Bool
         matches' [] [] []                             = True
         matches' (Nothing : bs) (_  : b1s) (_  : b2s) = matches' bs b1s b2s
         matches' (Just b  : bs) (b1 : b1s) (b2 : b2s) = (b == b1 && b == b2) && matches' bs b1s b2s
-        matches' _ _ _                                = error "Incompatible DominantSchema and DNA"
