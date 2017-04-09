@@ -249,7 +249,7 @@ spec = parallel $ do
                 assertApproxEqual
                     "stdDev changes (abs d)-times if all elements of the list are multiplied by d"
                     0.000001
-                    ((abs d) * stdDev xs)
+                    (abs d * stdDev xs)
                     (stdDev (map (* d) xs))
             )
 
