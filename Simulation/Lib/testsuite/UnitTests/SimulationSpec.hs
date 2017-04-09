@@ -115,8 +115,7 @@ spec = parallel $ do
         it "random population has all the chromosomes of the expected length" $
             property (\i (Positive count) (Positive geneCount) ->
                 all (== (geneCount, geneCount))
-                   $ map (\ch -> (length $ genes $ fst ch, length $ genes $ snd ch))
-                   $ map chromosomes
+                   $ map ((\ch -> (length $ genes $ fst ch, length $ genes $ snd ch)) . chromosomes)
                    $ individuals
                    $ fst
                    $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) geneCount) (mkStdGen i)
@@ -153,7 +152,6 @@ spec = parallel $ do
                     (average [0.0, 0.0, 0.0])
                     0.0
             )
-
 
         it "x for [x]" $
             property ( \x ->
