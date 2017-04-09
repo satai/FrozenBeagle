@@ -6,6 +6,7 @@ module SimulationConstants ( dimensionCount
                            , probabilityIndividualMutation
                            , probabilityBasisMutation
                            , maximumCountOfOffspring
+                           , nan
                            ) where
 
 dimensionCount :: Int
@@ -32,3 +33,5 @@ probabilityBasisMutation = 0.02
 maximumCountOfOffspring :: Int
 maximumCountOfOffspring = 6
 
+nan :: Double
+nan = 0.0 / 0.0

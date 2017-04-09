@@ -146,11 +146,11 @@ minFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 minFitness generationOptimum generationNumber = minFitnessForGeneration (generationOptimum generationNumber)
 
 minFitnessForGeneration :: Phenotype -> Population -> Double
-minFitnessForGeneration _       (Population _ []) = 1.0 / 0.0
+minFitnessForGeneration _       (Population _ []) = nan
 minFitnessForGeneration optimum (Population _ is) = minimum $ map (fitness optimum . phenotype) is
 
 percentileFitness :: Double -> (Int -> Phenotype) -> Int -> Population -> Double
-percentileFitness _          _                    _              (Population _ []) = 1.0 / 0.0
+percentileFitness _          _                    _              (Population _ []) = nan
 percentileFitness percentile generationOptimum generationNumber  (Population _ is) =
     sort (map (fitness (generationOptimum generationNumber) . phenotype) is) !! floor (percentile * fromIntegral (length is))
 
