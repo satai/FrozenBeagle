@@ -87,6 +87,18 @@ randomBase = choice [ G1
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
 
+homozygotness :: (Int -> Phenotype) -> Int -> Population -> Double
+homozygotness _ _ population =
+    let
+        is = individuals population
+        chs = map chromosomes is
+        ps = zip (concat $ map (genes . fst) chs)  (concat $ map (genes . snd) chs)
+        homos = filter (\(a1,a2) -> a1 /= a2) ps
+    in
+        fromIntegral (length homos) / fromIntegral (length ps)
+
+
+
 avgFitnessForGeneration :: Phenotype -> Population -> Double
 avgFitnessForGeneration optimum (Population _ is)  = average $ map (fitness optimum . phenotype) is
 
@@ -363,6 +375,7 @@ computeSimulation params =
      , ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
      , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
      , ("Population Size", stats $ const $ fromIntegral . length . individuals)
+     , ("homozygotness", stats $ homozygotness $ optimumForGeneration rules)
      , ("% of polymorphic locus", stats $ const polymorphism)
      , ("% of locus with alela with more than 90% appearence", stats $ const almostPolymorphism)
      ]       -- fixme
