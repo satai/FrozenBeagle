@@ -234,6 +234,8 @@ extractParameters parameterFields = do
                , countOfEpistaticRules = epistaticRulesCount
                , countOfComplicatedRules = 0
                , countOfDominantRules = dominantRulesCount
+               , countOfNegativeDominantRules = 0
+               , countOfPositiveDominantRules = 0
                , seed = 0
                }
   where

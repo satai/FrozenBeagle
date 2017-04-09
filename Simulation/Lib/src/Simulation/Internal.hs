@@ -39,17 +39,19 @@ import           System.Random
 import Debug.Trace
 
 data AnalysisParameters = AnalysisParameters
-    { separatedGenerations    :: Bool
-    , hardSelectionThreshold  :: Double
-    , populationSize          :: Int
-    , optimumChange           :: [(Double, Double, Double)]
-    , maxAge                  :: Int
-    , countOfBases            :: Int
-    , countOfPleiotropicRules :: Int
-    , countOfEpistaticRules   :: Int
-    , countOfComplicatedRules :: Int
-    , countOfDominantRules    :: Int
-    , seed                    :: Int
+    { separatedGenerations           :: Bool
+    , hardSelectionThreshold         :: Double
+    , populationSize                 :: Int
+    , optimumChange                  :: [(Double, Double, Double)]
+    , maxAge                         :: Int
+    , countOfBases                   :: Int
+    , countOfPleiotropicRules        :: Int
+    , countOfEpistaticRules          :: Int
+    , countOfComplicatedRules        :: Int
+    , countOfDominantRules           :: Int
+    , countOfNegativeDominantRules   :: Int
+    , countOfPositiveDominantRules   :: Int
+    , seed                           :: Int
     } deriving Show
 
 randomPopulation :: Int -> ExpressionStrategy -> Int -> RVar Population
@@ -254,13 +256,27 @@ randomOptimum = randomPhenotypeFraction 4.0
 negativeDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
 negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -2.0 * d) ph)
 
-express :: Int -> Int -> Int -> Int -> Int -> RVar ExpressionStrategy
-express baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount dominantRulesCount = do
+positiveDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
+positiveDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d ->  2.0 * d) ph)
+
+express :: Int -> Int -> Int -> Int -> Int -> Int -> RVar ExpressionStrategy
+express baseCount
+        pleiotropicRulesCount
+        epistaticRulesCount
+        complicatedRulesCount
+        negativeDominantRulesCount
+        positiveDominantRulesCount
+        = do
+
     rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
     -- domRules <- dominantRules baseCount dominantRulesCount
-    domRules <- take dominantRulesCount . map negativeDominantRule <$> shuffle rules
+    shuffledRules <- shuffle rules
+
 
     let
+        domRules = (map negativeDominantRule $ take negativeDominantRulesCount shuffledRules) ++
+                   (map positiveDominantRule $ take positiveDominantRulesCount $ drop negativeDominantRulesCount shuffledRules)
+
         matchers = map (matches . fst) rules ++ map (matches . fst) domRules
         changes = map snd (traceShowId rules) ++ map snd (traceShowId domRules)
 
@@ -287,14 +303,16 @@ params2rules params =
     pleiotropicRulesCount = countOfPleiotropicRules params
     epistaticRulesCount = countOfEpistaticRules params
     complicatedRulesCount = countOfComplicatedRules params
-    dominantRulesCount = countOfDominantRules params
+    negativeDominantRulesCount = countOfNegativeDominantRules params
+    positiveDominantRulesCount = countOfPositiveDominantRules params
 
     expression' = collapse (seed params) $ express
                                                    baseCount
                                                    pleiotropicRulesCount
                                                    epistaticRulesCount
                                                    complicatedRulesCount
-                                                   dominantRulesCount
+                                                   negativeDominantRulesCount
+                                                   positiveDominantRulesCount
 
     breedingStrategy = if separatedGenerations params
                            then panmictic expression'
