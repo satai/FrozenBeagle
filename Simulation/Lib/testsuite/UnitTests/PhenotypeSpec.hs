@@ -37,7 +37,7 @@ spec = parallel $
         it "Distance is a linear form" $
             property (\p1 p2 q ->
                 assertApproxEqual
-                    "should equalequal"
+                    "should equal"
                     0.001
                     (p1 `distance` p2 * abs q)
                     (Phenotype (map (* q) $ phenotypeToVector p1) `distance` Phenotype (map (* q) $ phenotypeToVector p2)))
