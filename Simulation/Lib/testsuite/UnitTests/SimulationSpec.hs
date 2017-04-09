@@ -6,6 +6,7 @@ import Data.Random
 import Data.Maybe
 import Data.List
 import Data.Set(fromList)
+import Data.Random
 import System.Random
 
 import UnitTests.PopulationSpec()
@@ -19,7 +20,7 @@ import Phenotype
 import SimulationConstants
 
 spec :: Spec
-spec = parallel $
+spec = parallel $ do
     describe "Simulation" $ do
         it "turbidostat constants" $
           property (turbidostatCoefficientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
@@ -125,4 +126,19 @@ spec = parallel $
                 length (fst $ sampleState (randomRules baseCount' pleiotropicRulesCount' epistaticRulesCount' complicatedRulesCount') (mkStdGen i))
                     `shouldBe`
                 3 * baseCount' + pleiotropicRulesCount' + epistaticRulesCount' + complicatedRulesCount'
+            )
+
+    describe "Collapse" $ do
+        it "for the same seed is the result the same" $
+            property ( \seed' ->
+                collapse seed' (uniform (1 :: Integer) 1000000000000)
+                    `shouldBe`
+                collapse seed' (uniform (1 :: Integer) 1000000000000)
+            )
+
+        it "for the different seeds the result is not the same" $
+            property ( \seed' ->
+                collapse seed' (uniform (1 :: Integer) 1000000000000)
+                    `shouldNotBe`
+                collapse (succ seed') (uniform (1 :: Integer) 1000000000000)
             )
