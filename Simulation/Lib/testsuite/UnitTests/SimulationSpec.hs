@@ -259,3 +259,63 @@ spec = parallel $ do
                     `shouldSatisfy`
                 isNaN
             )
+
+
+    describe "All the same" $ do
+        it "true for list of the same values" $
+            property (\x (Positive n) ->
+                allTheSame (replicate n (x :: Int))
+                    `shouldBe`
+                True
+            )
+
+        it "false for list with some different value" $
+            property (\x (Positive n) ->
+                allTheSame ((x + 1) : replicate n (x :: Int))
+                    `shouldBe`
+                False
+            )
+
+        it "true for empty list" $
+            property (
+                allTheSame ([] :: [String])
+                    `shouldBe`
+                True
+            )
+
+
+    describe "Almost all the same" $ do
+        it "true for list of the same values" $
+            property (\x (Positive n) ->
+                almostAllTheSame (replicate n (x :: Int))
+                    `shouldBe`
+                True
+            )
+
+        it "false for list with some different value" $
+            property (\x (Positive n) ->
+                almostAllTheSame (replicate n (x + 1)  ++ replicate (n * 8) (x :: Int))
+                    `shouldBe`
+                False
+            )
+
+        it "true for list with only a few different value" $
+            property (\x (Positive n) ->
+                almostAllTheSame ((x + 1)  : replicate (n + 11) (x :: Int))
+                    `shouldBe`
+                True
+            )
+
+        it "true for list with too few different values" $
+            property (\x (Positive n) ->
+                almostAllTheSame ((x + 1)  : replicate (n * 9 + 22) (x :: Int) ++ replicate n (x + 1))
+                    `shouldBe`
+                True
+            )
+
+        it "true for empty list" $
+            property (
+                almostAllTheSame ([] :: [String])
+                    `shouldBe`
+                True
+            )

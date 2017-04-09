@@ -12,6 +12,8 @@ module Simulation.Internal
     , randomRules
     , average
     , stdDev
+    , allTheSame
+    , almostAllTheSame
     ) where
 
 import           SimulationConstants
@@ -93,10 +95,12 @@ stdDevFitnessForGeneration :: Phenotype -> Population -> Double
 stdDevFitnessForGeneration optimum (Population _ is)  = stdDev $ map (fitness optimum . phenotype) is
 
 allTheSame :: (Eq a) => [a] -> Bool
+allTheSame [] = True
 allTheSame xs = all (== head xs) (tail xs)
 
 almostAllTheSame :: (Ord a) => [a] -> Bool
-almostAllTheSame xs = (0.90 :: Double) * fromIntegral (length xs)  >= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
+almostAllTheSame [] = True
+almostAllTheSame xs = (0.90 :: Double) * fromIntegral (length xs)  <= fromIntegral (maximum $ map snd $ toOccurList $ fromList xs)
 
 polymorphism :: Population -> Double
 polymorphism population = 1.0 - fromIntegral (length $ filter id same) / fromIntegral (length same)
