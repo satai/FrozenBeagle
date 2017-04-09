@@ -10,6 +10,8 @@ module Simulation.Internal
     , collapse
     , randomPopulation
     , randomRules
+    , average
+    , stdDev
     ) where
 
 import           SimulationConstants

@@ -1,12 +1,13 @@
 module UnitTests.SimulationSpec(spec) where
 
 import Test.Hspec
+import Test.HUnit.Approx
 import Test.QuickCheck
+
 import Data.Random
 import Data.Maybe
 import Data.List
 import Data.Set(fromList)
-import Data.Random
 import System.Random
 
 import UnitTests.PopulationSpec()
@@ -141,4 +142,120 @@ spec = parallel $ do
                 collapse seed' (uniform (1 :: Integer) 1000000000000)
                     `shouldNotBe`
                 collapse (succ seed') (uniform (1 :: Integer) 1000000000000)
+            )
+
+    describe "Average" $ do
+        it "zero for list of zeros" $
+            property (
+                assertApproxEqual
+                    "avg should be zero for list of zeros"
+                    0.000001
+                    (average [0.0, 0.0, 0.0])
+                    0.0
+            )
+
+
+        it "x for [x]" $
+            property ( \x ->
+                 assertApproxEqual
+                    "avg should be x for [x]"
+                    0.000001
+                    (average [x])
+                    x
+            )
+
+        it "2 for 1,2,3,2" $
+            property (
+                 assertApproxEqual
+                    "avg should be 2 for 1,2,3,2"
+                    0.000001
+                    (average [1.0, 2.0, 3.0, 2.0])
+                    2.0
+            )
+
+        it "the same for a list when elements duplicated" $
+            property ( \(NonEmpty xs) ->
+                assertApproxEqual
+                    "avgs should be the same for a list when elements duplicated"
+                    0.000001
+                    (average (xs ++ xs))
+                    (average xs)
+            )
+
+        it "changes d-times if all elements of the list are multiplied by d" $
+            property ( \(NonEmpty xs) d ->
+                assertApproxEqual
+                    "avg changes d-times if all elements of the list are multiplied by d"
+                    0.000001
+                    (d * average xs)
+                    (average (map (* d) xs))
+            )
+
+        it "is NaN for empty list" $
+            property (
+                average []
+                    `shouldSatisfy`
+                isNaN
+            )
+
+    describe "Standard deviation" $ do
+        it "zero for list of zeroes" $
+            property (
+                assertApproxEqual
+                    "stdDev should be zero for list of zeros"
+                    0.000001
+                    (stdDev [0.0, 0.0, 0.0])
+                    0.0
+            )
+
+        it "zero for list of the same values" $
+            property (\x (Positive n) ->
+                assertApproxEqual
+                    "stdDev should be zero for list of zeros"
+                    0.000001
+                    (stdDev $ replicate n x)
+                    0.0
+            )
+
+        it "x for [x]" $
+            property ( \x ->
+                 assertApproxEqual
+                    "stdDev should be 0.0 for [x]"
+                    0.000001
+                    (stdDev [x])
+                    0.0
+            )
+
+        it "2 for 1,2,3,2" $
+            property (
+                 assertApproxEqual
+                    "stdDev should be 0.70711 for 1,2,3,2"
+                    0.000001
+                    (stdDev [1.0, 2.0, 3.0, 2.0])
+                    0.7071067811865476
+            )
+
+        it "the same for a list when elements duplicated" $
+            property ( \(NonEmpty xs) ->
+                assertApproxEqual
+                    "stdDev should be the same for a list when elements duplicated"
+                    0.000001
+                    (stdDev (xs ++ xs))
+                    (stdDev xs)
+            )
+
+        it "changes d-times if all elements of the list are multiplied by d" $
+            property ( \(NonEmpty xs) d ->
+                assertApproxEqual
+                    "stdDev changes (abs d)-times if all elements of the list are multiplied by d"
+                    0.000001
+                    ((abs d) * stdDev xs)
+                    (stdDev (map (* d) xs))
+            )
+
+        it "is NaN for empty list" $
+            property (
+                stdDev []
+                    `shouldSatisfy`
+                isNaN
             )
