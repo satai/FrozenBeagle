@@ -92,8 +92,8 @@ homozygotness _ _ population =
     let
         is = individuals population
         chs = map chromosomes is
-        ps = zip (concat $ map (genes . fst) chs)  (concat $ map (genes . snd) chs)
-        homos = filter (\(a1,a2) -> a1 /= a2) ps
+        ps = zip (concatMap (genes . fst) chs) (concatMap (genes . snd) chs)
+        homos = filter (uncurry (==)) ps
     in
         fromIntegral (length homos) / fromIntegral (length ps)
 
