@@ -1,14 +1,102 @@
 \chapter{Metodika}
 
+
+%V této části buďte velmi precizní. Vše musíte popsat tak důkladně, aby kdokoliv mohl vaše pokusy či
+%pozorování zopakovat. Nezapomeňte uvést velikost vzorků, věk a pohlaví zvířat, denní a roční dobu,
+%podmínky chovu nebo popis lokalit (třeba včetně mapky), specifické přístrojové vybavení
+%(pokud je to důležité, např.~pro srovnání výsledků s publikovanými údaji, uveďte i přesný typ
+%přístroje) a jiné podrobnosti. Také může být dobré zmínit, jak jste zabránili vlivu pakovaného testování stejných
+%individuí a proč se domníváte, že je počet jedinců dostatečný k zodpovězení vašich otázek. Více než
+%vhodné je zmínit a zdůvodnit použité statistické metody a počítačové programy. Používáte-li zkratky, uveďte
+%jejich seznam.
+%Materiál a metodika bývají pro větší srozumitelnost často členěny na menší podkapitoly: materiál,
+%experimentální design, analýza dat atd. Systém více podkapitol třeba jen o třech řádcích bývá přehlednější
+%než souvislý odstavec na dvě strany. (A to samozřejmě neplatí jen pro metodiku.)
+%Čtení DP usnadní, pokud je členění na podkapitoly obdobné v kapitolách Materiál a metodika,
+%Výsledky a případně i Diskuse.
+%Při vší pečlivosti se však snažte být poměrně struční. Materiál a metodika by neměly tvořit většinu DP.
+
+XXX neco trosku obecnejsiho?
+
 \section{Simulace}
 
-V této části buďte velmi precizní. Vše musíte popsat tak důkladně, aby kdokoliv mohl vaše pokusy či pozorování zopakovat. Nezapomeňte uvést velikost vzorků, věk a pohlaví zvířat, denní a roční dobu, podmínky chovu nebo popis lokalit (třeba včetně mapky), specifické přístrojové vybavení (pokud je to důležité, např. pro srovnání výsledků s publikovanými údaji, uveďte i přesný typ přístroje) a jiné podrobnosti. Také může být dobré zmínit, jak jste zabránili vlivu pakovaného testování stejných
-individuí a proč se domníváte, že je počet jedinců dostatečný k zodpovězení vašich otázek. Více než vhodné je zmínit a zdůvodnit použité statistické metody a počítačové programy. Používáte-li zkratky, uveďte jejich seznam.
-Materiál a metodika bývají pro větší srozumitelnost často členěny na menší podkapitoly: materiál, experimentální design, analýza dat atd. Systém více podkapitol třeba jen o třech řádcích bývá přehlednější než souvislý odstavec na dvě strany. (A to samozřejmě neplatí jen pro metodiku.) Čtení DP usnadní, pokud je členění na podkapitoly obdobné v kapitolách Materiál a metodika, Výsledky a případně i Diskuse.
-Při vší pečlivosti se však snažte být poměrně struční. Materiál a metodika by neměly tvořit většinu DP.
+Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými
+pohlavími a žijí v nestrukturovaném prostředí. Fenotyp jedinců i optimum prostředí jsou čtyřrozměrnými
+vektory. Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase. Euklidovská vzdálenost fenotypu jedince
+od aktuálního optima prostředí určuje jeho fitness.
+
+Optimum prostředí je po dobu 2048 kroků simulace konstantní a následně dojde k jeho skokové změně
+o $\Delta{}E$. Po této změně opět zůstane optimum neměnné.
+
+Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost
+populace udržována mechanismem turbidostatu. Navíc je každý jedinec limitován maximální délkou života -- po 64
+krocích umírá. Jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
+
+V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví a osmina z nich se může rozmnožit. Kolik
+vyvedou potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
+jak následně geny určují jejich fenotyp je popsán později.
+Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů.
+
+\section{Jedinec a jeho geny}
+
+Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 50 locusů.
+Na každém z locusů může být jedna ze třech variant genu - možné alely pro oba \textit{i}-té locusy jsou
+značeny $G_i{}1$, $G_i{}2$ a $G_i{}3$ (dále obvykle značeny jen jako \textit{G1, G2, G3}, pokud
+nemůže dojít k záměně).
+
+\begin{tikzpicture}
+\tikzstyle{every path}=[very thick]
+
+\edef\sizetape{0.7cm}
+\tikzstyle{tmtape}=[draw,minimum size=\sizetape]
+
+\begin{scope}[start chain=1 going right,node distance=-0.15mm]
+    \node [on chain=1,tmtape,draw=none] {$\ldots$};
+    \node [on chain=1,tmtape] {G1};
+    \node [on chain=1,tmtape] {G1};
+    \node [on chain=1,tmtape] {G2};
+    \node [on chain=1,tmtape] {G3};
+    \node [on chain=1,tmtape] {G3};
+    \node [on chain=1,tmtape] {G1};
+    \node [on chain=1,tmtape,draw=none] {$\ldots$};
+    \node [on chain=1] {\textbf{Chromozom 1}};
+\end{scope}
+
+
+\begin{scope}[shift={(0cm, - \sizetape)},start chain=1 going right,node distance=-0.15mm]
+    \node [on chain=1,tmtape,draw=none] {$\ldots$};
+    \node [on chain=1,tmtape] {G2};
+    \node [on chain=1,tmtape] {G2};
+    \node [on chain=1,tmtape] {G2};
+    \node [on chain=1,tmtape] {G2};
+    \node [on chain=1,tmtape] {G3};
+    \node [on chain=1,tmtape] {G1};
+    \node [on chain=1,tmtape,draw=none] {$\ldots$};
+    \node [on chain=1] {\textbf{Chromozom 2}};
+\end{scope}
+\end{tikzpicture}
+
+\subsection{Mutace}
+
+
+\subsection{Křížení}
+
+
+
+\section{Jedinec a jeho fenotyp}
+
+Fenotyp jedince jsou jeho čtyři vlastnosti dohromady reprezntované jako čtyřrozměrný vektor.
+
+
+\section{Řízení velikosti populace}
+
 
 \section{Frozen Beagle}
-Název první kapitoly
+
+Popsaná simulace byla implementována v silně staticky typovaném čistě funkcionálním jazyce \cite{haskell}.
+
+\url {https://github.com/satai/FrozenBeagle}
+
 \section{Statistická analýza}
 \section{Reprodukovatelnost}
 
