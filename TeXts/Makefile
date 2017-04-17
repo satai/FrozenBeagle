@@ -13,6 +13,8 @@ dist/prace.ps: dist/prace.dvi
 # LaTeX je potreba spustit dvakrat, aby spravne spocital odkazy
 dist/prace.dvi: prace.tex $(wildcard *.tex)
 	latex -output-directory=dist $<
+	cd dist; cp ../bibtex.bib . ;  bibtex prace ; cd ..
+	latex -output-directory=dist $<
 	latex -output-directory=dist $<
 
 clean:
