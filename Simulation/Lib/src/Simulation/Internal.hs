@@ -263,7 +263,7 @@ randomPhenotypeChange :: RVar Phenotype
 randomPhenotypeChange = randomPhenotypeFraction 1.0
 
 randomOptimum :: RVar Phenotype
-randomOptimum = randomPhenotypeFraction 4.0
+randomOptimum = randomPhenotypeFraction 8.0
 
 negativeDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
 negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -2.0 * d) ph)
@@ -338,7 +338,7 @@ params2rules params =
     maximumAge = maxAge params
 
     optimum1 = collapse (seed params + 1) randomOptimum
-    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 4.0
+    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 8.0
     optimum2 = Phenotype $ zipWithCheck (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
 
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
