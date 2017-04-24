@@ -76,7 +76,10 @@ randomChromosomes baseCount = do
     return (dna1, dna2)
 
 randomDnaString :: Int -> RVar DnaString
-randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase
+randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase'
+
+randomBase' :: RVar Basis
+randomBase' = choice [G1]
 
 randomBase :: RVar Basis
 randomBase = choice [ G1
