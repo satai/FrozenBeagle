@@ -14,17 +14,11 @@ spec = parallel $
         it "zeroPhenotypeVec is the right dimension" $
             length zeroPhenotypeVec `shouldBe` dimensionCount
 
-        it "accidentDeathProbability is pribability" $
+        it "accidentDeathProbability is probability" $
             isProbability accidentDeathProbability `shouldBe` True
 
-        it "probabilityIndividualMutation is pribability" $
-            isProbability probabilityIndividualMutation `shouldBe` True
-
-        it "probabilityBasisMutation is pribability" $
+        it "probabilityBasisMutation is probability" $
             isProbability probabilityBasisMutation `shouldBe` True
-
-        it "maximumCountOfOffspring is at least 1" $
-            maximumCountOfOffspring >= 1 `shouldBe` True
 
         it "nan is NaN" $
             nan `shouldSatisfy` isNaN

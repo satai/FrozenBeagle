@@ -119,21 +119,14 @@ pointMutationDnaString  (DnaString s) = do
 
 pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual
 pointMutationIndividual expression i = do
+    let (d1, d2) = chromosomes i
 
-        shouldMutateIndividual <- boolBernoulli probabilityIndividualMutation
+    d1' <- pointMutationDnaString d1
+    d2' <- pointMutationDnaString d2
 
-        if shouldMutateIndividual
-            then do
-                let (d1, d2) = chromosomes i
+    let offspringPhenotype = expression (sex i) (d1', d2')
 
-                d1' <- pointMutationDnaString d1
-                d2' <- pointMutationDnaString d2
-
-                let offspringPhenotype = expression (sex i) (d1', d2')
-
-                return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
-            else
-                return i
+    return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
 
 pointMutation :: ExpressionStrategy -> Mutation
 pointMutation expression = mapM (pointMutationIndividual expression)
