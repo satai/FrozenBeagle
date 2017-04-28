@@ -91,16 +91,15 @@ mate expression optimum g parents = do
         motherFitness = fitness optimum $ expression F (fdna1, fdna2)
         pairFitness = (fatherFitness + motherFitness) / 2.0
 
-        numOfOffspring = min maximumCountOfOffspring $ floor pairFitness
+    areParents <- boolBernoulli pairFitness
 
-    randOffspring1 <- randomOffspring expression g father mother
-    randOffspring2 <- randomOffspring expression g father mother
-    randOffspring3 <- randomOffspring expression g father mother
-    randOffspring4 <- randomOffspring expression g father mother
-    randOffspring5 <- randomOffspring expression g father mother
-    randOffspring6 <- randomOffspring expression g father mother
-
-    return $ take numOfOffspring [randOffspring1, randOffspring2, randOffspring3, randOffspring4, randOffspring5, randOffspring6]
+    if areParents
+    then
+        do
+            offspring <- randomOffspring expression g father mother
+            return [offspring]
+    else
+        return []
 
 pointMutationBasis :: Basis -> RVar Basis
 pointMutationBasis b = do

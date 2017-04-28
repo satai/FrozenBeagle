@@ -21,4 +21,4 @@ distance (Phenotype p1) (Phenotype p2) = euclideanDistance p1 p2
     euclideanDistance a b = sqrt $ sum $ map sqr $ zipWithCheck (-) a b
 
 fitness :: Phenotype -> Phenotype -> Double
-fitness optimum individual = 4.0 * (exp $ (-0.010) * ((individual `distance` optimum) ** 2))
+fitness optimum individual = exp $ (-0.002) * ((individual `distance` optimum) ** 2)
