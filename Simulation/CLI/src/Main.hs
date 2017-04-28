@@ -24,7 +24,7 @@ extractParams seedValue = AnalysisParameters
                       <*> option auto (long "hardSelectionThreshold" <> value 0.0)
                       <*> option auto (long "populationSize" <> value 300)
                       <*> option auto (long "optimumChange" <> value [])
-                      <*> option auto (long "maxAge" <> value 64)
+                      <*> option auto (long "maxAge" <> value 512)
                       <*> option auto (long "countOfBases" <> value 50)
                       <*> option auto (long "countOfPleiotropicRules" <> value 0)
                       <*> option auto (long "countOfEpistaticRules" <> value 0)

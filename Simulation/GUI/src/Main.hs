@@ -228,15 +228,15 @@ extractParameters parameterFields = do
                , hardSelectionThreshold = hardSelectionThresholdValue
                , populationSize =  popSize
                , optimumChange = optimumMovements
-               , maxAge = 64
+               , maxAge = 512
                , countOfBases = baseCount
                , countOfPleiotropicRules = pleiotropicRulesCount
                , countOfEpistaticRules = epistaticRulesCount
                , countOfComplicatedRules = 0
-               , countOfDominantRules = dominantRulesCount
-               , countOfNegativeDominantRules = 0
+               , countOfDominantRules = 0   --FIXME
+               , countOfNegativeDominantRules = dominantRulesCount
                , countOfPositiveDominantRules = 0
-               , seed = 0
+               , seed = 69
                }
   where
     optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)
