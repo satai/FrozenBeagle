@@ -78,10 +78,10 @@ randomChromosomes baseCount = do
 randomDnaString :: Int -> RVar DnaString
 randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase'
 
-randomBase' :: RVar Basis
+randomBase' :: RVar Alela
 randomBase' = choice [G1]
 
-randomBase :: RVar Basis
+randomBase :: RVar Alela
 randomBase = choice [ G1
                     , G2
                     , G3
@@ -178,11 +178,11 @@ pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotr
 randomPleiotropicRule :: Int -> RVar (Schema, Phenotype)
 randomPleiotropicRule baseCount = do
     position <- integralUniform 0 (baseCount - 1)
-    basis <- randomBase
+    alela <- randomBase
     dimChange <- randomPhenotypeChange
 
     let
-        schema = replicate position Nothing ++ [Just basis] ++ replicate (baseCount - position - 1) Nothing
+        schema = replicate position Nothing ++ [Just alela] ++ replicate (baseCount - position - 1) Nothing
 
     return (Schema schema, dimChange)
 
@@ -269,7 +269,7 @@ randomOptimum :: RVar Phenotype
 randomOptimum = randomPhenotypeFraction 8.0
 
 negativeDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
-negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -2.0 * d) ph)
+negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -3.0 * d) ph)
 
 positiveDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
 positiveDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d ->  2.0 * d) ph)
@@ -289,11 +289,11 @@ express baseCount
 
 
     let
-        domRules = (map negativeDominantRule $ take negativeDominantRulesCount shuffledRules) ++
-                   (map positiveDominantRule $ take positiveDominantRulesCount $ drop negativeDominantRulesCount shuffledRules)
+        domRules = map negativeDominantRule (take negativeDominantRulesCount shuffledRules) ++
+                   map positiveDominantRule (take positiveDominantRulesCount $ drop negativeDominantRulesCount shuffledRules)
 
         matchers = map (matches . fst) rules ++ map (matches . fst) domRules
-        changes = map snd (traceShowId rules) ++ map snd (traceShowId domRules)
+        changes  = map snd (traceShowId rules) ++ map snd (traceShowId domRules)
 
     return $ schemaBasedExpression $ zip matchers changes
 
@@ -381,4 +381,4 @@ computeSimulation params =
      , ("homozygotness", stats $ homozygotness $ optimumForGeneration rules)
      , ("% of polymorphic locus", stats $ const polymorphism)
      , ("% of locus with alela with more than 90% appearence", stats $ const almostPolymorphism)
-     ]       -- fixme
+     ]

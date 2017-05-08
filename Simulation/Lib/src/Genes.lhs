@@ -3,18 +3,18 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 > module Genes
 >          ( DnaString(DnaString)
 >          , genes
->          , Basis(..)
+>          , Alela(..)
 >          , crossover
 >          , mutate
 >          ) where
 >
 
-Bases are the abstract G1..G3
+Alelas are the abstract G1..G3
 
-> data Basis = G1 | G2 | G3
+> data Alela = G1 | G2 | G3
 >     deriving (Eq, Ord)
 >
-> instance Show Basis where
+> instance Show Alela where
 >   show G1 = "1"
 >   show G2 = "2"
 >   show G3 = "3"
@@ -22,7 +22,7 @@ Bases are the abstract G1..G3
 
 DnaString is defined by the list of bases.
 
-> newtype DnaString = DnaString {genes :: [Basis]} deriving(Eq)
+> newtype DnaString = DnaString {genes :: [Alela]} deriving(Eq)
 >
 
 DnaStrings have a common lexicographic ordering. It's handy for constructing data structure but not used any other way.
@@ -36,7 +36,7 @@ DnaStrings have a common lexicographic ordering. It's handy for constructing dat
 > crossover :: Int -> DnaString -> DnaString -> DnaString
 > crossover crossoverPoint (DnaString dna1) (DnaString dna2) = DnaString $ take crossoverPoint dna1 ++ drop crossoverPoint dna2
 >
-> mutate :: Int -> Basis -> DnaString -> DnaString
-> mutate mutationPoint newBasis (DnaString dna) =
->     DnaString $ zipWithIndex (\oldBasis i -> if i == mutationPoint then newBasis else oldBasis) dna
+> mutate :: Int -> Alela -> DnaString -> DnaString
+> mutate mutationPoint newAlela (DnaString dna) =
+>     DnaString $ zipWithIndex (\oldAlela i -> if i == mutationPoint then newAlela else oldAlela) dna
 >     where zipWithIndex f l = zipWith f l [0..]

@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module UnitTests.GenesSpec (spec, DnaString, Basis) where
+module UnitTests.GenesSpec (spec, DnaString, Alela) where
 
 import Test.Hspec
 import Test.QuickCheck
@@ -9,7 +9,7 @@ import Data.List
 import Genes
 import ListUtils
 
-instance Arbitrary Basis where
+instance Arbitrary Alela where
   arbitrary =
        elements [ G1
                 , G2
@@ -74,7 +74,7 @@ spec = parallel $
                 length (genes $ mutate n b (DnaString dna))
             )
 
-        it "mutated dna has new basis at point of mutation" $
+        it "mutated dna has new Alela at point of mutation" $
             property ( \(IndexInString n)  b  (DnaString dna ) ->
                 b == genes (mutate n b (DnaString dna)) !! n
             )
