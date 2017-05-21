@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module UnitTests.GenesSpec (spec, DnaString, Alela) where
+module UnitTests.GenesSpec (spec, DnaString, Allele) where
 
 import Test.Hspec
 import Test.QuickCheck
@@ -8,13 +8,12 @@ import Data.List
 
 import Genes
 import ListUtils
+import Phenotype()
 
-instance Arbitrary Alela where
-  arbitrary =
-       elements [ G1
-                , G2
-                , G3
-                ]
+import UnitTests.PhenotypeSpec()
+
+instance Arbitrary Allele where
+  arbitrary = Allele <$> arbitrary <*> arbitrary
 
 instance Arbitrary DnaString where
      arbitrary = DnaString <$> vector 10
@@ -31,13 +30,13 @@ spec :: Spec
 spec = parallel $
     describe "Genes" $ do
 
-        it "show DNA string looks like '[12213]'" $
-            show (DnaString [G1, G2, G2, G1, G3]) `shouldBe` "[12213]"
+--         it "show DNA string looks like '[12213]'" $
+--             show (DnaString [G1, G2, G2, G1, G3]) `shouldBe` "[12213]"
 
-        it "show DNA strings are lexicographicaly ordered" $
-            DnaString [G1, G2, G2, G1, G3] `compare` DnaString [G1, G2, G3, G1, G3]
-                `shouldBe`
-            LT
+--         it "show DNA strings are lexicographicaly ordered" $
+--             DnaString [G1, G2, G2, G1, G3] `compare` DnaString [G1, G2, G3, G1, G3]
+--                 `shouldBe`
+--             LT
 
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) (DnaString dna2)  ->
@@ -74,7 +73,7 @@ spec = parallel $
                 length (genes $ mutate n b (DnaString dna))
             )
 
-        it "mutated dna has new Alela at point of mutation" $
+        it "mutated dna has new Allele at point of mutation" $
             property ( \(IndexInString n)  b  (DnaString dna ) ->
                 b == genes (mutate n b (DnaString dna)) !! n
             )

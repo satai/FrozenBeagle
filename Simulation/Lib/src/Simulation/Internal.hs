@@ -1,8 +1,6 @@
 module Simulation.Internal
     ( computeSimulation
     , AnalysisParameters(..)
-    , pleiotropicRules
-    , randomPleiotropicRule
     , turbidostatCoefficientsForPopulationSize
     , optimumCalculation
     , randomPhenotypeChange
@@ -76,16 +74,15 @@ randomChromosomes baseCount = do
     return (dna1, dna2)
 
 randomDnaString :: Int -> RVar DnaString
-randomDnaString baseCount = DnaString <$> replicateM baseCount randomBase'
+randomDnaString baseCount = DnaString <$> replicateM baseCount randomAllele'
 
-randomBase' :: RVar Alela
-randomBase' = choice [G1]
+randomAllele' :: RVar Allele
+randomAllele' = randomAllele --FIXME
 
-randomBase :: RVar Alela
-randomBase = choice [ G1
-                    , G2
-                    , G3
-                    ]
+randomAllele :: RVar Allele
+randomAllele = do
+    effect' <- randomPhenotypeChange --FIXME
+    return $ Allele effect' $ Phenotype  [0.0, 0.0, 0.0, 0.0]
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
@@ -159,105 +156,7 @@ percentileFitness percentile generationOptimum generationNumber  (Population _ i
 
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
-    br <- basicRules baseCount
-    er <- epistaticRules baseCount epistaticRulesCount
-    pr <- pleiotropicRules baseCount pleiotropicRulesCount
-    cr <- complicatedRules baseCount complicatedRulesCount
-    return (br ++ pr ++ er ++ cr)
-
-epistaticRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-epistaticRules baseCount countOfRules = replicateM countOfRules (randomEpistaticRule baseCount)
-
--- FIXME use it
--- dominantRules :: Int -> Int -> RVar [(DominantSchema, Phenotype)]
--- dominantRules baseCount countOfRules = replicateM countOfRules (randomDominantRule baseCount)
-
-pleiotropicRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-pleiotropicRules baseCount countOfRules = replicateM countOfRules (randomPleiotropicRule baseCount)
-
-randomPleiotropicRule :: Int -> RVar (Schema, Phenotype)
-randomPleiotropicRule baseCount = do
-    position <- integralUniform 0 (baseCount - 1)
-    alela <- randomBase
-    dimChange <- randomPhenotypeChange
-
-    let
-        schema = replicate position Nothing ++ [Just alela] ++ replicate (baseCount - position - 1) Nothing
-
-    return (Schema schema, dimChange)
-
-basicRules :: Int -> RVar [(Schema, Phenotype)]
-basicRules baseCount = concat <$> mapM (simpleRulesForPosition baseCount) [0..(baseCount - 1)]
-
-complicatedRules :: Int -> Int -> RVar [(Schema, Phenotype)]
-complicatedRules baseCount countOfRules = replicateM countOfRules (randomComplicatedRule baseCount)
-
-simpleRulesForPosition :: Int -> Int -> RVar [(Schema, Phenotype)]
-simpleRulesForPosition baseCount p = do
-    dimension <- integralUniform 0 (dimensionCount - 1)
-
-    g1Change <- doubleStdNormal
-    g2Change <- doubleStdNormal
-    g3Change <- doubleStdNormal
-
-    let g1DimChange = replicate dimension 0.0 ++ [g1Change] ++ replicate (dimensionCount - dimension - 1) 0.0
-    let g2DimChange = replicate dimension 0.0 ++ [g2Change] ++ replicate (dimensionCount - dimension - 1) 0.0
-    let g3DimChange = replicate dimension 0.0 ++ [g3Change] ++ replicate (dimensionCount - dimension - 1) 0.0
-
-    let schema1 = replicate p Nothing ++ [Just G1] ++ replicate (baseCount - p - 1) Nothing
-    let schema2 = replicate p Nothing ++ [Just G2] ++ replicate (baseCount - p - 1) Nothing
-    let schema3 = replicate p Nothing ++ [Just G3] ++ replicate (baseCount - p - 1) Nothing
-
-    return [ (Schema schema1, Phenotype g1DimChange)
-           , (Schema schema2, Phenotype g2DimChange)
-           , (Schema schema3, Phenotype g3DimChange)
-           ]
-
-randomEpistaticRule :: Int -> RVar (Schema, Phenotype)
-randomEpistaticRule baseCount = do
-    schema <- randomSchema baseCount
-    dimension <- integralUniform 0 (dimensionCount - 1)
-    gChange <- doubleStdNormal
-
-    let gDimChange = replicate dimension 0.0 ++ [gChange] ++ replicate (dimensionCount - dimension - 1) 0.0
-
-    return (schema, Phenotype gDimChange)
-
-randomComplicatedRule :: Int -> RVar (Schema, Phenotype)
-randomComplicatedRule baseCount = do
-    schema <- randomSchema baseCount
-    p <- randomPhenotypeChange
-    return (schema, p)
-
---FIXME use it
--- randomDominantRule :: Int -> RVar (DominantSchema, Phenotype)
--- randomDominantRule baseCount = do
---     schema <- randomDominantSchema baseCount
---     g1Change <- doubleStdNormal
---
---     let
---         dimChange = g1Change : replicate (dimensionCount - 1) 0.0
---
---     p <- shuffle dimChange
---
---     return (schema, Phenotype p)
-
-randomSchema :: Int -> RVar Schema
-randomSchema baseCount = do
-    b1 <- randomBase
-    b2 <- randomBase
-    b3 <- randomBase
-    let
-       a = take baseCount $ [Just b1, Just b2, Just b3] ++ repeat Nothing
-    Schema <$> shuffle a
-
--- FIXME use it
--- randomDominantSchema :: Int -> RVar DominantSchema
--- randomDominantSchema baseCount = do
---     b1 <- randomBase
---     let
---        a = Just b1 : replicate (baseCount - 1) Nothing
---     DominantSchema <$> shuffle a
+    return []
 
 randomPhenotypeFraction :: Double -> RVar Phenotype
 randomPhenotypeFraction d = Phenotype . map (* d) <$> replicateM dimensionCount doubleStdNormal
@@ -380,5 +279,5 @@ computeSimulation params =
      , ("Population Size", stats $ const $ fromIntegral . length . individuals)
      , ("homozygotness", stats $ homozygotness $ optimumForGeneration rules)
      , ("% of polymorphic locus", stats $ const polymorphism)
-     , ("% of locus with alela with more than 90% appearence", stats $ const almostPolymorphism)
+     , ("% of locus with allele with more than 90% appearence", stats $ const almostPolymorphism)
      ]

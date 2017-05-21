@@ -17,8 +17,8 @@ spec = parallel $
         it "accidentDeathProbability is probability" $
             isProbability accidentDeathProbability `shouldBe` True
 
-        it "probabilityAlelaMutation is probability" $
-            isProbability probabilityAlelaMutation `shouldBe` True
+        it "probabilityAlleleMutation is probability" $
+            isProbability probabilityAlleleMutation `shouldBe` True
 
         it "nan is NaN" $
             nan `shouldSatisfy` isNaN

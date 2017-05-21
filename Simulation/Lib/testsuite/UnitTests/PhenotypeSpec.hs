@@ -13,7 +13,6 @@ import Debug.Trace
 import SimulationConstants
 import Phenotype.Internal
 
-
 instance Arbitrary Phenotype where
      arbitrary = Phenotype <$> vector dimensionCount
 

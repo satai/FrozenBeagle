@@ -101,20 +101,17 @@ mate expression optimum g parents = do
     else
         return []
 
-pointMutationAlela :: Alela -> RVar Alela
-pointMutationAlela b = do
-    shouldMutateAlela <- boolBernoulli probabilityAlelaMutation
+pointMutationAllele :: Allele -> RVar Allele
+pointMutationAllele b = do
+    shouldMutateAllele <- boolBernoulli probabilityAlleleMutation
 
-    if shouldMutateAlela
-        then choice [ G1
-                    , G2
-                    , G3
-                    ]
+    if shouldMutateAllele
+        then return b -- FIXME
         else return b
 
 pointMutationDnaString :: DnaString -> RVar DnaString
 pointMutationDnaString  (DnaString s) = do
-    bases <- mapM pointMutationAlela s
+    bases <- mapM pointMutationAllele s
     return $ DnaString bases
 
 pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual

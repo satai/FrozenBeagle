@@ -3,7 +3,7 @@ module SimulationConstants ( dimensionCount
                            , maxSteps
                            , optimumChangeGeneration
                            , accidentDeathProbability
-                           , probabilityAlelaMutation
+                           , probabilityAlleleMutation
                            , nan
                            ) where
 
@@ -22,8 +22,8 @@ optimumChangeGeneration = maxSteps `div` 2
 accidentDeathProbability :: Double
 accidentDeathProbability = 0.0
 
-probabilityAlelaMutation :: Double
-probabilityAlelaMutation = 0.0001
+probabilityAlleleMutation :: Double
+probabilityAlleleMutation = 0.0001
 
 nan :: Double
 nan = 0.0 / 0.0

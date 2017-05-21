@@ -25,27 +25,27 @@ spec = parallel $ do
     describe "Simulation" $ do
         it "turbidostat constants" $
           property (turbidostatCoefficientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
-
-        it "random pleiotropic rule should have schema of expected length" $
-          property (\i ->
-            length (schemaElements $ fst $  fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
-               `shouldBe`
-            10
-          )
-
-        it "random pleiotropic rule should have fixed only one position of schema" $
-          property (\i ->
-            length (filter isJust $ schemaElements $ fst $ fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
-               `shouldBe`
-            1
-          )
-
-        it "plenty of random pleiotropic rules should have fixed all posible positions in some rule" $
-          property (\i ->
-            length (nub $ map (fromJust . findIndex isJust . schemaElements . fst) $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
-               `shouldBe`
-            10
-          )
+--
+--         it "random pleiotropic rule should have schema of expected length" $
+--           property (\i ->
+--             length (schemaElements $ fst $  fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
+--                `shouldBe`
+--             10
+--           )
+--
+--         it "random pleiotropic rule should have fixed only one position of schema" $
+--           property (\i ->
+--             length (filter isJust $ schemaElements $ fst $ fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
+--                `shouldBe`
+--             1
+--           )
+--
+--         it "plenty of random pleiotropic rules should have fixed all posible positions in some rule" $
+--           property (\i ->
+--             length (nub $ map (fromJust . findIndex isJust . schemaElements . fst) $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
+--                `shouldBe`
+--             10
+--           )
 
         it "optimum calculation produces constant for first couple of generations" $
             property $
@@ -121,12 +121,12 @@ spec = parallel $ do
                    $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) geneCount) (mkStdGen i)
             )
 
-        it "random rules have expected count of rules" $
-            property (\i (Positive baseCount') (NonNegative pleiotropicRulesCount') (NonNegative epistaticRulesCount') (NonNegative complicatedRulesCount') ->
-                length (fst $ sampleState (randomRules baseCount' pleiotropicRulesCount' epistaticRulesCount' complicatedRulesCount') (mkStdGen i))
-                    `shouldBe`
-                3 * baseCount' + pleiotropicRulesCount' + epistaticRulesCount' + complicatedRulesCount'
-            )
+--         it "random rules have expected count of rules" $
+--             property (\i (Positive baseCount') (NonNegative pleiotropicRulesCount') (NonNegative epistaticRulesCount') (NonNegative complicatedRulesCount') ->
+--                 length (fst $ sampleState (randomRules baseCount' pleiotropicRulesCount' epistaticRulesCount' complicatedRulesCount') (mkStdGen i))
+--                     `shouldBe`
+--                 3 * baseCount' + pleiotropicRulesCount' + epistaticRulesCount' + complicatedRulesCount'
+--             )
 
     describe "Collapse" $ do
         it "for the same seed is the result the same" $

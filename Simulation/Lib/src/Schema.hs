@@ -17,14 +17,14 @@ class HasOrder a where
     order :: a -> Int
 
 newtype Schema = Schema
-    { schemaElements :: [Maybe Alela]
+    { schemaElements :: [Maybe Allele]
     } deriving (Eq)
 
 newtype DominantSchema = DominantSchema
-    { dominantSchemaElements :: [Maybe Alela]
+    { dominantSchemaElements :: [Maybe Allele]
     } deriving (Eq)
 
-shortRepr :: Maybe Alela -> Char
+shortRepr :: Maybe Allele -> Char
 shortRepr Nothing  = '*'
 shortRepr (Just b) = head $ show b
 
@@ -51,7 +51,7 @@ instance MatchesGenes Schema
       then matches' s d1 d2
       else error "Incompatible Schema and DNA"
       where
-        matches' :: [Maybe Alela] -> [Alela] -> [Alela] -> Bool
+        matches' :: [Maybe Allele] -> [Allele] -> [Allele] -> Bool
         matches' [] [] []                             = True
         matches' (Nothing : bs) (_  : b1s) (_  : b2s) = matches' bs b1s b2s
         matches' (Just b  : bs) (b1 : b1s) (b2 : b2s) = (b == b1 || b == b2) && matches' bs b1s b2s
@@ -63,7 +63,7 @@ instance MatchesGenes DominantSchema
       then matches' s d1 d2
       else error "Incompatible DominantSchema and DNA"
       where
-        matches' :: [Maybe Alela] -> [Alela] -> [Alela] -> Bool
+        matches' :: [Maybe Allele] -> [Allele] -> [Allele] -> Bool
         matches' [] [] []                             = True
         matches' (Nothing : bs) (_  : b1s) (_  : b2s) = matches' bs b1s b2s
         matches' (Just b  : bs) (b1 : b1s) (b2 : b2s) = (b == b1 && b == b2) && matches' bs b1s b2s
