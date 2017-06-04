@@ -31,8 +31,6 @@ randomPhenotypeChangeWithOneNonzero = do
         r <- doubleStdNormal
         Phenotype <$> shuffle (r : tail zeroPhenotypeVec)
 
-
-
 phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs
 
