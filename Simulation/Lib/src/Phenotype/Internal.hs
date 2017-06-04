@@ -2,11 +2,36 @@ module Phenotype.Internal
     ( Phenotype (Phenotype)
     , distance
     , phenotypeToVector
+    , zeroPhenotype
+    , randomPhenotypeFraction
+    , randomPhenotypeChange
+    , randomPhenotypeChangeWithOneNonzero
     , fitness) where
 
 import ListUtils
+import Control.Monad
+import Data.Random
+import Data.Random.Distribution.Normal
+
+import SimulationConstants
 
 newtype Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
+
+zeroPhenotype :: Phenotype
+zeroPhenotype = Phenotype zeroPhenotypeVec
+
+randomPhenotypeFraction :: Double -> RVar Phenotype
+randomPhenotypeFraction d = Phenotype . map (* d) <$> replicateM dimensionCount doubleStdNormal
+
+randomPhenotypeChange :: RVar Phenotype
+randomPhenotypeChange = randomPhenotypeFraction 1.0
+
+randomPhenotypeChangeWithOneNonzero :: RVar Phenotype
+randomPhenotypeChangeWithOneNonzero = do
+        r <- doubleStdNormal
+        Phenotype <$> shuffle (r : tail zeroPhenotypeVec)
+
+
 
 phenotypeToVector :: Phenotype -> [Double]
 phenotypeToVector (Phenotype xs) = xs

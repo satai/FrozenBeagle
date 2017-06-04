@@ -7,6 +7,8 @@ import Test.HUnit.Approx
 import Test.QuickCheck
 
 import Control.Exception.Base
+import Data.Random
+import System.Random
 
 import Debug.Trace
 
@@ -50,6 +52,33 @@ spec = parallel $
 
         it "Phenotype has sane text representation" $
             show (Phenotype [0, 0, 1]) `shouldBe` "Phenotype [0.0,0.0,1.0]"
+
+        it "zeroPhenotype contains only zeroes" $
+            all (== 0.0) (phenotypeToVector zeroPhenotype) `shouldBe` True
+
+        it "zeroPhenotype length is the dimension" $
+            length (phenotypeToVector zeroPhenotype) `shouldBe` dimensionCount
+
+        it "randomPhenotypeChange length is the dimension" $
+            property (\i ->
+                     length (phenotypeToVector $ fst $ sampleState randomPhenotypeChange (mkStdGen i))
+                        `shouldBe`
+                     dimensionCount
+            )
+
+        it "randomPhenotypeChangeWithOneNonzero length is the dimension" $
+            property (\i ->
+                     length (phenotypeToVector $ fst $ sampleState randomPhenotypeChangeWithOneNonzero (mkStdGen i))
+                        `shouldBe`
+                     dimensionCount
+            )
+
+        it "randomPhenotypeChangeWithOneNonzero has one non-zero" $
+            property (\i ->
+                     length (filter (/= 0.0) $ phenotypeToVector $ fst $ sampleState randomPhenotypeChangeWithOneNonzero (mkStdGen i))
+                        `shouldBe`
+                     1
+            )
 
       --  it "increasing distance to the optimum decreaces fitness and via versa" $
         --    property (\optimum p1 p2 ->

@@ -106,7 +106,7 @@ pointMutationAllele b = do
     shouldMutateAllele <- boolBernoulli probabilityAlleleMutation
 
     if shouldMutateAllele
-        then return b -- FIXME
+        then randomAllele
         else return b
 
 pointMutationDnaString :: DnaString -> RVar DnaString

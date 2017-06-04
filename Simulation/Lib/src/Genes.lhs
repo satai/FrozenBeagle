@@ -6,7 +6,10 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >          , Allele(..)
 >          , crossover
 >          , mutate
+>          , randomAllele
 >          ) where
+>
+> import Data.Random
 >
 > import Phenotype
 
@@ -23,6 +26,11 @@ DnaString is defined by the list of bases.
 
 > newtype DnaString = DnaString {genes :: [Allele]} deriving(Eq)
 >
+
+> randomAllele :: RVar Allele
+> randomAllele = do
+>     effect' <- randomPhenotypeChangeWithOneNonzero --FIXME
+>     return $ Allele effect' $ Phenotype  [0.0, 0.0, 0.0, 0.0]
 
 DnaStrings have a common lexicographic ordering. It's handy for constructing data structure but not used any other way.
 

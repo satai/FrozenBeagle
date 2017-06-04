@@ -3,7 +3,6 @@ module Simulation.Internal
     , AnalysisParameters(..)
     , turbidostatCoefficientsForPopulationSize
     , optimumCalculation
-    , randomPhenotypeChange
     , randomOptimum
     , collapse
     , randomPopulation
@@ -29,6 +28,7 @@ import           Data.List
 import           Data.MultiSet                    (fromList, toOccurList)
 
 import           Data.Random
+import           Data.Random.Distribution.Bernoulli
 import           Data.Random.Distribution.Normal
 import           Data.Random.Distribution.Uniform
 import           Data.Random.Extras hiding (shuffle)
@@ -74,15 +74,15 @@ randomChromosomes baseCount = do
     return (dna1, dna2)
 
 randomDnaString :: Int -> RVar DnaString
-randomDnaString baseCount = DnaString <$> replicateM baseCount randomAllele'
+randomDnaString baseCount = DnaString <$> replicateM baseCount randomInitAllele
 
-randomAllele' :: RVar Allele
-randomAllele' = randomAllele --FIXME
+randomInitAllele :: RVar Allele
+randomInitAllele = do
+    isZero <- boolBernoulli (0.99 :: Double)
 
-randomAllele :: RVar Allele
-randomAllele = do
-    effect' <- randomPhenotypeChange --FIXME
-    return $ Allele effect' $ Phenotype  [0.0, 0.0, 0.0, 0.0]
+    if isZero
+        then return $ Allele (Phenotype  [0.0, 0.0, 0.0, 0.0]) (Phenotype  [0.0, 0.0, 0.0, 0.0])
+        else randomAllele
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
@@ -157,12 +157,6 @@ percentileFitness percentile generationOptimum generationNumber  (Population _ i
 randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
 randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
     return []
-
-randomPhenotypeFraction :: Double -> RVar Phenotype
-randomPhenotypeFraction d = Phenotype . map (* d) <$> replicateM dimensionCount doubleStdNormal
-
-randomPhenotypeChange :: RVar Phenotype
-randomPhenotypeChange = randomPhenotypeFraction 1.0
 
 randomOptimum :: RVar Phenotype
 randomOptimum = randomPhenotypeFraction 8.0
