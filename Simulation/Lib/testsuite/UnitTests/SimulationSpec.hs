@@ -40,7 +40,7 @@ spec = parallel $ do
 --             1
 --           )
 --
---         it "plenty of random pleiotropic rules should have fixed all posible positions in some rule" $
+--         it "plenty of random pleiotropic rules should have fixed all possible positions in some rule" $
 --           property (\i ->
 --             length (nub $ map (fromJust . findIndex isJust . schemaElements . fst) $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
 --                `shouldBe`
