@@ -50,6 +50,25 @@ spec = parallel $
                 anyErrorCall
             )
 
+        it "increasing distance to the optimum decreaces fitness and via versa" $
+            property (\optimum p1 p2 ->
+                (
+                    fitness optimum p2 == 0.0
+                        &&
+                    fitness optimum p1 == 0.0
+                        &&
+                    distance optimum p2 > 610.0
+                        &&
+                    distance optimum p1 > 610.0
+                )
+                  ||
+                (
+                    distance optimum p2 `compare` distance optimum p1
+                       ==
+                    fitness optimum p1 `compare` fitness optimum p2
+                )
+            )
+
         it "Phenotype has sane text representation" $
             show (Phenotype [0, 0, 1]) `shouldBe` "Phenotype [0.0,0.0,1.0]"
 
@@ -79,10 +98,3 @@ spec = parallel $
                         `shouldBe`
                      1
             )
-
-      --  it "increasing distance to the optimum decreaces fitness and via versa" $
-        --    property (\optimum p1 p2 ->
-          --      traceShowId (fitness optimum p1 `compare` fitness optimum p2)
-            --   ==
-              --     traceShowId (distance optimum p2 `compare` distance optimum p1)
-          -- )
