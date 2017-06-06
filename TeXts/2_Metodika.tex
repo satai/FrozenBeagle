@@ -20,15 +20,25 @@ XXX neco trosku obecnejsiho?
 
 \section{Simulace}
 
-Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými pohlavími a žijí v nestrukturovaném prostředí. Fenotyp jedinců i optimum prostředí jsou čtyřrozměrnými vektory. Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase. Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
+Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými pohlavími a
+žijí v nestrukturovaném prostředí. Fenotyp jedinců i optimum prostředí jsou čtyřrozměrnými vektory.
+Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase.
+Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
 
-Optimum prostředí je po dobu 2048 kroků simulace konstantní a následně dojde k jeho skokové změně o $\Delta{}E$. Po této změně opět zůstane optimum neměnné.
+Optimum prostředí je po dobu 2048 kroků simulace konstantní a následně dojde k jeho skokové změně o
+$\Delta{}E$. Po této změně opět zůstane optimum neměnné.
 
-Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost populace udržována mechanismem turbidostatu. Navíc je každý jedinec limitován maximální délkou života -- po 64 krocích umírá. Jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
+Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost populace udržována
+mechanismem turbidostatu.
+Navíc je každý jedinec limitován maximální délkou života -- po 64 krocích umírá.
+Jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
 
 XXX picture: Big picture
 
-V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví a osmina z nich se může rozmnožit. Kolik vyvedou potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a jak následně geny určují jejich fenotyp, je popsán později.  Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů.
+V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví a osmina z nich se může rozmnožit.
+Kolik vyvedou potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
+jak následně geny určují jejich fenotyp, je popsán později.
+Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů.
 
 \section{Jedinec a jeho geny}
 
@@ -66,21 +76,24 @@ Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z
 \end{scope}
 \end{tikzpicture}
 
-Na počátku simulace jsou vygenerováni náhodní jedinci -- na každý lokus na každém chromosomu je se stejnou pravděpodobností vybrána jedna z možných alel.
+Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 50 lokusů.
+Na každém z lokusů může být jedna ze tří variant genu -- možné alely pro oba \textit{i}-té lokusy jsou
+značeny $G_i{}1$, $G_i{}2$ a $G_i{}3$ (dále obvykle značeny jen jako \textit{G1, G2, G3}, pokud nemůže dojít k záměně).
+
 
 \subsection{Mutace}
 
 Jedinou možnou mutací je změna alely za jinou.
 
-V každém kroku je pro každého jedince náhodně s pravděpodobností XXX určeno, zda u něj dojde k mutacím. Pokud ano, tak je nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně. V případě, že ano, tak je na lokus dána náhodně vybraná alela. Nová alela je z možných alel vybrána se stejnou pravděpodobností.
-\footnote{Jak si pozorný čtenář mohl povšimnout, je možné, přestože nepříliš pravděpodobné, že i jedinec, u kterého \uv{došlo k mutacím}, má nakonec stejné geny, jako na počátku, nebo má naopak změněných genů více.}
+V každém kroku je pro každého jedince náhodně s pravděpodobností XXX určeno, zda u něj dojde k mutacím. Pokud ano, tak je nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně. V případě, že ano, tak je na lokus dána náhodně vybraná alela. Nová alela je z možných alel vybrána se stejnou pravděpodobností.  \footnote{Jak si pozorný čtenář mohl povšimnout, je možné, přestože nepříliš pravděpodobné, že i jedinec, u kterého \uv{došlo k mutacím}, má nakonec stejné geny, jako na počátku, nebo má naopak změněných genů více.}
 \subsection{Křížení}
 
 Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny páry jedinců opačného pohlaví.
 
 Náhodě vybraná osmina párů má následně možnost splodit potomky.
 
-Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromozom je vybrán náhodný lokus. lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
+Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromozom je vybrán náhodný lokus.
+Lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
 
 Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
 
@@ -89,11 +102,19 @@ Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě poh
 
 Fenotyp jedince jsou jeho čtyři kvantitativní vlastnosti dohromady reprezentované jako čtyřrozměrný vektor.
 
-Aby simulace postihla různé procesy, které komplikují to, jak genotyp určuje fenotyp, je na jejím začátku vygenerováno množství pravidel, která v závislosti na přítomnosti různých kombinací alel mění výsledný fenotyp. Jmenovitě jde o epistatické interakce, pleiotropii a dominanci.
+Aby simulace postihla různé procesy, které komplikují to, jak genotyp určuje fenotyp, je na jejím začátku
+vygenerováno množství pravidel, která v závislosti na přítomnosti různých kombinací alel mění výsledný fenotyp.
+Jmenovitě jde o epistatické interakce, pleiotropii a dominanci.
 
-Každé pravidlo se skládá z předpokladů a vlivu na fenotyp. Příkladem jednoduchého pravidla může být \uv{pokud alespoň jeden z chromosomů obsahuje na lokusu $3$ alelu $G_3{}3$, tak změň fenotyp jedince o $[0.1, 0, 0, 0]$}, složitějšího, v tomto případě epistatického \uv{pokud alespoň jeden z chromosomů obsahuje na lokusu $3$ alelu $G_3{}2$ a alespoň jeden z chromosomů obsahuje na lokusu $7$ alelu $G_7{1}$, tak změň výsledný fenotyp o $[0, 0, 0, -0.431]$} .
+Každé pravidlo se skládá z předpokladů a vlivu na fenotyp. Příkladem jednoduchého pravidla může být
+\uv{pokud alespoň jeden z chromosomů obsahuje na lokusu $3$ alelu $G_3{}3$, tak změň fenotyp
+jedince o $[0.1, 0, 0, 0]$}, složitějšího, v tomto případě epistatického
+\uv{pokud alespoň jeden z chromosomů obsahuje na lokusu $3$ alelu $G_3{}2$ a alespoň jeden z chromosomů
+obsahuje na lokusu $7$ alelu $G_7{1}$, tak změň výsledný fenotyp o $[0, 0, 0, -0.431]$} .
 
-Fenotyp jedince je tak určen jako (vektorový) součet příspěvků pravidel, jejichž předpokladům geny jedince vyhovují. Každá složka fenotypu tak může být ovlivněna více geny a naopak každý gen může mít, často jen ve souhře s jinými geny, vliv na různé složky fenotypu.
+Fenotyp jedince je tak určen jako (vektorový) součet příspěvků pravidel,
+jejichž předpokladům geny jedince vyhovují. Každá složka fenotypu tak může být ovlivněna více geny a naopak
+každý gen může mít, často jen ve souhře s jinými geny, vliv na různé složky fenotypu.
 
 Obr XXX znázornění předpokladů pravidla
 
@@ -110,7 +131,9 @@ Jednoduché pravidlo zachycuje příspěvek jedné alely k jedné složce fenoty
 
 Obr XXX
 
-Na počátku je pro každý lokus vybrána náhodná dimense, kterou budou alely v ní ovlivňovat. Pro každou alelu pak změna fenotypu má jednu nenulovou hodnotu v náhodně vybrané dimenzi. Velikost této změny je vybrána z normálního rozložení, vlivy jednotlivých alel ze stejného locusu se tak mohou lišit jak ve směru, tak ve velikosti.
+Na počátku je pro každý lokus vybrána náhodná dimenze, kterou budou alely v ní ovlivňovat. Pro každou alelu pak změna
+fenotypu má jednu nenulovou hodnotu v náhodně vybrané dimenzi. Velikost této změny je vybrána z normálního rozložení,
+vlivy jednotlivých alel ze stejného locusu se tak mohou lišit jak ve směru, tak ve velikosti.
 
 \subsection{Pravidla pro pleiotropii a epistázi}
 
@@ -136,7 +159,7 @@ Existují dvě zajímavé skupiny dominantních vztahů. Jednou je situace, kdy 
 
 Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí. Tento optimální fenotyp se v průběhu simulace jednou skokově -- v jejím kroku číslo 2048 -- změní.
 
-Počáteční optimum je nastaveno na čtyřnásobek výběru z normálního roložení nezávisle pro každou dimenzi. Změna proběhne o dvojnásobek výběru z normálního rozložení nezávisle pro každou dimenzi.
+Počáteční optimum je nastaveno na osminásobek výběru z normálního roložení nezávisle pro každou dimenzi. Změna proběhne o osminásobek výběru z normálního rozložení nezávisle pro každou dimenzi.
 
 XXX
 $$
@@ -156,15 +179,16 @@ $$
 
 \subsection{Fitness}
 
-Euklidovská vzdálenost jedince od aktuálního optima prostředí určuje jeho aktuální fitness $fitness = XXX log XXX = XXX log \sum XXX$
-\footnote{Konstanty v tomto vzorci jsou čistě empiricky zvolené tak, aby, měli jedinci v simulacích přiměřené velikosti fitness -- pokud by například místo XXX byla výrazně menší konstanta, tak by pro většinu simulací neměla většina párů potomky a druh by brzy vymřel. Což je nezajímavé a neodpovídá to reálným druhům. Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
+Euklidovská vzdálenost jedince s fenotypem $X = [X_1,\dots{}X_4]$ od aktuálního optima prostředí určuje $E = [E_1,\dots{} E_4]$ jeho aktuální fitness, tak jak bylo zavedeno ve Fisherově geometrickém modeluXXX\footnote{Konstanta $a$ v tomto vzorci jsou čistě empiricky zvolená tak, aby, měli jedinci v simulacích přiměřené velikosti fitness -- pokud by například místo ní byla výrazně větší konstanta, tak by pro většinu simulací neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajímavé a neodpovídá to reálným druhům. Dvojka v exponentu je pak ve fisherovkých modelech běžná volba[XXX].  Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
+
+$$fitness = 4{\cdot}e^{-a |E-X|^2} = 4{\cdot}e^{-a\cdot{\sum{(E_i - X_i)^2}}}$$
 
 Počet potomků páru je aritmetický průměr fitness jeho členů zaokrouhlený dolů.
 
 
 \section{Řízení velikosti populace}
 
-Počáteční velikost populace je jedním z parametrů simulace. Následně je velikost populace řízena turbidostatickou zpětnou vazbou. V každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě. V přírodě mu odpovídá například regulace parazitem, kterému se lépe daří, pokud se jedinci častěji setkávají. Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace. Pravděpodobnost je z praktických důvodů zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1$, kde se ztrácí možnost (nejen biologické) interpretace.
+Počáteční velikost populace je jedním z parametrů simulace. Následně je velikost populace řízena turbidostatickou zpětnou vazbou[XXX]. V každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě. V přírodě mu odpovídá například regulace parazitem, kterému se lépe daří, pokud se jedinci častěji setkávají. Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace. Pravděpodobnost je z praktických důvodů zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1$, kde se ztrácí možnost (nejen biologické) interpretace.
 \footnote{Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace, které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a menší než deset na pár. XXX}
 
 Konstanta $k4$ v předchozím vzorci je vypočítána následově: $XXX$. Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na její hustotě a na deterministické smrti stářím po $64$ generacích.
@@ -180,7 +204,7 @@ Grafický \textit{FrozenBeagleSimulation}, zobrazený na XXX, umožňuje pohodln
 
 \textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace, které je moźné dále analyzovat a zpracovávat.
 
-Zdrojové texty jsou k dispozici na adrese \url {https://github.com/satai/FrozenBeagle} včetně jednotkových testů a kompletní historie ve VCS git. Jsou poskytnuty pod licencí XXX.
+Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů a kompletní historie ve VCS git. Jsou poskytnuty pod trojsložkovou BSD licencí.
 
 \section{Statistická analýza}
 
