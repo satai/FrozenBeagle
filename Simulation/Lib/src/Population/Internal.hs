@@ -73,6 +73,8 @@ randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (
     crossOverPoint1 <- integralUniform 1 (baseCount - 1)
     crossOverPoint2 <- integralUniform 1 (baseCount - 1)
 
+    swapChromosomes <- boolBernoulli (0.5 :: Double)
+
     let
         d1 = crossover crossOverPoint1 mdna1 fdna1
         d2 = crossover crossOverPoint2 mdna2 fdna2
