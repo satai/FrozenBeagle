@@ -232,11 +232,9 @@ extractParameters parameterFields = do
                , countOfBases = baseCount
                , countOfPleiotropicRules = pleiotropicRulesCount
                , countOfEpistaticRules = epistaticRulesCount
-               , countOfComplicatedRules = 0
-               , countOfDominantRules = 0   --FIXME
                , ratioOfNegativeDominantRules = 0.50  -- FIXME dominantRulesCount
-               , countOfPositiveDominantRules = 0
-               , seed = 69
+               , ratioOfPositiveDominantRules = 0.0
+               , seed = 1351
                }
   where
     optimumChangesGetValue :: (SpinButton, SpinButton, SpinButton) -> IO(Double, Double, Double)

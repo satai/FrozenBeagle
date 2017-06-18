@@ -6,7 +6,7 @@ module Simulation.Internal
     , randomOptimum
     , collapse
     , randomPopulation
-    , randomRules
+   -- , randomRules
     , average
     , stdDev
     , allTheSame
@@ -24,13 +24,12 @@ import           Population
 import           Schema
 
 import           Control.Monad
+import           Control.Exception.Base
 import           Data.List
 import           Data.MultiSet                    (fromList, toOccurList)
 
 import           Data.Random
 import           Data.Random.Distribution.Bernoulli
-import           Data.Random.Distribution.Normal
-import           Data.Random.Distribution.Uniform
 import           Data.Random.Extras hiding (shuffle)
 import           System.Random
 
@@ -45,10 +44,8 @@ data AnalysisParameters = AnalysisParameters
     , countOfBases                   :: Int
     , countOfPleiotropicRules        :: Int
     , countOfEpistaticRules          :: Int
-    , countOfComplicatedRules        :: Int
-    , countOfDominantRules           :: Int
     , ratioOfNegativeDominantRules   :: Double
-    , countOfPositiveDominantRules   :: Int
+    , ratioOfPositiveDominantRules   :: Double
     , seed                           :: Int
     } deriving Show
 
@@ -164,21 +161,21 @@ percentileFitness _          _                    _              (Population _ [
 percentileFitness percentile generationOptimum generationNumber  (Population _ is) =
     sort (map (fitness (generationOptimum generationNumber) . phenotype) is) !! floor (percentile * fromIntegral (length is))
 
-randomRules :: Int -> Int -> Int -> Int -> RVar [(Schema, Phenotype)]
-randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount = do
+randomRules :: Int -> Int -> RVar [(Schema, Phenotype)]
+randomRules baseCount epistaticRulesCount = do
+    let _ = assert $ baseCount > 0
+        _ = assert $ epistaticRulesCount == 0
     return []
 
 randomOptimum :: RVar Phenotype
 randomOptimum = randomPhenotypeFraction 12.0
 
-express :: Int -> Int -> Int -> Int -> RVar ExpressionStrategy
+express :: Int -> Int -> RVar ExpressionStrategy
 express baseCount
-        pleiotropicRulesCount
         epistaticRulesCount
-        complicatedRulesCount
         = do
 
-    rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
+    rules <- randomRules baseCount epistaticRulesCount
 
     let
         matchers = map (matches . fst) rules
@@ -204,17 +201,13 @@ params2rules params =
   let
     baseCount = countOfBases params
 
-    pleiotropicRulesCount = countOfPleiotropicRules params
     epistaticRulesCount = countOfEpistaticRules params
-    complicatedRulesCount = countOfComplicatedRules params
     negativeDominantRulesRatio = ratioOfNegativeDominantRules params
-    positiveDominantRulesCount = countOfPositiveDominantRules params
+    -- FIXME positiveDominantRulesRatio = ratioOfPositiveDominantRules params
 
     expression' = collapse (seed params) $ express
                                                    baseCount
-                                                   pleiotropicRulesCount
                                                    epistaticRulesCount
-                                                   complicatedRulesCount
 
     breedingStrategy = if separatedGenerations params
                            then panmictic expression'
