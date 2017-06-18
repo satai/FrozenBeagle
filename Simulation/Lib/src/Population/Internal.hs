@@ -138,7 +138,7 @@ panmictic expression optimum g population = do
 
 panmicticOverlap :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmicticOverlap expression optimum g population = do
-   pairs <- chosenPairs 8 population
+   pairs <- chosenPairs 1 population
    children <- mapM (mate expression optimum g) pairs
    return $ population ++ concat children
 
