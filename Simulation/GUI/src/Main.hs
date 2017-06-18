@@ -234,7 +234,7 @@ extractParameters parameterFields = do
                , countOfEpistaticRules = epistaticRulesCount
                , countOfComplicatedRules = 0
                , countOfDominantRules = 0   --FIXME
-               , countOfNegativeDominantRules = dominantRulesCount
+               , ratioOfNegativeDominantRules = 0.50  -- FIXME dominantRulesCount
                , countOfPositiveDominantRules = 0
                , seed = 69
                }

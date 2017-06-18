@@ -78,9 +78,11 @@ randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (
     let
         d1 = crossover crossOverPoint1 mdna1 fdna1
         d2 = crossover crossOverPoint2 mdna2 fdna2
-        offspringPhenotype = expression s (d1, d2)
 
-    return $ Individual s currentGeneration (d1, d2) offspringPhenotype
+        newChromosomes = if swapChromosomes then (d1, d2) else (d2, d1)
+        offspringPhenotype = expression s newChromosomes
+
+    return $ Individual s currentGeneration newChromosomes offspringPhenotype
 
 randomOffspring _ _ _ _ = error "should not happen - only a M and F can be parents in this order"
 
@@ -103,32 +105,32 @@ mate expression optimum g parents = do
     else
         return []
 
-pointMutationAllele :: Allele -> RVar Allele
-pointMutationAllele b = do
+pointMutationAllele :: Double -> Allele -> RVar Allele
+pointMutationAllele probabilityNegativeDominance b = do
     shouldMutateAllele <- boolBernoulli probabilityAlleleMutation
 
     if shouldMutateAllele
-        then randomAllele
+        then randomAllele probabilityNegativeDominance
         else return b
 
-pointMutationDnaString :: DnaString -> RVar DnaString
-pointMutationDnaString  (DnaString s) = do
-    bases <- mapM pointMutationAllele s
+pointMutationDnaString :: Double -> DnaString -> RVar DnaString
+pointMutationDnaString probabilityNegativeDominance (DnaString s) = do
+    bases <- mapM (pointMutationAllele probabilityNegativeDominance) s
     return $ DnaString bases
 
-pointMutationIndividual :: ExpressionStrategy -> Individual -> RVar Individual
-pointMutationIndividual expression i = do
+pointMutationIndividual :: Double -> ExpressionStrategy -> Individual -> RVar Individual
+pointMutationIndividual probabilityNegativeDominance expression i = do
     let (d1, d2) = chromosomes i
 
-    d1' <- pointMutationDnaString d1
-    d2' <- pointMutationDnaString d2
+    d1' <- pointMutationDnaString probabilityNegativeDominance d1
+    d2' <- pointMutationDnaString probabilityNegativeDominance d2
 
     let offspringPhenotype = expression (sex i) (d1', d2')
 
     return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
 
-pointMutation :: ExpressionStrategy -> Mutation
-pointMutation expression = mapM (pointMutationIndividual expression)
+pointMutation :: Double -> ExpressionStrategy -> Mutation
+pointMutation probabilityNegativeDominance expression = mapM (pointMutationIndividual probabilityNegativeDominance expression)
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmictic expression optimum g population = do

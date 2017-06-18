@@ -10,6 +10,7 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >          ) where
 >
 > import Data.Random
+> import Data.Random.Distribution.Bernoulli
 >
 > import Phenotype
 
@@ -27,10 +28,18 @@ DnaString is defined by the list of bases.
 > newtype DnaString = DnaString {genes :: [Allele]} deriving(Eq)
 >
 
-> randomAllele :: RVar Allele
-> randomAllele = do
+> randomDominantEffect :: Phenotype -> Double -> RVar Phenotype
+> randomDominantEffect effect' negativeDominantRatio = do
+>    isNegativeDominant <- boolBernoulli negativeDominantRatio
+>    if isNegativeDominant
+>    then return $ Phenotype $ map ((-2.0) *) $ phenotypeToVector effect'
+>    else return effect'
+
+> randomAllele :: Double -> RVar Allele
+> randomAllele negativeDominanceRatio = do
 >     effect' <- randomPhenotypeChangeWithOneNonzero --FIXME
->     return $ Allele effect' $ Phenotype  [0.0, 0.0, 0.0, 0.0]
+>     dominantEffect' <- randomDominantEffect effect' negativeDominanceRatio
+>     return $ Allele effect' dominantEffect'
 
 DnaStrings have a common lexicographic ordering. It's handy for constructing data structure but not used any other way.
 

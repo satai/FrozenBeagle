@@ -57,9 +57,9 @@ spec = parallel $
                         &&
                     fitness optimum p1 == 0.0
                         &&
-                    distance optimum p2 > 610.0
+                    distance optimum p2 > 100.0  --FIXME
                         &&
-                    distance optimum p1 > 610.0
+                    distance optimum p1 > 100.0  --FIXME
                 )
                   ||
                 (

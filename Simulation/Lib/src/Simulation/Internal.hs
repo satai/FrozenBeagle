@@ -47,42 +47,42 @@ data AnalysisParameters = AnalysisParameters
     , countOfEpistaticRules          :: Int
     , countOfComplicatedRules        :: Int
     , countOfDominantRules           :: Int
-    , countOfNegativeDominantRules   :: Int
+    , ratioOfNegativeDominantRules   :: Double
     , countOfPositiveDominantRules   :: Int
     , seed                           :: Int
     } deriving Show
 
-randomPopulation :: Int -> ExpressionStrategy -> Int -> RVar Population
-randomPopulation count expressionStrategy baseCount = Population 0 <$> randomIndividuals count expressionStrategy baseCount
+randomPopulation :: Int -> ExpressionStrategy -> Double -> Int -> RVar Population
+randomPopulation count expressionStrategy ratioOfNegativeDominance baseCount = Population 0 <$> randomIndividuals count expressionStrategy ratioOfNegativeDominance baseCount
 
-randomIndividuals :: Int -> ExpressionStrategy -> Int -> RVar [Individual]
-randomIndividuals count expressionStrategy baseCount = replicateM count $ randomIndividual baseCount expressionStrategy
+randomIndividuals :: Int -> ExpressionStrategy -> Double -> Int -> RVar [Individual]
+randomIndividuals count expressionStrategy ratioOfNegativeDominance baseCount = replicateM count $ randomIndividual ratioOfNegativeDominance baseCount expressionStrategy
 
-randomIndividual :: Int -> ExpressionStrategy -> RVar Individual
-randomIndividual baseCount expressionStrategy = do
+randomIndividual :: Double -> Int -> ExpressionStrategy -> RVar Individual
+randomIndividual ratioOfNegativeDominance baseCount expressionStrategy = do
     individualsSex <- randomSex
-    chs <- randomChromosomes baseCount
+    chs <- randomChromosomes ratioOfNegativeDominance baseCount
     return $ Individual individualsSex 0 chs $ expressionStrategy individualsSex chs
 
 randomSex :: RVar Sex
 randomSex = choice [F, M]
 
-randomChromosomes :: Int -> RVar (DnaString, DnaString)
-randomChromosomes baseCount = do
-    dna1 <- randomDnaString baseCount
-    dna2 <- randomDnaString baseCount
+randomChromosomes :: Double -> Int -> RVar (DnaString, DnaString)
+randomChromosomes ratioOfNegativeDominance baseCount = do
+    dna1 <- randomDnaString ratioOfNegativeDominance baseCount
+    dna2 <- randomDnaString ratioOfNegativeDominance baseCount
     return (dna1, dna2)
 
-randomDnaString :: Int -> RVar DnaString
-randomDnaString baseCount = DnaString <$> replicateM baseCount randomInitAllele
+randomDnaString :: Double -> Int -> RVar DnaString
+randomDnaString ratioOfNegativeDominance baseCount = DnaString <$> replicateM baseCount (randomInitAllele ratioOfNegativeDominance)
 
-randomInitAllele :: RVar Allele
-randomInitAllele = do
+randomInitAllele :: Double -> RVar Allele
+randomInitAllele ratioNegativeDominance = do
     isZero <- boolBernoulli (0.99 :: Double)
 
     if isZero
-        then return $ Allele (Phenotype  [0.0, 0.0, 0.0, 0.0]) (Phenotype  [0.0, 0.0, 0.0, 0.0])
-        else randomAllele
+        then return $ Allele zeroPhenotype zeroPhenotype
+        else randomAllele ratioNegativeDominance
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
@@ -94,6 +94,16 @@ homozygotness _ _ population =
         chs = map chromosomes is
         ps = zip (concatMap (genes . fst) chs) (concatMap (genes . snd) chs)
         homos = filter (uncurry (==)) ps
+    in
+        fromIntegral (length homos) / fromIntegral (length ps)
+
+dominantHomozygotness :: (Int -> Phenotype) -> Int -> Population -> Double
+dominantHomozygotness _ _ population =
+    let
+        is = individuals population
+        chs = map chromosomes is
+        ps = zip (concatMap (genes . fst) chs) (concatMap (genes . snd) chs)
+        homos = filter (\p -> effect p /= dominantEffect p) $ map fst $ filter (uncurry (==)) ps
     in
         fromIntegral (length homos) / fromIntegral (length ps)
 
@@ -159,36 +169,22 @@ randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRules
     return []
 
 randomOptimum :: RVar Phenotype
-randomOptimum = randomPhenotypeFraction 8.0
+randomOptimum = randomPhenotypeFraction 12.0
 
-negativeDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
-negativeDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d -> -3.0 * d) ph)
-
-positiveDominantRule :: (Schema, Phenotype) -> (DominantSchema, Phenotype)
-positiveDominantRule (Schema sch, Phenotype ph) = (DominantSchema sch, Phenotype $ map (\d ->  2.0 * d) ph)
-
-express :: Int -> Int -> Int -> Int -> Int -> Int -> RVar ExpressionStrategy
+express :: Int -> Int -> Int -> Int -> RVar ExpressionStrategy
 express baseCount
         pleiotropicRulesCount
         epistaticRulesCount
         complicatedRulesCount
-        negativeDominantRulesCount
-        positiveDominantRulesCount
         = do
 
     rules <- randomRules baseCount pleiotropicRulesCount epistaticRulesCount complicatedRulesCount
-    -- domRules <- dominantRules baseCount dominantRulesCount
-    shuffledRules <- shuffle rules
-
 
     let
-        domRules = map negativeDominantRule (take negativeDominantRulesCount shuffledRules) ++
-                   map positiveDominantRule (take positiveDominantRulesCount $ drop negativeDominantRulesCount shuffledRules)
+        matchers = map (matches . fst) rules
+        changes  = map snd (traceShowId rules)
 
-        matchers = map (matches . fst) rules ++ map (matches . fst) domRules
-        changes  = map snd (traceShowId rules) ++ map snd (traceShowId domRules)
-
-    return $ schemaBasedExpression $ zip matchers changes
+    return $ commonExpression $ schemaBasedExpression $ zip matchers changes
 
 collapse :: Int -> RVar a -> a
 collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
@@ -199,7 +195,7 @@ turbidostatCoefficientsForPopulationSize accidentDeathProbability' expectedPopul
 
 optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
 optimumCalculation optimum1 optimum2 g =
-    if g < optimumChangeGeneration
+    if g < optimumChangeGeneration || g > 2 * optimumChangeGeneration
         then optimum1
         else optimum2
 
@@ -211,7 +207,7 @@ params2rules params =
     pleiotropicRulesCount = countOfPleiotropicRules params
     epistaticRulesCount = countOfEpistaticRules params
     complicatedRulesCount = countOfComplicatedRules params
-    negativeDominantRulesCount = countOfNegativeDominantRules params
+    negativeDominantRulesRatio = ratioOfNegativeDominantRules params
     positiveDominantRulesCount = countOfPositiveDominantRules params
 
     expression' = collapse (seed params) $ express
@@ -219,8 +215,6 @@ params2rules params =
                                                    pleiotropicRulesCount
                                                    epistaticRulesCount
                                                    complicatedRulesCount
-                                                   negativeDominantRulesCount
-                                                   positiveDominantRulesCount
 
     breedingStrategy = if separatedGenerations params
                            then panmictic expression'
@@ -234,13 +228,13 @@ params2rules params =
     maximumAge = maxAge params
 
     optimum1 = collapse (seed params + 1) randomOptimum
-    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 8.0
+    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 12.0
     optimum2 = Phenotype $ zipWithCheck (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
 
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 
   in
-    EvolutionRules { mutation = [ pointMutation expression' ]
+    EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio expression' ]
                    , breeding = [ breedingStrategy ]
                    , selection = [ hSelection ]
                    , deaths =
@@ -257,7 +251,7 @@ computeSimulation params =
     rules = params2rules params
     startPopulationSize = populationSize params
 
-    initialPopulation = randomPopulation startPopulationSize (expression rules) $ countOfBases params
+    initialPopulation = randomPopulation startPopulationSize (expression rules) (ratioOfNegativeDominantRules params) $ countOfBases params
     allGenerations = evolution maxSteps rules initialPopulation
 
     generations :: [Population]
@@ -272,6 +266,7 @@ computeSimulation params =
      , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
      , ("Population Size", stats $ const $ fromIntegral . length . individuals)
      , ("homozygotness", stats $ homozygotness $ optimumForGeneration rules)
+     , ("% of dominant homozygotes", stats $ dominantHomozygotness $ optimumForGeneration rules)
      , ("% of polymorphic locus", stats $ const polymorphism)
      , ("% of locus with allele with more than 90% appearence", stats $ const almostPolymorphism)
      ]

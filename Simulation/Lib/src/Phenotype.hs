@@ -4,6 +4,7 @@ module Phenotype
     , randomPhenotypeFraction
     , randomPhenotypeChange
     , randomPhenotypeChangeWithOneNonzero
+    , zeroPhenotype
     , fitness) where
 
 import Phenotype.Internal
