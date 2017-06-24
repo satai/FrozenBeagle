@@ -7,6 +7,8 @@ module SimulationConstants ( dimensionCount
                            , optimumSizeCoeficient
                            , optimumChangeSizeCoeficient
                            , fitnessDecreaseCoefficient
+                           , negativeDominanceScale
+                           , negativeDominanceShape
                            , nan
                            ) where
 
@@ -39,3 +41,9 @@ optimumChangeSizeCoeficient = 12.0
 
 fitnessDecreaseCoefficient :: Double
 fitnessDecreaseCoefficient = -0.004
+
+negativeDominanceScale :: Double
+negativeDominanceScale = 1.0
+
+negativeDominanceShape :: Double
+negativeDominanceShape = 1.5

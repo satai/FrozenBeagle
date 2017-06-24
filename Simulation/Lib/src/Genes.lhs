@@ -32,7 +32,7 @@ DnaString is defined by the list of bases.
 > randomDominantEffect :: Phenotype -> Double -> RVar Phenotype
 > randomDominantEffect effect' negativeDominantRatio = do
 >    isNegativeDominant <- boolBernoulli negativeDominantRatio
->    effectSize <- pareto 1.0 2.0
+>    effectSize <- pareto negativeDominanceScale negativeDominanceShape
 >    if isNegativeDominant
 >    then return $ Phenotype $ map ((-1.0 * effectSize) *) $ phenotypeToVector effect'
 >    else return effect'
