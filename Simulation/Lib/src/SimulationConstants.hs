@@ -4,6 +4,9 @@ module SimulationConstants ( dimensionCount
                            , optimumChangeGeneration
                            , accidentDeathProbability
                            , probabilityAlleleMutation
+                           , optimumSizeCoeficient
+                           , optimumChangeSizeCoeficient
+                           , fitnessDecreaseCoefficient
                            , nan
                            ) where
 
@@ -27,3 +30,12 @@ probabilityAlleleMutation = 0.0002
 
 nan :: Double
 nan = 0.0 / 0.0
+
+optimumSizeCoeficient :: Double
+optimumSizeCoeficient = 12.0
+
+optimumChangeSizeCoeficient :: Double
+optimumChangeSizeCoeficient = 12.0
+
+fitnessDecreaseCoefficient :: Double
+fitnessDecreaseCoefficient = -0.004

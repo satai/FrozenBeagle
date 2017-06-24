@@ -168,7 +168,7 @@ randomRules baseCount epistaticRulesCount = do
     return []
 
 randomOptimum :: RVar Phenotype
-randomOptimum = randomPhenotypeFraction 12.0
+randomOptimum = randomPhenotypeFraction optimumSizeCoeficient
 
 express :: Int -> Int -> RVar ExpressionStrategy
 express baseCount
@@ -221,7 +221,7 @@ params2rules params =
     maximumAge = maxAge params
 
     optimum1 = collapse (seed params + 1) randomOptimum
-    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction 12.0
+    optimumC = collapse (seed params + 2) $ randomPhenotypeFraction optimumChangeSizeCoeficient
     optimum2 = Phenotype $ zipWithCheck (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
 
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
