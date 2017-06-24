@@ -11,6 +11,7 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >
 > import Data.Random
 > import Data.Random.Distribution.Bernoulli
+> import Data.Random.Distribution.Pareto
 >
 > import Phenotype
 
@@ -31,8 +32,9 @@ DnaString is defined by the list of bases.
 > randomDominantEffect :: Phenotype -> Double -> RVar Phenotype
 > randomDominantEffect effect' negativeDominantRatio = do
 >    isNegativeDominant <- boolBernoulli negativeDominantRatio
+>    effectSize <- pareto 1.0 2.0
 >    if isNegativeDominant
->    then return $ Phenotype $ map ((-2.0) *) $ phenotypeToVector effect'
+>    then return $ Phenotype $ map ((-1.0 * effectSize) *) $ phenotypeToVector effect'
 >    else return effect'
 
 > randomAllele :: Double -> RVar Allele
