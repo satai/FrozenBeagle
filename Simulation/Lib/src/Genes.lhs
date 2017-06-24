@@ -14,6 +14,7 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 > import Data.Random.Distribution.Pareto
 >
 > import Phenotype
+> import SimulationConstants
 
 Alleles are FIXME
 
