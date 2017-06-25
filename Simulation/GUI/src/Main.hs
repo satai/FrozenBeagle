@@ -221,11 +221,10 @@ extractParameters parameterFields = do
 
     pleiotropicRulesCount <- spinButtonGetValueAsInt $ countOfPleiotropicRulesField parameterFields
     epistaticRulesCount <- spinButtonGetValueAsInt $ countOfEpistaticRulesField parameterFields
-    dominantRulesCount <- spinButtonGetValueAsInt $ countOfDominantRulesField parameterFields
 
     return AnalysisParameters
                { separatedGenerations = separatedGen
-               , hardSelectionThreshold = hardSelectionThresholdValue
+               , hardSelectionThreshold = realToFrac hardSelectionThresholdValue
                , populationSize =  popSize
                , optimumChange = optimumMovements
                , maxAge = 512
@@ -234,6 +233,7 @@ extractParameters parameterFields = do
                , countOfEpistaticRules = epistaticRulesCount
                , ratioOfNegativeDominantRules = 0.50  -- FIXME dominantRulesCount
                , ratioOfPositiveDominantRules = 0.0
+               , ratioOfPleiotropicRules = 0.0
                , seed = 1351
                }
   where

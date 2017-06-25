@@ -46,45 +46,47 @@ data AnalysisParameters = AnalysisParameters
     , countOfEpistaticRules          :: Int
     , ratioOfNegativeDominantRules   :: Double
     , ratioOfPositiveDominantRules   :: Double
+    , ratioOfPleiotropicRules        :: Double
     , seed                           :: Int
     } deriving Show
 
-randomPopulation :: Int -> ExpressionStrategy -> Double -> Int -> RVar Population
-randomPopulation count expressionStrategy ratioOfNegativeDominance baseCount = Population 0 <$> randomIndividuals count expressionStrategy ratioOfNegativeDominance baseCount
+randomPopulation :: Int -> ExpressionStrategy -> Double  -> Double -> Int -> RVar Population
+randomPopulation count expressionStrategy ratioOfNegativeDominance probabilityPleiotropic baseCount = Population 0 <$> randomIndividuals count expressionStrategy ratioOfNegativeDominance probabilityPleiotropic baseCount
 
-randomIndividuals :: Int -> ExpressionStrategy -> Double -> Int -> RVar [Individual]
-randomIndividuals count expressionStrategy ratioOfNegativeDominance baseCount = replicateM count $ randomIndividual ratioOfNegativeDominance baseCount expressionStrategy
+randomIndividuals :: Int -> ExpressionStrategy -> Double -> Double -> Int -> RVar [Individual]
+randomIndividuals count expressionStrategy ratioOfNegativeDominance probabilityPleiotropic baseCount = replicateM count $ randomIndividual ratioOfNegativeDominance probabilityPleiotropic baseCount expressionStrategy
 
-randomIndividual :: Double -> Int -> ExpressionStrategy -> RVar Individual
-randomIndividual ratioOfNegativeDominance baseCount expressionStrategy = do
+randomIndividual :: Double ->Double -> Int -> ExpressionStrategy -> RVar Individual
+randomIndividual ratioOfNegativeDominance probabilityPleiotropic baseCount expressionStrategy = do
     individualsSex <- randomSex
-    chs <- randomChromosomes ratioOfNegativeDominance baseCount
+    chs <- randomChromosomes ratioOfNegativeDominance probabilityPleiotropic baseCount
     return $ Individual individualsSex 0 chs $ expressionStrategy individualsSex chs
 
 randomSex :: RVar Sex
 randomSex = choice [F, M]
 
-randomChromosomes :: Double -> Int -> RVar (DnaString, DnaString)
-randomChromosomes ratioOfNegativeDominance baseCount = do
-    dna1 <- randomDnaString ratioOfNegativeDominance baseCount
-    dna2 <- randomDnaString ratioOfNegativeDominance baseCount
+randomChromosomes :: Double -> Double -> Int -> RVar (DnaString, DnaString)
+randomChromosomes ratioOfNegativeDominance ratioPleiotropic baseCount = do
+    dna1 <- randomDnaString ratioOfNegativeDominance ratioPleiotropic baseCount
+    dna2 <- randomDnaString ratioOfNegativeDominance ratioPleiotropic baseCount
     return (dna1, dna2)
 
-randomDnaString :: Double -> Int -> RVar DnaString
-randomDnaString ratioOfNegativeDominance baseCount = DnaString <$> replicateM baseCount (randomInitAllele ratioOfNegativeDominance)
+randomDnaString :: Double -> Double -> Int -> RVar DnaString
+randomDnaString ratioOfNegativeDominance ratioPleiotropic baseCount = DnaString <$> replicateM baseCount (randomInitAllele ratioOfNegativeDominance ratioPleiotropic )
 
-randomInitAllele :: Double -> RVar Allele
-randomInitAllele ratioNegativeDominance = do
-    isZero <- boolBernoulli (0.99 :: Double)
+randomInitAllele :: Double -> Double -> RVar Allele
+randomInitAllele ratioNegativeDominance ratioPleiotropic  = do
+    isZero <- boolBernoulli (0.99 :: Float)
 
     if isZero
         then return $ Allele zeroPhenotype zeroPhenotype
-        else randomAllele ratioNegativeDominance
+        else randomAllele ratioNegativeDominance ratioPleiotropic
 
 avgFitness :: (Int -> Phenotype) -> Int -> Population -> Double
 avgFitness generationOptimum generationNumber = avgFitnessForGeneration (generationOptimum generationNumber)
 
 homozygotness :: (Int -> Phenotype) -> Int -> Population -> Double
+
 homozygotness _ _ population =
     let
         is = individuals population
@@ -203,6 +205,7 @@ params2rules params =
 
     epistaticRulesCount = countOfEpistaticRules params
     negativeDominantRulesRatio = ratioOfNegativeDominantRules params
+    pleiotropicRulesRatio = ratioOfPleiotropicRules params
     -- FIXME positiveDominantRulesRatio = ratioOfPositiveDominantRules params
 
     expression' = collapse (seed params) $ express
@@ -227,7 +230,7 @@ params2rules params =
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 
   in
-    EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio expression' ]
+    EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio pleiotropicRulesRatio expression' ]
                    , breeding = [ breedingStrategy ]
                    , selection = [ hSelection ]
                    , deaths =
@@ -244,7 +247,7 @@ computeSimulation params =
     rules = params2rules params
     startPopulationSize = populationSize params
 
-    initialPopulation = randomPopulation startPopulationSize (expression rules) (ratioOfNegativeDominantRules params) $ countOfBases params
+    initialPopulation = randomPopulation startPopulationSize (expression rules) (ratioOfNegativeDominantRules params) (ratioOfPleiotropicRules params) $ countOfBases params
     allGenerations = evolution maxSteps rules initialPopulation
 
     generations :: [Population]

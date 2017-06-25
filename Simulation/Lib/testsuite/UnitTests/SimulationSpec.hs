@@ -74,42 +74,42 @@ spec = parallel $ do
 
 
         it "random population contains required number of individuals" $
-            property (\i d (NonNegative count) ->
-                length (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) d 33) (mkStdGen i))
+            property (\i d1 d2 (NonNegative count) ->
+                length (individuals $ fst $ sampleState (randomPopulation count (\_ _-> Phenotype []) d1 d2 33) (mkStdGen i))
                     `shouldBe`
                 count
              )
 
         it "random population generation is 0" $
-            property (\i d (NonNegative count) ->
-                generation (fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) d 33)  (mkStdGen i))
+            property (\i d1 d2 (NonNegative count) ->
+                generation (fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) d1 d2 33)  (mkStdGen i))
                     `shouldBe`
                 0
             )
 
         it "random population has only individuals of generation 0" $
-            property (\i d (NonNegative count) ->
-                map birthGeneration (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) d 23) (mkStdGen i))
+            property (\i d1 d2 (NonNegative count) ->
+                map birthGeneration (individuals $ fst $ sampleState (randomPopulation count (\_ _ -> Phenotype []) d1 d2 23) (mkStdGen i))
                     `shouldBe`
                 replicate count 0
             )
 
         it "big enough random population contains both Males and Females" $
-            property (\i d (Positive count) ->
-                fromList (map sex $ individuals $ fst $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) d 13) (mkStdGen i))
+            property (\i d1 d2 (Positive count) ->
+                fromList (map sex $ individuals $ fst $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) d1 d2 13) (mkStdGen i))
                     `shouldBe`
                 fromList [F, M]
             )
 
         it "big enough random population contains both Males and Females in about the same count" $
             -- https://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair#Examples
-            property (\i d (Positive count) ->
+            property (\i d1 d2 (Positive count) ->
                  let
                      n :: Int
                      n = count + 3000
                      is = individuals
                             $ fst
-                            $ sampleState (randomPopulation n (\_ _ -> Phenotype []) d 33) (mkStdGen i)
+                            $ sampleState (randomPopulation n (\_ _ -> Phenotype []) d1 d2 33) (mkStdGen i)
                      femCount :: Int
                      femCount = length $ filter (== F) $ map sex is
                      p :: Double
@@ -122,12 +122,12 @@ spec = parallel $ do
             )
 
         it "random population has all the chromosomes of the expected length" $
-            property (\i d (Positive count) (Positive geneCount) ->
+            property (\i d1 d2 (Positive count) (Positive geneCount) ->
                 all (== (geneCount, geneCount))
                    $ map ((\ch -> (length $ genes $ fst ch, length $ genes $ snd ch)) . chromosomes)
                    $ individuals
                    $ fst
-                   $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) d geneCount) (mkStdGen i)
+                   $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) d1 d2 geneCount) (mkStdGen i)
             )
 
 --         it "random rules have expected count of rules" $

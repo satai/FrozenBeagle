@@ -105,32 +105,32 @@ mate expression optimum g parents = do
     else
         return []
 
-pointMutationAllele :: Double -> Allele -> RVar Allele
-pointMutationAllele probabilityNegativeDominance b = do
+pointMutationAllele :: Double -> Double -> Allele -> RVar Allele
+pointMutationAllele probabilityNegativeDominance probabilityPleiotropic b = do
     shouldMutateAllele <- boolBernoulli probabilityAlleleMutation
 
     if shouldMutateAllele
-        then randomAllele probabilityNegativeDominance
+        then randomAllele probabilityNegativeDominance probabilityPleiotropic
         else return b
 
-pointMutationDnaString :: Double -> DnaString -> RVar DnaString
-pointMutationDnaString probabilityNegativeDominance (DnaString s) = do
-    bases <- mapM (pointMutationAllele probabilityNegativeDominance) s
+pointMutationDnaString :: Double -> Double -> DnaString -> RVar DnaString
+pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic (DnaString s) = do
+    bases <- mapM (pointMutationAllele probabilityNegativeDominance probabilityPleiotropic) s
     return $ DnaString bases
 
-pointMutationIndividual :: Double -> ExpressionStrategy -> Individual -> RVar Individual
-pointMutationIndividual probabilityNegativeDominance expression i = do
+pointMutationIndividual :: Double ->Double -> ExpressionStrategy -> Individual -> RVar Individual
+pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expression i = do
     let (d1, d2) = chromosomes i
 
-    d1' <- pointMutationDnaString probabilityNegativeDominance d1
-    d2' <- pointMutationDnaString probabilityNegativeDominance d2
+    d1' <- pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic d1
+    d2' <- pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic d2
 
     let offspringPhenotype = expression (sex i) (d1', d2')
 
     return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
 
-pointMutation :: Double -> ExpressionStrategy -> Mutation
-pointMutation probabilityNegativeDominance expression = mapM (pointMutationIndividual probabilityNegativeDominance expression)
+pointMutation :: Double -> Double -> ExpressionStrategy -> Mutation
+pointMutation probabilityNegativeDominance probabilityPleiotropic expression = mapM (pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expression)
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmictic expression optimum g population = do

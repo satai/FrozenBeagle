@@ -30,4 +30,5 @@ extractParams seedValue = AnalysisParameters
                       <*> option auto (long "countOfEpistaticRules" <> value 0)
                       <*> option auto (long "ratioOfNegativeDominantRules" <> value 0.0)
                       <*> option auto (long "ratioOfPositiveDominantRules" <> value 0.0)
+                      <*> option auto (long "ratioOfPleiotropicRules" <> value 0.0)
                       <*> option auto (long "dont_use" <> value seedValue)

@@ -38,9 +38,12 @@ DnaString is defined by the list of bases.
 >    then return $ Phenotype $ map ((-1.0 * effectSize) *) $ phenotypeToVector effect'
 >    else return effect'
 
-> randomAllele :: Double -> RVar Allele
-> randomAllele negativeDominanceRatio = do
->     effect' <- randomPhenotypeChangeWithOneNonzero --FIXME
+> randomAllele :: Double -> Double -> RVar Allele
+> randomAllele negativeDominanceRatio pleiotropicRatio = do
+>     isPleiotropic <- boolBernoulli pleiotropicRatio
+>     effect' <- if isPleiotropic
+>                then randomPhenotypeFraction (1 / (sqrt $ fromIntegral dimensionCount))
+>                else randomPhenotypeChangeWithOneNonzero
 >     dominantEffect' <- randomDominantEffect effect' negativeDominanceRatio
 >     return $ Allele effect' dominantEffect'
 
