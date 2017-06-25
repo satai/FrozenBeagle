@@ -106,7 +106,7 @@ spec = parallel $ do
             property (\i d1 d2 (Positive count) ->
                  let
                      n :: Int
-                     n = count + 3000
+                     n = count + 10000
                      is = individuals
                             $ fst
                             $ sampleState (randomPopulation n (\_ _ -> Phenotype []) d1 d2 33) (mkStdGen i)
