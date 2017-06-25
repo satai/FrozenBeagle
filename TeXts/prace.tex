@@ -39,13 +39,14 @@
 %% Ostatní balíčky
 \usepackage{graphicx}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{url}
 
 \usepackage{cite}
 
 \usepackage{tikz}
-\usetikzlibrary{chains,fit,shapes}
-
+\usetikzlibrary{chains,fit,shapes,calc,arrows,backgrounds}
+\usepackage{xstring}
 
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
 %% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
@@ -78,6 +79,57 @@
 \chapter*{#1}
 \addcontentsline{toc}{chapter}{#1}
 }
+
+
+
+\pgfdeclarelayer{background layer} 
+\pgfdeclarelayer{foreground layer} 
+\pgfsetlayers{background layer,main,foreground layer}
+
+
+\newcommand*{\NodeSize}{0.8cm}%
+\newcommand*{\YShiftBetweenRows}{-1cm}% Subsequent rows are shited down so they don't overlap
+\tikzset{DNA Style/.style={minimum size=0.8cm, draw=gray, line width=1pt}}
+
+\tikzset{Fit Line Style 1/.style={draw=olive, thick, dotted}}
+\tikzset{Fill Style 1/.style={fill=olive!20}}
+
+\tikzset{Fit Line Style 2/.style={draw=green!50!black, thick, dashed}}
+\tikzset{Fill Style 2/.style={fill=green!20}}
+
+\newlength{\YShift}% 
+\newcounter{ColumnCounter}% Prefix for node labels
+
+% Initialize - These are probably not needed, but prefer to set them
+\setlength{\YShift}{0cm}% 
+\setcounter{ColumnCounter}{0}
+
+
+\newcommand*{\DNASequence}[2][Mark]{%
+    % http://tex.stackexchange.com/questions/12091/tikz-foreach-loop-with-macro-defined-list
+    \setcounter{ColumnCounter}{0}
+    \def\Sequence{#2}
+    \foreach [count=\xi] \Label/\Color in \Sequence {%
+        \pgfmathsetmacro{\XShift}{\NodeSize*\xi}%
+        \IfStrEq{\Color}{}{\def\Color{white}}{}
+        \edef\NodeName{#1-\arabic{ColumnCounter}}
+        \begin{pgfonlayer}{foreground layer}
+        \node [DNA Style, fill=\Color, xshift=\XShift] (\NodeName) {\Label};
+        \end{pgfonlayer}
+        \stepcounter{ColumnCounter}
+    } 
+}%
+
+
+\newcommand*{\ConnectNodes}[3][]{%
+    % #1 = draw options
+    % #2 = ending node
+    % #3 = list of starting nodes
+    \def\ListOfEndNodes{#3}
+    \foreach \EndNode in \ListOfEndNodes {%
+    \draw[latex'-, thin, #1] (#2) to[#1] (\EndNode);
+    }%
+  }
 
 \begin{document}
 
@@ -239,6 +291,11 @@ Keywords:
 \setcounter{page}{1}
 \tableofcontents
 
+
+\listoffigures
+
+\listoftables
+
 %%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných souborech
 \include{0_Uvod}
 
@@ -255,13 +312,8 @@ Keywords:
 %%% Seznam použité literatury
 \include{literatura}
 
-%%% Tabulky v diplomové práci, existují-li.
-\chapwithtoc{Seznam tabulek}
 
-\listoftables
 
-%%% Použité zkratky v diplomové práci, existují-li, včetně jejich vysvětlení.
-\chapwithtoc{Seznam použitých zkratek}
 
 %%% Přílohy k diplomové práci, existují-li (různé dodatky jako výpisy programů,
 %%% diagramy apod.). Každá příloha musí být alespoň jednou odkazována z vlastního
