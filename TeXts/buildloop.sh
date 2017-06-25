@@ -22,7 +22,10 @@ function build_it {
   echo
 }
 
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+
 make clean
+make
 build_it
 
 while true; do
