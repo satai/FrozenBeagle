@@ -10,12 +10,16 @@ module Phenotype.Internal
 
 import ListUtils
 import Control.Monad
+import Data.List
 import Data.Random
 import Data.Random.Distribution.Normal
 
 import SimulationConstants
 
-newtype Phenotype = Phenotype [Double] deriving (Eq, Show, Ord)
+newtype Phenotype = Phenotype [Double] deriving (Eq, Ord)
+
+instance Show Phenotype where
+    show (Phenotype xs) = "(" ++ intercalate "," (map show xs) ++ ")"
 
 zeroPhenotype :: Phenotype
 zeroPhenotype = Phenotype zeroPhenotypeVec

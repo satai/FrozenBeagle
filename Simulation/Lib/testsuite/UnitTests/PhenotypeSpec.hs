@@ -70,7 +70,7 @@ spec = parallel $
             )
 
         it "Phenotype has sane text representation" $
-            show (Phenotype [0, 0, 1]) `shouldBe` "Phenotype [0.0,0.0,1.0]"
+            show (Phenotype [0, 0, 1]) `shouldBe` "(0.0,0.0,1.0)"
 
         it "zeroPhenotype contains only zeroes" $
             all (== 0.0) (phenotypeToVector zeroPhenotype) `shouldBe` True

@@ -2,6 +2,7 @@ module Expression
     ( ExpressionStrategy
     , schemaBasedExpression
     , commonExpression
+    , simpleExpression
     ) where
 
 import Genes

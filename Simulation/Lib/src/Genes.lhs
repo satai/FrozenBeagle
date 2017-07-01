@@ -7,8 +7,10 @@ This module exports Genes as lists of bases, bases names and crossover and mutat
 >          , crossover
 >          , mutate
 >          , randomAllele
+>          , randomDominantEffect
 >          ) where
 >
+> import Data.List
 > import Data.Random
 > import Data.Random.Distribution.Bernoulli
 > import Data.Random.Distribution.Pareto
@@ -22,7 +24,10 @@ Alleles are FIXME
 >                { effect :: Phenotype
 >                , dominantEffect :: Phenotype
 >                }
->     deriving (Eq, Ord, Show)
+>     deriving (Eq, Ord)
+>
+> instance Show Allele where
+>     show (Allele ef def) = "{" ++ show ef ++ "|" ++ show def ++ "}"
 
 
 DnaString is defined by the list of bases.
@@ -42,7 +47,7 @@ DnaString is defined by the list of bases.
 > randomAllele negativeDominanceRatio pleiotropicRatio = do
 >     isPleiotropic <- boolBernoulli pleiotropicRatio
 >     effect' <- if isPleiotropic
->                then randomPhenotypeFraction (1 / (sqrt $ fromIntegral dimensionCount))
+>                then randomPhenotypeFraction (1.0 / sqrt (fromIntegral dimensionCount))
 >                else randomPhenotypeChangeWithOneNonzero
 >     dominantEffect' <- randomDominantEffect effect' negativeDominanceRatio
 >     return $ Allele effect' dominantEffect'
@@ -53,7 +58,7 @@ DnaStrings have a common lexicographic ordering. It's handy for constructing dat
 >     (DnaString d1) `compare` (DnaString d2) = d1 `compare` d2
 >
 > instance Show DnaString where
->     show (DnaString elems) = "[" ++ map (head . show) elems ++ "]"
+>     show (DnaString elems) = "[" ++ intercalate ", " (map show elems) ++ "]"
 >
 > crossover :: Int -> DnaString -> DnaString -> DnaString
 > crossover crossoverPoint (DnaString dna1) (DnaString dna2) = DnaString $ take crossoverPoint dna1 ++ drop crossoverPoint dna2

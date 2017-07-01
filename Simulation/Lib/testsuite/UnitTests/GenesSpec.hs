@@ -4,11 +4,15 @@ module UnitTests.GenesSpec (spec, DnaString, Allele) where
 
 import Test.Hspec
 import Test.QuickCheck
+
+import Data.Random
+import System.Random
+
 import Data.List
 
 import Genes
 import ListUtils
-import Phenotype()
+import Phenotype
 
 import UnitTests.PhenotypeSpec()
 
@@ -16,27 +20,36 @@ instance Arbitrary Allele where
   arbitrary = Allele <$> arbitrary <*> arbitrary
 
 instance Arbitrary DnaString where
-     arbitrary = DnaString <$> vector 10
+     arbitrary = DnaString <$> vector 8
 
 newtype PointInString = PointInString Int deriving Show
 instance Arbitrary PointInString  where
-     arbitrary = PointInString <$> elements [0..11]
+     arbitrary = PointInString <$> elements [0..8]
 
 newtype IndexInString = IndexInString Int deriving Show
 instance Arbitrary IndexInString  where
-     arbitrary = IndexInString <$> elements [0..9]
+     arbitrary = IndexInString <$> elements [0..7]
 
 spec :: Spec
-spec = parallel $
+spec = parallel $ do
     describe "Genes" $ do
 
---         it "show DNA string looks like '[12213]'" $
---             show (DnaString [G1, G2, G2, G1, G3]) `shouldBe` "[12213]"
+        it "show DNA string looks like '[12213]'" $
+             show ( DnaString [ Allele (Phenotype [ 1.1, 1.2]) (Phenotype [-1.2, 0.3]),
+                                Allele (Phenotype [-1.2, 0.3]) (Phenotype [-0.2, 0.3])
+                              ]
+                  ) `shouldBe` "[{(1.1,1.2)|(-1.2,0.3)}, {(-1.2,0.3)|(-0.2,0.3)}]"
 
---         it "show DNA strings are lexicographicaly ordered" $
---             DnaString [G1, G2, G2, G1, G3] `compare` DnaString [G1, G2, G3, G1, G3]
---                 `shouldBe`
---             LT
+        it "show DNA strings are lexicographicaly ordered" $
+             DnaString [ Allele (Phenotype [ 1.1, 1.2]) (Phenotype [-1.2, 0.3]),
+                         Allele (Phenotype [-1.2, 0.3]) (Phenotype [-0.2, 0.3])
+                       ]
+             `compare`
+             DnaString [ Allele (Phenotype [ 1.1, 1.2]) (Phenotype [-1.2, 0.3]),
+                         Allele (Phenotype [-1.2, 5.5]) (Phenotype [-0.2, 0.3])
+                       ]
+                 `shouldBe`
+             LT
 
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) (DnaString dna2)  ->
@@ -81,4 +94,21 @@ spec = parallel $
         it "mutated dna doesn't differ from original one with exception of point of mutation" $
             property ( \(IndexInString n) b (DnaString dna ) ->
                  1 >= length (elemIndices True $ zipWithCheck (/=) dna (genes $ mutate n b (DnaString dna)) )
+            )
+
+    describe "Random Dominant Effect" $ do
+        it "there is no effect if it's probability is 0.0" $
+            property ( \(Phenotype p) seed  ->
+                fst (sampleState (randomDominantEffect (Phenotype p) 0.0) (mkStdGen seed))
+                    `shouldBe`
+                Phenotype p
+            )
+
+        it "result is oposite direction than input if probability is 1.0" $
+            property ( \(Phenotype p) seed  ->
+                fst (sampleState (randomDominantEffect (Phenotype p) 1.0) (mkStdGen seed))
+                    `shouldSatisfy`
+                ( \(Phenotype p') ->
+                   all (== 0) (zipWith (+) (map signum p) (map signum p'))
+                )
             )
