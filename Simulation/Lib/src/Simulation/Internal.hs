@@ -190,7 +190,7 @@ collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
 
 turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
 turbidostatCoefficientsForPopulationSize accidentDeathProbability' expectedPopulationSize =
-      (1 - accidentDeathProbability') / 2.25 / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
+      (1 - 1.5 * accidentDeathProbability') / (27.0 / 8.0) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
 optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
 optimumCalculation optimum1 optimum2 g =

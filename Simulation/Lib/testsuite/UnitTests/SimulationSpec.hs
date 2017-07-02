@@ -25,8 +25,22 @@ import SimulationConstants
 spec :: Spec
 spec = parallel $ do
     describe "Simulation" $ do
-        it "turbidostat constants" $
-          property (turbidostatCoefficientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
+        it "turbidostat constants by example" $
+          property (turbidostatCoefficientsForPopulationSize 0.0 256 `shouldBe` 4.521122685185185e-6)
+
+        it "turbidostat constants keep population stable for pair fitness = 1.0 and population size 1024" $
+            property (
+                round ((turbidostatCoefficientsForPopulationSize 0.1 1024 * ((1024 * 1.5) ** 2.0) + 0.1) * (1024 * 1.5))
+                `shouldBe`
+                1024
+            )
+
+        it "turbidostat constants keep population stable for pair fitness = 1.0 and population size 256" $
+            property (
+                round ((traceShowId (turbidostatCoefficientsForPopulationSize 0.0 256) * ((256 * 1.5) ** 2.0) + 0.0) * (256 * 1.5))
+                `shouldBe`
+                256
+            )
 
         it "optimum calculation produces constant for first couple of generations" $
             property $
