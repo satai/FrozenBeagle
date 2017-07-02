@@ -1,4 +1,6 @@
-module Expression
+{-# LANGUAGE BangPatterns #-}
+
+ module Expression
     ( ExpressionStrategy
     , schemaBasedExpression
     , commonExpression
@@ -23,7 +25,7 @@ combinedExpression :: ExpressionStrategy -> ExpressionStrategy -> ExpressionStra
 combinedExpression ex1 ex2 s dnas = Phenotype $ zipWith (+) (phenotypeToVector $ ex1 s dnas) (phenotypeToVector $ ex2 s dnas)
 
 simpleExpression :: ExpressionStrategy
-simpleExpression _ (DnaString chromosome1, DnaString chromosome2) = Phenotype $ foldl sumVec zeroPhenotypeVec $ zipWith addeneum chromosome1 chromosome2
+simpleExpression !_ (DnaString !chromosome1, DnaString !chromosome2) = Phenotype $ foldl sumVec zeroPhenotypeVec $ zipWith addeneum chromosome1 chromosome2
   where
     addeneum :: Allele -> Allele -> [Double]
     addeneum allele1 allele2 =
@@ -33,7 +35,7 @@ simpleExpression _ (DnaString chromosome1, DnaString chromosome2) = Phenotype $ 
 
 
 schemaBasedExpression :: [(DnaString -> DnaString -> Bool, Phenotype)] -> ExpressionStrategy
-schemaBasedExpression xs _ chromosomes = Phenotype $ foldl sumVec zeroPhenotypeVec $ map phenotypeToVector phenotypeChanges
+schemaBasedExpression !xs !_ !chromosomes = Phenotype $ foldl sumVec zeroPhenotypeVec $ map phenotypeToVector phenotypeChanges
   where
     (chromosome1, chromosome2) = chromosomes
     matchingPairs = filter ((\i -> i chromosome1 chromosome2) . fst) xs
