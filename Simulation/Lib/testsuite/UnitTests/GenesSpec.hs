@@ -142,3 +142,40 @@ spec = parallel $ do
                    all (== 0) (zipWith (+) (map signum p) (map signum p'))
                 )
             )
+
+    describe "Random alele" $ do
+        it "there is no pleiotropy if it's probability is 0.0" $
+            property ( \ seed  ->
+                fst (sampleState (randomAllele 0.4 0.0) (mkStdGen seed))
+                    `shouldSatisfy`
+                (\a ->
+                    1 >= length (filter (/= 0.0) $ phenotypeToVector $ effect a)
+                )
+            )
+
+        it "there is some pleiotropy if it's probability is 1.0" $
+            property ( \ seed  ->
+                fst (sampleState (randomAllele 0.4 1.0) (mkStdGen seed))
+                    `shouldSatisfy`
+                (\a ->
+                    1 < length (filter (/= 0.0) $ phenotypeToVector $ effect a)
+                )
+            )
+
+        it "there is the no dominant effect as the effect if dominance probability is 0.0" $
+            property ( \ seed  ->
+                fst (sampleState (randomAllele 0.0 1.0) (mkStdGen seed))
+                    `shouldSatisfy`
+                (\a ->
+                    dominantEffect a == effect a
+                )
+            )
+
+        it "there is the same dominant effect as the effect if dominance probability is 1.0" $
+            property ( \ seed  ->
+                fst (sampleState (randomAllele 1.0 1.0) (mkStdGen seed))
+                    `shouldSatisfy`
+                (\a ->
+                    dominantEffect a /= effect a
+                )
+            )
