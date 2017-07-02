@@ -1,0 +1,153 @@
+%%% Titulní strana práce a další povinné informační strany
+
+%%% Titulní strana práce
+
+\pagestyle{empty}
+\hypersetup{pageanchor=false}
+
+\begin{center}
+
+{\bf\Large Univerzita Karlova}
+
+\vspace{4mm}
+
+{\bf\Large Přírodovědecká fakulta}
+
+\vspace{8mm}
+
+\begin{tabular}{rl}
+\Large Studijní program: & \Large\StudijniProgram \\
+\noalign{\vspace{2mm}}
+\Large Studijní obor: & \Large\StudijniObor \\
+\end{tabular}
+
+
+\vfill
+
+\vfill
+
+{\Large\bf\AutorPrace}
+
+\vspace{15mm}
+
+{\Large\NazevPrace}
+
+\vspace{4mm}
+
+{\Large\NazevPraceEN}
+
+\vfill
+
+
+\begin{tabular}{rl}
+\Large Typ závěrečné práce: & \Large Diplomová práce \\
+\noalign{\vspace{4mm}}
+\Large Vedoucí práce: & \Large\Vedouci \\
+\end{tabular}
+
+\vfill
+
+% Zde doplňte rok
+{\Large Praha \RokOdevzdani }
+
+\end{center}
+
+\newpage
+
+%%% Následuje vevázaný list -- kopie podepsaného "Zadání diplomové práce".
+%%% Toto zadání NENÍ součástí elektronické verze práce, nescanovat.
+
+%%% Strana s čestným prohlášením k diplomové práci
+
+\openright
+\hypersetup{pageanchor=true}
+\pagestyle{plain}
+\pagenumbering{roman}
+\vglue 0pt plus 1fill
+
+\noindent
+Prohlašuji, že jsem tuto diplomovou práci vypracoval(a) samostatně a výhradně
+s~použitím citovaných pramenů, literatury a dalších odborných zdrojů.
+
+\medskip\noindent
+Beru na~vědomí, že se na moji práci vztahují práva a povinnosti vyplývající
+ze zákona č. 121/2000 Sb., autorského zákona v~platném znění, zejména skutečnost,
+že Univerzita Karlova má právo na~uzavření licenční smlouvy o~užití této
+práce jako školního díla podle §60 odst. 1 autorského zákona.
+
+\vspace{10mm}
+
+\hbox{\hbox to 0.5\hsize{%
+V ........ dne ............
+\hss}\hbox to 0.5\hsize{%
+Podpis autora
+\hss}}
+
+\vspace{20mm}
+\newpage
+
+%%% Poděkování
+
+\openright
+
+\noindent
+\Podekovani
+
+\newpage
+
+%%% Povinná informační strana diplomové práce
+
+\openright
+
+\vbox to 0.5\vsize{
+\setlength\parindent{0mm}
+\setlength\parskip{5mm}
+
+Název práce:
+\NazevPrace
+
+Autor:
+\AutorPrace
+
+\TypPracoviste:
+\Katedra
+
+Vedoucí diplomové práce:
+\Vedouci, \KatedraVedouciho
+
+Abstrakt:
+\Abstrakt
+
+Klíčová slova:
+\KlicovaSlova
+
+\vss}\nobreak\vbox to 0.49\vsize{
+\setlength\parindent{0mm}
+\setlength\parskip{5mm}
+
+Title:
+\NazevPraceEN
+
+Author:
+\AutorPrace
+
+\TypPracovisteEN:
+\KatedraEN
+
+Supervisor:
+\Vedouci, \KatedraVedoucihoEN
+
+Abstract:
+\AbstraktEN
+
+Keywords:
+\KlicovaSlovaEN
+
+\vss}
+
+\newpage
+
+\openright
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}

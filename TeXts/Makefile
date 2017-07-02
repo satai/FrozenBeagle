@@ -1,21 +1,13 @@
+export TEXINPUTS=../tex//:
+
 all: dist/prace.pdf
 
-# Vyroba PDF primo z DVI by byla prijemnejsi, ale vetsina verzi dvipdfm nici obrazky
-# prace.pdf: prace.dvi
-#	dvipdfm -o $@ -p a4 -r 600 $<
-
-dist/prace.pdf: dist/prace.ps
-	ps2pdf $< $@
-
-dist/prace.ps: dist/prace.dvi
-	dvips -o $@ -D600 -t a4 $<
-
-# LaTeX je potreba spustit dvakrat, aby spravne spocital odkazy
-dist/prace.dvi: prace.tex $(wildcard *.tex)
-	latex -output-directory=dist $<
+# LaTeX je potreba spustit nekolikrat, aby spravne spocital odkazy
+dist/prace.pdf: prace.tex $(wildcard *.tex) literatura.bib prace.xmpdata
+	pdflatex -output-directory=dist $<
 	cd dist; cp ../bibtex.bib . ;  bibtex prace ; cd ..
-	latex -output-directory=dist $<
-	latex -output-directory=dist $<
+	pdflatex -output-directory=dist $<
+	pdflatex -output-directory=dist $<
 
 clean:
 	rm -f dist/*
