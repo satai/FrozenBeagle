@@ -20,12 +20,12 @@ allMatchingSchema :: Schema
 allMatchingSchema = Schema $ replicate 8 Nothing
 
 spec :: Spec
-spec = parallel $ do
+spec = parallel $
     describe "Schema" $ do
 
-        it "show schema string has the same length as schema + 2" $
+        it "show schema string contains as many * as it's length - order" $
             property  ( \(Schema elems) ->
-                (2 + length elems) == length (show $ Schema elems)
+                length elems - order (Schema elems) == length (filter (== '*') (show (Schema elems)))
             )
 
         it "schema equals itself" $
@@ -33,16 +33,21 @@ spec = parallel $ do
                 (schema :: Schema) == schema
             )
 
---         it "different schemas don't equal" $
---             property  $ Schema [Just G2] /= Schema [Just G1]
+        it "different schemas don't equal" $
+             property  $ Schema [Just $ Allele (Phenotype [1]) (Phenotype [2])] /= Schema [Just $ Allele (Phenotype [3]) (Phenotype [2])]
 
         it "schema equals an other schema with iff they have the same content" $
             property  ( \elems1 elems2 ->
                 (elems1 == elems2) == (Schema elems1 == Schema elems2)
             )
---
---         it "show schema string looks like {13*5*}"
---             (show (Schema [Just G1, Just G2, Nothing,  Just G1, Nothing]) `shouldBe` "{12*1*}" )
+
+        it "show schema string looks like {13*5*}"
+            (show (Schema [ Just $ Allele (Phenotype [1]) (Phenotype [2])
+                          , Just $ Allele (Phenotype [1]) (Phenotype [2])
+                          , Nothing
+                          , Just $ Allele (Phenotype [3]) (Phenotype [1])
+                          , Nothing]
+                  ) `shouldBe` "<{(1.0)|(2.0)}{(1.0)|(2.0)}*{(3.0)|(1.0)}*>" )
 
         it "order of schema is count of specified positions" $
             order (Schema [ Just (Allele (Phenotype []) (Phenotype []))
@@ -64,37 +69,48 @@ spec = parallel $ do
 --         it "schema doesn't match dna with different content" $
 --             not (matches (Schema [Just G1, Just G1]) (DnaString [G1, G2]) (DnaString [G2, G2])) &&
 --             not (matches (Schema [Just G1, Just G1]) (DnaString [G2, G2]) (DnaString [G1, G2]))
---
---         it "schema does match dna with different same same content on specified places" $
---             matches (Schema [Nothing, Just G2, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G1, G2]) &&
---             matches (Schema [Nothing, Just G2, Nothing]) (DnaString [G1, G1, G1]) (DnaString [G2, G2, G2])
--- --
--- --         it "match fails in runtime when schema list longer then first dna" $
---             evaluate (traceShowId $ matches (Schema [Just G3, Just G2, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G2]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
 
---         it "match fails in runtime when schema list longer then second dna" $
---             evaluate (traceShowId $ matches (Schema [Nothing, Nothing, Nothing]) (DnaString [G1, G2, G1]) (DnaString [G2, G1]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
---
---         it "match fails in runtime when schema list longer then both dnas" $
---             evaluate (traceShowId $ matches (Schema [Nothing, Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
---
---         it "match fails in runtime when schema list shorter then first dna" $
---             evaluate (traceShowId $ matches (Schema [Nothing, Just G2]) (DnaString [G1, G2, G1]) (DnaString [G2, G1]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
---
---         it "match fails in runtime when schema list shorter then second dna" $
---             evaluate (traceShowId $ matches (Schema [Nothing, Nothing]) (DnaString [G1, G2]) (DnaString [G2, G1, G3]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
---
---         it "match fails in runtime when schema list shorter then both dnas" $
---             evaluate (traceShowId $ matches (Schema [Nothing, Nothing]) (DnaString [G1, G2, G3]) (DnaString [G2, G1, G3]) )
---                `shouldThrow`
---             errorCall "Incompatible Schema and DNA"
+        it "schema does match dna with different same same content on specified places" $
+            property ( \a a' ->
+                matches (Schema [Nothing, Just a, Nothing, Just a'])
+                                      (DnaString [a, a, a', a'])
+                                      (DnaString [a, a, a , a ])
+                   `shouldBe`
+                True
+            )
+
+        it "match fails in runtime when schema list longer then first dna" $
+            property ( \a ->
+                evaluate (traceShowId $ matches (Schema [Nothing, Nothing, Nothing])
+                                                (DnaString [a, a])
+                                                (DnaString [a, a, a]) )
+                   `shouldThrow`
+                errorCall "Incompatible Schema and DNA"
+            )
+
+        it "match fails in runtime when schema list longer then second dna" $
+            property ( \a ->
+                evaluate (matches (Schema [Nothing, Nothing, Nothing])
+                                                (DnaString [a, a, a])
+                                                (DnaString [a, a]) )
+                   `shouldThrow`
+                errorCall "Incompatible Schema and DNA"
+            )
+
+        it "match fails in runtime when schema list shorter then first dna" $
+            property ( \a ->
+                evaluate (traceShowId $ matches (Schema [Nothing, Just a])
+                                                (DnaString [a, a, a])
+                                                (DnaString [a, a]) )
+                   `shouldThrow`
+                errorCall "Incompatible Schema and DNA"
+            )
+
+        it "match fails in runtime when schema list shorter then second dna" $
+            property ( \a ->
+                evaluate (matches (Schema [Nothing, Just a])
+                                                (DnaString [a, a])
+                                                (DnaString [a, a, a]) )
+                   `shouldThrow`
+                errorCall "Incompatible Schema and DNA"
+            )

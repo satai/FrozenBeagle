@@ -4,8 +4,8 @@ module SimulationConstants ( dimensionCount
                            , optimumChangeGeneration
                            , accidentDeathProbability
                            , probabilityAlleleMutation
-                           , optimumSizeCoeficient
-                           , optimumChangeSizeCoeficient
+                           , optimumSizeCoefficient
+                           , optimumChangeSizeCoefficient
                            , fitnessDecreaseCoefficient
                            , negativeDominanceScale
                            , negativeDominanceShape
@@ -33,11 +33,11 @@ probabilityAlleleMutation = 0.0002
 nan :: Double
 nan = 0.0 / 0.0
 
-optimumSizeCoeficient :: Double
-optimumSizeCoeficient = 12.0
+optimumSizeCoefficient :: Double
+optimumSizeCoefficient = 12.0
 
-optimumChangeSizeCoeficient :: Double
-optimumChangeSizeCoeficient = 12.0
+optimumChangeSizeCoefficient :: Double
+optimumChangeSizeCoefficient = 12.0
 
 fitnessDecreaseCoefficient :: Double
 fitnessDecreaseCoefficient = -0.004

@@ -32,6 +32,29 @@ instance Arbitrary IndexInString  where
 
 spec :: Spec
 spec = parallel $ do
+    describe "Allelas" $ do
+         it "alella equals itself" $
+            property (
+                \a -> (a:: Allele) == a
+            )
+
+         it "alellas are ordered" $
+             property (
+                 \e de1 de2 ->
+                     Allele e de1 `compare` Allele e de2
+                     `shouldBe`
+                     de1 `compare` de2
+             )
+
+         it "alellas are ordered" $
+             property (
+                 \e1 e2 de ->
+                     Allele e1 de `compare` Allele e2 de
+                     `shouldBe`
+                     e1 `compare` e2
+             )
+
+
     describe "Genes" $ do
 
         it "show DNA string looks like '[12213]'" $
@@ -50,6 +73,13 @@ spec = parallel $ do
                        ]
                  `shouldBe`
              LT
+
+        it "dna equals itself" $
+            property ( \(DnaString dna) ->
+                DnaString dna == DnaString dna
+                    `shouldBe`
+                True
+            )
 
         it "length of crosovered dna is the same as the mother dnas" $
             property ( \(DnaString dna1) (DnaString dna2)  ->

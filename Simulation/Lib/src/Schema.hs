@@ -7,6 +7,8 @@ module Schema
     , matches
     ) where
 
+import Data.List
+
 import           Genes
 
 class MatchesGenes a where
@@ -19,13 +21,13 @@ newtype Schema = Schema
     { schemaElements :: [Maybe Allele]
     } deriving (Eq)
 
-shortRepr :: Maybe Allele -> Char
-shortRepr Nothing  = '*'
-shortRepr (Just b) = head $ show b
+shortRepr :: Maybe Allele -> String
+shortRepr Nothing  = "*"
+shortRepr (Just b) = show b
 
 instance Show Schema
   where
-    show (Schema elems) = "<" ++ map shortRepr elems ++ ">"
+    show (Schema elems) = "<" ++ intercalate "" (map  shortRepr elems) ++ ">"
 
 instance HasOrder Schema
   where

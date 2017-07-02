@@ -29,6 +29,29 @@ spec = parallel $
                 \p -> 0.0 == p `distance` p
             )
 
+        it "phenotype equals itself" $
+            property (
+                \p -> (p:: Phenotype) == p
+            )
+
+        it "phenotype doesn't equal a phenotype with different values" $
+            property (
+                Phenotype [1, 2, 3, 4] /= Phenotype [1, 2, 3, 0]
+            )
+
+        it "phenotype ordering is lexicographic one" $
+            property (
+                \p1 p2 ->
+                    Phenotype p1 `compare` Phenotype p2
+                    `shouldBe`
+                    p1 `compare` p2
+            )
+
+        it "phenotype ordering is lexicographic one by example" $
+            property (
+                Phenotype [1, 2, 3, 0] <= Phenotype [1, 2, 3, 4]
+            )
+
         it "Distance is symetric" $
             property (\p1 p2 -> p1 `distance` p2 == p2 `distance` p1)
 

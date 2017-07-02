@@ -10,6 +10,8 @@ import Data.List
 import Data.Set(fromList)
 import System.Random
 
+import Debug.Trace
+
 import UnitTests.PopulationSpec()
 
 import Genes
@@ -25,27 +27,6 @@ spec = parallel $ do
     describe "Simulation" $ do
         it "turbidostat constants" $
           property (turbidostatCoefficientsForPopulationSize 0.1 10000 `shouldBe` 0.000000004)
---
---         it "random pleiotropic rule should have schema of expected length" $
---           property (\i ->
---             length (schemaElements $ fst $  fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
---                `shouldBe`
---             10
---           )
---
---         it "random pleiotropic rule should have fixed only one position of schema" $
---           property (\i ->
---             length (filter isJust $ schemaElements $ fst $ fst $ sampleState (randomPleiotropicRule 10) (mkStdGen i))
---                `shouldBe`
---             1
---           )
---
---         it "plenty of random pleiotropic rules should have fixed all possible positions in some rule" $
---           property (\i ->
---             length (nub $ map (fromJust . findIndex isJust . schemaElements . fst) $ fst $ sampleState (pleiotropicRules 10 100) (mkStdGen i))
---                `shouldBe`
---             10
---           )
 
         it "optimum calculation produces constant for first couple of generations" $
             property $
@@ -111,9 +92,9 @@ spec = parallel $ do
                             $ fst
                             $ sampleState (randomPopulation n (\_ _ -> Phenotype []) d1 d2 33) (mkStdGen i)
                      femCount :: Int
-                     femCount = length $ filter (== F) $ map sex is
+                     femCount = traceShowId $ length $ filter (== F) $ map sex is
                      p :: Double
-                     p = fromIntegral femCount / fromIntegral n
+                     p = traceShowId $ fromIntegral femCount / fromIntegral n
                      r = 0.5
                      e :: Double
                      e = 4.4172 / 2.0 / sqrt (fromIntegral n)
@@ -129,13 +110,6 @@ spec = parallel $ do
                    $ fst
                    $ sampleState (randomPopulation (count + 22) (\_ _ -> Phenotype []) d1 d2 geneCount) (mkStdGen i)
             )
-
---         it "random rules have expected count of rules" $
---             property (\i (Positive baseCount') (NonNegative pleiotropicRulesCount') (NonNegative epistaticRulesCount') (NonNegative complicatedRulesCount') ->
---                 length (fst $ sampleState (randomRules baseCount' pleiotropicRulesCount' epistaticRulesCount' complicatedRulesCount') (mkStdGen i))
---                     `shouldBe`
---                 3 * baseCount' + pleiotropicRulesCount' + epistaticRulesCount' + complicatedRulesCount'
---             )
 
     describe "Collapse" $ do
         it "for the same seed is the result the same" $

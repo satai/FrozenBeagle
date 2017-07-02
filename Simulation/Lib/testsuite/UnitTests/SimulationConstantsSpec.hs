@@ -20,6 +20,15 @@ spec = parallel $
         it "probabilityAlleleMutation is probability" $
             isProbability probabilityAlleleMutation `shouldBe` True
 
+        it "maxSteps is positive" $
+            maxSteps > 0
+
+        it "optimumSizeCoefficient is positive" $
+            optimumSizeCoefficient > 0
+
+        it "optimumChangeSizeCoefficient is positive" $
+            optimumChangeSizeCoefficient > 0
+
         it "nan is NaN" $
             nan `shouldSatisfy` isNaN
 
