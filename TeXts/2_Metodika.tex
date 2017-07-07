@@ -23,9 +23,10 @@ XXX neco trosku obecnejsiho?
 Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými pohlavími a
 žijí v nestrukturovaném prostředí. Fenotyp jedinců i optimum prostředí jsou čtyřrozměrnými vektory.
 Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase.
+
 Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
 
-Optimum prostředí je po dobu 2048 kroků simulace konstantní a následně dojde k jeho skokové změně o
+Optimum prostředí je po dobu XXXX kroků simulace konstantní a následně dojde k jeho skokové změně o
 $\Delta{}E$. Po této změně opět zůstane optimum neměnné.
 
 Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost populace udržována
@@ -39,8 +40,8 @@ XXX picture: Big picture
 
 
 
-V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví a osmina z nich se může rozmnožit.
-Kolik vyvedou potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
+V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví.
+Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
 jak následně geny určují jejich fenotyp, je popsán později.
 Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů.
 
@@ -48,21 +49,22 @@ Při každém kroku simulace také velmi malou část jedinců postihne mutace j
 
 Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má XXX lokusů.
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
-vektor, typicky s jednou nenulovou hodnotou) a svým příspěvkem k fenotypu, pokud se vyskytuje na obou protilehlých
-lokusech (opět čtyřrozměrný vektor). Druhý příspěvek k fenotypu se tedy projevuje jako dominance alely.
+vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince) a svým příspěvkem k fenotypu,
+pokud se vyskytuje na obou protilehlých lokusech (opět čtyřrozměrný vektor).
+Druhý příspěvek k fenotypu se tedy projevuje jako dominance alely.
 
 Na počátku simulace jsou vygenerováni náhodní jedinci. Jejich alely jsou generovány náhodně - příspěvek k fenotypu
-má jednu nenulovou složku pro náhoně zvolenou dimenzi. Velikost této složky je vybrána z normálního rozdělení. Vliv na
+má jednu nenulovou složku pro náhodně zvolenou dimenzi. Velikost této složky je vybrána z normálního rozdělení. Vliv na
 fenotyp v případě dominance závisí na parametrech simulace. S určenou pravěpodobností je to opačný vektor k běžnému
 vlivu na fenotyp, jinak je to nulový vektor.
 
 \subsection{Mutace}
 
-Jedinou možnou mutací je změna alely za jinou - nejsou tedy simulovany rozsahlejsi mutace, ktere maji vetsi vliv na
+Jedinou možnou mutací je změna alely za jinou - nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv na
 strukturu DNA.
 
 Nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně.
-V případě, že ano, tak je na lokus dána nová náhodná. Nová alela vybírána obdobným mechanismem, jako jsou
+V případě, že ano, tak je na lokus dána nová náhodná alela. Ta je vybírána obdobným mechanismem, jako jsou
 generovny počáteční alely.
 
 \begin{figure}
@@ -99,8 +101,6 @@ generovny počáteční alely.
 \subsection{Křížení}
 
 Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny páry jedinců opačného pohlaví.
-
-Náhodě vybraná osmina párů má následně možnost splodit potomky.
 
 Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromozom je vybrán náhodný lokus.
 Lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
@@ -222,22 +222,25 @@ Existují dvě zajímavé skupiny dominantních vztahů. Jednou je situace, kdy 
 
 \section{Optimum}
 
-Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí. Tento optimální fenotyp se v průběhu simulace jednou skokově -- v jejím kroku číslo 2048 -- změní.
+Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí.
+Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo XXXX a XXXX -- změní.
 
-Počáteční optimum je nastaveno na osminásobek výběru z normálního roložení nezávisle pro každou dimenzi. Změna proběhne o šestnáctinásobek výběru z normálního rozložení nezávisle pro každou dimenzi.
+Počáteční optimum je nastaveno na dvanáctinásobek XXX výběru z normálního roložení nezávisle pro každou dimenzi.
+První změna proběhne o dvanáctinásobek XXX  výběru z normálního rozložení nezávisle pro každou dimenzi. Druhá změna
+vrátí fenotyp na půuvodní hodnotu.
 
 XXX
 $$
-E(0) =  [8{\cdot}X_1, 8{\cdot}X_2, 8{\cdot}X_3, 8{\cdot}X_4], F(X_i) \sim \phi
+E(0) =  [12{\cdot}X_1, 12{\cdot}X_2, 12{\cdot}X_3, 12{\cdot}X_4], F(X_i) \sim \phi
 $$
 
 $$
-\Delta{E} = [8{\cdot}X_1, 8{\cdot}X_2, 8{\cdot}X_3, 8{\cdot}X_4], F(X_i) \sim \phi
+\Delta{E} = [12{\cdot}X_1, 12{\cdot}X_2, 12{\cdot}X_3, 12{\cdot}X_4], F(X_i) \sim \phi
 $$
 
 $$
 E(t) = \left \{
-     \begin{array}{l} E(0), \quad t \leq 2048 \\
+     \begin{array}{l} E(0), \quad t \leq 6144 nebo 12288 \leq t \\
                       E(0) + \Delta{E}, \quad jinak
 \end{array} \right .
 $$
@@ -252,7 +255,7 @@ neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajím
 Dvojka v exponentu je pak ve fisherovkých modelech běžná volba[XXX].
 Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
 
-$$fitness = 4{\cdot}e^{-a |E-X|^2} = 4{\cdot}e^{-a\cdot{\sum{(E_i - X_i)^2}}}$$
+$$fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}$$
 
 Počet potomků páru je aritmetický průměr fitness jeho členů zaokrouhlený dolů.
 
@@ -266,14 +269,29 @@ V přírodě mu odpovídá například regulace parazitem, kterému se lépe da�
 Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace. Pravděpodobnost je z praktických důvodů
 zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1$, kde se ztrácí
 možnost (nejen biologické) interpretace.
+
 \footnote{Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
 simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a
 menší než deset na pár. XXX}
 
-Konstanta $k4$ v předchozím vzorci je vypočítána následově: $XXX$. Pro simulace byla zvolena nulová pravděpodobnost
-náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na její hustotě a na deterministické smrti
-stářím po $64$ XXX generacích.
+Konstanta $k4$ v předchozím vzorci je vypočítána následově:
+
+$$k_4 = \frac{1 - 1.5{\cdot}{k_5 + 1/{a_{max}}}}
+             {\frac{8}{27}\cdot{n_0^2}}$$
+
+kde $n_0$ je rovnovážná velikost populace a $a_max$ je maximální věk jedince.
+Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na
+její hustotě a na deterministické smrti stářím po $a_max$ generacích.
+
+Vzorec pro velikost $k_4$ je poněkud neintuitivní, ale dá se odvodit z požadavku, aby velikost populace zůstala
+konstantní za předpokladu konstantní průměrné fitness:
+
+\begin{equation}
+(k_4\cdot{n^2} + {k_5})\cdot{n} + \frac{n}{2}\cdot{f} - + \frac{n}{a_max} = n
+\end{equation}
+
+kde $n$ je aktuální velikost populace a $f$ je průměrná fitness páru.
 
 
 \section{Frozen Beagle}
