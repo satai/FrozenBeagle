@@ -22,7 +22,7 @@ maxSteps :: Int
 maxSteps = 3 * optimumChangeGeneration
 
 optimumChangeGeneration :: Int
-optimumChangeGeneration = 6 * 1024
+optimumChangeGeneration = 8 * 1024
 
 accidentDeathProbability :: Double
 accidentDeathProbability = 0.0
