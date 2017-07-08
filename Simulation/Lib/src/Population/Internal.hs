@@ -125,9 +125,7 @@ pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expr
     d1' <- pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic d1
     d2' <- pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic d2
 
-    let offspringPhenotype = expression (sex i) (d1', d2')
-
-    return $ Individual (sex i) (birthGeneration i) (d1', d2') offspringPhenotype
+    return $ Individual (sex i) (birthGeneration i) (d1', d2') (phenotype i)
 
 pointMutation :: Double -> Double -> ExpressionStrategy -> Mutation
 pointMutation probabilityNegativeDominance probabilityPleiotropic expression = mapM (pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expression)
