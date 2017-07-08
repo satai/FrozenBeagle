@@ -20,30 +20,40 @@ XXX neco trosku obecnejsiho?
 
 \section{Simulace}
 
+\begin{figure}[!b]
+    \centering
+
+    \begin{tikzpicture}
+        \draw [blue] (0,0) rectangle (1.5,1);
+        \draw [red, ultra thick] (3,0.5) circle [radius=0.5];;
+        \draw [gray] (6,0) arc [radius=1, start angle=45, end angle= 120];
+    \end{tikzpicture}
+
+    \caption{XXX picture: Big picture}
+\end{figure}
+
 Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými pohlavími a
-žijí v nestrukturovaném prostředí. Fenotyp jedinců i optimum prostředí jsou čtyřrozměrnými vektory.
-Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase.
+žijí v nestrukturovaném prostředí. Fenotyp jedinců a tedy i fenotyp optimální pro dané prostředí jsou čtyřrozměrnými
+vektory. Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase.
 
 Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
 
-Optimum prostředí je po dobu XXXX kroků simulace konstantní a následně dojde k jeho skokové změně o
-$\Delta{}E$. Po této změně opět zůstane optimum neměnné.
+Optimum prostředí je po dobu 8192 kroků simulace konstantní a následně dojde k jeho skokové změně o
+$\Delta{}E$. Po této změně opět zůstane optimum neměnné po dalších 8192 kroků, poté se vrátí na počáteční hodnotu.
 
 Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost populace udržována
 mechanismem turbidostatu.
-Navíc je každý jedinec limitován maximální délkou života -- po 64 (XXX) krocích umírá.
-Jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
 
-
-
-XXX picture: Big picture
-
-
+Navíc je každý jedinec limitován maximální délkou života -- po 64 krocích umírá.
+Čerstvě narození jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
 
 V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví.
 Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
 jak následně geny určují jejich fenotyp, je popsán později.
-Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů.
+
+Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů. Tyto mutace mají
+vliv na geny, které mohou zdědit potomci jedince, jeho fenotyp však již neovlivňují a ten zůstává konstatní po celou
+dobu života. Somatické mutace nejsou modelovány.
 
 \section{Jedinec a jeho geny}
 
@@ -51,12 +61,15 @@ Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
 vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince) a svým příspěvkem k fenotypu,
 pokud se vyskytuje na obou protilehlých lokusech (opět čtyřrozměrný vektor).
+
 Druhý příspěvek k fenotypu se tedy projevuje jako dominance alely.
 
-Na počátku simulace jsou vygenerováni náhodní jedinci. Jejich alely jsou generovány náhodně - příspěvek k fenotypu
+Na počátku simulace jsou vygenerováni náhodní jedinci. XXXX
+
+Ostatní alely jsou generovány náhodně - příspěvek k fenotypu
 má jednu nenulovou složku pro náhodně zvolenou dimenzi. Velikost této složky je vybrána z normálního rozdělení. Vliv na
-fenotyp v případě dominance závisí na parametrech simulace. S určenou pravěpodobností je to opačný vektor k běžnému
-vlivu na fenotyp, jinak je to nulový vektor.
+fenotyp v případě dominance závisí na parametrech simulace. S určenou pravěpodobností je to XXX opačný vektor k běžnému
+vlivu na fenotyp, jinak je to nulový XXXX vektor.
 
 \subsection{Mutace}
 
@@ -65,7 +78,7 @@ strukturu DNA.
 
 Nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně.
 V případě, že ano, tak je na lokus dána nová náhodná alela. Ta je vybírána obdobným mechanismem, jako jsou
-generovny počáteční alely.
+generovny nenulové počáteční alely.
 
 \begin{figure}
   \centering
@@ -100,7 +113,8 @@ generovny počáteční alely.
 
 \subsection{Křížení}
 
-Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny páry jedinců opačného pohlaví.
+Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny nové páry jedinců opačného
+pohlaví. Jde tedy o panmiktický model populace.
 
 Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromozom je vybrán náhodný lokus.
 Lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
@@ -223,27 +237,29 @@ Existují dvě zajímavé skupiny dominantních vztahů. Jednou je situace, kdy 
 \section{Optimum}
 
 Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí.
-Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo XXXX a XXXX -- změní.
+Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo 8192 a 16384-- změní.
 
 Počáteční optimum je nastaveno na dvanáctinásobek XXX výběru z normálního roložení nezávisle pro každou dimenzi.
 První změna proběhne o dvanáctinásobek XXX  výběru z normálního rozložení nezávisle pro každou dimenzi. Druhá změna
 vrátí fenotyp na půuvodní hodnotu.
 
 XXX
-$$
+
+\begin{equation}
 E(0) =  [12{\cdot}X_1, 12{\cdot}X_2, 12{\cdot}X_3, 12{\cdot}X_4], F(X_i) \sim \phi
-$$
+\end{equation}
 
-$$
+\begin{equation}
 \Delta{E} = [12{\cdot}X_1, 12{\cdot}X_2, 12{\cdot}X_3, 12{\cdot}X_4], F(X_i) \sim \phi
-$$
+\end{equation}
 
-$$
+\begin{equation}
 E(t) = \left \{
-     \begin{array}{l} E(0), \quad t \leq 6144 nebo 12288 \leq t \\
+     \begin{array}{l} E(0), \quad t \leq 8192 \\
+                      E(0), \quad t \geq 16384 \\
                       E(0) + \Delta{E}, \quad jinak
-\end{array} \right .
-$$
+     \end{array} \right .
+\end{equation}
 
 \subsection{Fitness}
 
@@ -255,7 +271,9 @@ neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajím
 Dvojka v exponentu je pak ve fisherovkých modelech běžná volba[XXX].
 Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
 
-$$fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}$$
+\begin{equation}
+fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}
+\end{equation}
 
 Počet potomků páru je aritmetický průměr fitness jeho členů zaokrouhlený dolů.
 
@@ -267,9 +285,8 @@ zpětnou vazbou[XXX]. V každém kroku má v populaci s $n$ jedinci každý jedi
 $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
 V přírodě mu odpovídá například regulace parazitem, kterému se lépe daří, pokud se jedinci častěji setkávají.
 Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace. Pravděpodobnost je z praktických důvodů
-zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1$, kde se ztrácí
+zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1.0$, kde se ztrácí
 možnost (nejen biologické) interpretace.
-
 \footnote{Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
 simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a
@@ -277,22 +294,86 @@ menší než deset na pár. XXX}
 
 Konstanta $k4$ v předchozím vzorci je vypočítána následově:
 
-$$k_4 = \frac{1 - 1.5{\cdot}{k_5 + 1/{a_{max}}}}
-             {\frac{8}{27}\cdot{n_0^2}}$$
+\begin{equation}
+k_4 = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}
+           {27\cdot{}n^2}
+\end{equation}
 
-kde $n_0$ je rovnovážná velikost populace a $a_max$ je maximální věk jedince.
+
+kde $n_0$ je rovnovážná velikost populace a $a_{max}$ je maximální věk jedince.
 Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na
-její hustotě a na deterministické smrti stářím po $a_max$ generacích.
+její hustotě a na deterministické smrti stářím po $a_{max}$ generacích.
 
 Vzorec pro velikost $k_4$ je poněkud neintuitivní, ale dá se odvodit z požadavku, aby velikost populace zůstala
 konstantní za předpokladu konstantní průměrné fitness:
 
 \begin{equation}
-(k_4\cdot{n^2} + {k_5})\cdot{n} + \frac{n}{2}\cdot{f} - + \frac{n}{a_max} = n
+(k_4\cdot{m^2} + {k_5} + \frac{1}{a_{max}})\cdot{m} = m - n
 \end{equation}
 
-kde $n$ je aktuální velikost populace a $f$ je průměrná fitness páru.
+kde $m$ je aktualní velikost populace po množení, $a_{max}$ je věk, ve kterém umírají organismy stářím a $n$ je rovnovážná
+velikost populace. Vzorec říká, že pro rovnovážnou velikost by měl být počet úmrtí (což je počet úmrtí daný
+turbidostatem plus počet úmrtí stářím) stejný jako počet čerstv narozených jedinců.
 
+\begin{equation}
+m = n + \frac{n\cdot{}p}{2}
+\end{equation}
+
+kde $p$ je průměrná pravděpodobnost, že pár vyvede v daném kole mládě. (Párů je v populaci zhruba $\frac{n}{2}$, protože
+obě pohlaví jsou zhruba stejně zastoupena).
+
+
+Odtud:
+
+\begin{equation}
+(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}})\cdot{(n + \frac{n\cdot{}p}{2})}
+        = n + \frac{n\cdot{}p}{2}  - n
+\end{equation}
+
+\begin{equation}
+(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}})\cdot{(n + \frac{n\cdot{}p}{2})} = \frac{n\cdot{}p}{2}
+\end{equation}
+
+\begin{equation}
+(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}})\cdot{(2 + p)} = p
+\end{equation}
+
+
+\begin{equation}
+(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}}) - \frac{p}{(2 + p)}
+\end{equation}
+
+\begin{equation}
+k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} = \frac{p}{2 + p} -  {k_5} - \frac{1}{a_{max}}
+\end{equation}
+
+\begin{equation}
+k_4  = \frac{\frac{p}{2 + p} -  {k_5} - \frac{1}{a_{max}}}{(n + \frac{n\cdot{}p}{2})^2}
+\end{equation}
+
+
+Vzorec můžeme chápat jako funkc proměnné $p$ (průměrné pravděpodobnosti rozmnožení páru), což nelze použít  pro
+počáteční inicializaci simulace, kdy $p$ není známa. Budeme tedy uvažovat rovnováhu populace v jednom konkrétním
+případě - pokud je optimálně přizpůsobena prostředí a pak je $p = 1.0$.
+
+Dosazením a úpravou lze získat:
+
+
+
+\begin{equation}
+k_4  = \frac{\frac{1}{2 + 1} -  {k_5} - \frac{1}{a_{max}}}{(n + \frac{n\cdot{}1}{2})^2}
+     = \frac{\frac{1}{3} -  {k_5} - \frac{1}{a_{max}}}{(n + \frac{n}{2})^2}
+     = \frac{\frac{1}{3} -  {k_5} - \frac{1}{a_{max}}}{(\frac{3\cdot{}n}{2})^2}
+\end{equation}
+
+\begin{equation}
+k_4  = \frac{\frac{1}{3} -  {k_5} - \frac{1}{a_{max}}}{\frac{9\cdot{}n^2}{4}}
+     = \frac{\frac{4}{3} - 4\cdot{}{k_5} - \frac{4}{a_{max}}}{9\cdot{}n^2}
+\end{equation}
+
+\begin{equation}
+k_4  = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}{27\cdot{}n^2}
+\end{equation}
 
 \section{Frozen Beagle}
 
@@ -306,11 +387,11 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 
 
 
-\begin{figure}
-\centering
-\includegraphics[totalheight=8cm]{img/ukazka-obr01.pdf}
-    \caption{FrozenBeagleSimulation screenshot}
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[totalheight=8cm]{img/ukazka-obr01.pdf}
+%    \caption{FrozenBeagleSimulation screenshot}
+%\end{figure}
 
 
 \textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace, které je moźné dále analyzovat a zpracovávat.
