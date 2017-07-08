@@ -64,12 +64,22 @@ pokud se vyskytuje na obou protilehlých lokusech (opět čtyřrozměrný vektor
 
 Druhý příspěvek k fenotypu se tedy projevuje jako dominance alely.
 
-Na počátku simulace jsou vygenerováni náhodní jedinci. XXXX
+Na počátku simulace jsou vygenerováni náhodní jedinci.
 
-Ostatní alely jsou generovány náhodně - příspěvek k fenotypu
-má jednu nenulovou složku pro náhodně zvolenou dimenzi. Velikost této složky je vybrána z normálního rozdělení. Vliv na
-fenotyp v případě dominance závisí na parametrech simulace. S určenou pravěpodobností je to XXX opačný vektor k běžnému
-vlivu na fenotyp, jinak je to nulový XXXX vektor.
+Většina alel těchto jedinců má nulový příspěvek k fenotypu. Náhodně je vybráno zhruba jedno procento alel, které k
+fenotypu přispívají. Jak vypadají je určeno parametry simulace - mezi nimi je, jaká je pravděpodobnost, že bude
+nová alela pleiotropická a tedy ovlivňovat více složek fenotypu a jaká je pravděpodobnost,
+že se u alely projeví dominance.
+
+Pokud alela působí jen na jednu vlastnost, tak je tato vlastnost vybrána náhodně a velikost příspěvku je vybrána z
+normálního rozdělení. Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
+rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy $\sqrt{4} = 2$). Důvodem je, že bez tohoto znormování měly
+pleiotropické příspěvky v průměru větší délku.
+
+Teorie zamrzlé plasticity předpokládá podstatný význam dominantích alel, které působí v opačných směrech, pokud se
+vyskytují jednou nebo dvakrát. Pravděpodobnost, že alela má takovou vlastnost je parametrem simulace.
+
+Ostatní alely mají účinek v obou případech stejný.
 
 \subsection{Mutace}
 
@@ -201,7 +211,6 @@ Obr XXX znázornění situace, kdy jedinec odpovídá pravidlu
 Obr XXX znázornění situace, kdy jedinec neodpovídá pravidlu
 
 Počty jednotlivých pravidel patří mezi parametry simulace.
-
 \footnote{Seznam všech parametrů simulace je součástí přílohy XXX}
 
 \subsection{Jednoduché příspěvky od alel}
