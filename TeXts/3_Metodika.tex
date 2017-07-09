@@ -57,14 +57,14 @@ dobu života. Somatické mutace nejsou modelovány.
 
 \section{Jedinec a jeho geny}
 
-Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má XXX lokusů.
+Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 20 lokusů.
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
-vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince) a svým příspěvkem k fenotypu,
-pokud se vyskytuje na obou protilehlých lokusech (opět čtyřrozměrný vektor).
+vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince, dále nazýván i
+\em{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje na obou protilehlých lokusech
+(opět čtyřrozměrný vektor, dále nazýván i \em{dominantní efekt alely}).
 
-Druhý příspěvek k fenotypu se tedy projevuje jako dominance alely.
-
-Na počátku simulace jsou vygenerováni náhodní jedinci.
+Na počátku simulace jsou vygenerováni náhodní jedinci. Jejich počet je parametrem simulace, zároveň je použit i jako
+rovnovážná velikost populace.
 
 Většina alel těchto jedinců má nulový příspěvek k fenotypu. Náhodně je vybráno zhruba jedno procento alel, které k
 fenotypu přispívají. Jak vypadají je určeno parametry simulace - mezi nimi je, jaká je pravděpodobnost, že bude
@@ -81,10 +81,51 @@ vyskytují jednou nebo dvakrát. Pravděpodobnost, že alela má takovou vlastno
 
 Ostatní alely mají účinek v obou případech stejný.
 
+
+Postup, jak je vygenerována každá alela v počáteční populaci tedy vypadá takto:
+
+\begin{code}[commandchars=\\\{\}]
+
+    pocatecni_alela() =
+        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < 0.99)
+            \textbf{pak} Alela([0,0,0,0], [0,0,0,0])
+            \textbf{jinak} nenulova_alela()
+
+    nenulova_alela =
+        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < XXXX)
+            \textbf{pak}
+                efekt <- nahodny_jednoduchy_efekt()
+                dominantni_efekt <- nahodny_dominantni_efekt(efekt)
+                Alela(efekt, dominantni_efekt)
+            \textbf{jinak}
+                efekt <- nahodny_pleiotropicky_efekt()
+                dominantni_efekt <- nahodny_dominantni_efekt(efekt)
+                Alela(efekt, dominantni_efekt)
+
+    nahodny_jednoduchy_efekt =
+        zamichej([0, 0, 0, \textit{N}()])
+
+    nahodny_jednoduchy_efekt =
+        [\textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2])
+
+    nahodny_dominantni_efekt(efekt) =
+        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < jine XXXX)
+            \textbf{pak} efekt
+            \textbf{jinak} nahodny_opacny_efekt(efekt)
+
+    nahodny_opacny_efekt(efekt) =
+        x <- XXXX
+        (-x) * efekt \textit{//násobení vektoru (záporným) skalárem}
+
+    \textit{// {N}() značí náhodné číslo ze standardizovaného}
+    \textit{//       normálního rozdělení}
+    \textit{// XXXX znaci vyber z XXXX}
+\end{code}
+
 \subsection{Mutace}
 
-Jedinou možnou mutací je změna alely za jinou - nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv na
-strukturu DNA.
+Jedinou možnou mutací je bodová změna alely za jinou - nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv
+na strukturu DNA.
 
 Nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně.
 V případě, že ano, tak je na lokus dána nová náhodná alela. Ta je vybírána obdobným mechanismem, jako jsou
@@ -189,58 +230,7 @@ Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě poh
 Fenotyp jedince jsou jeho čtyři kvantitativní vlastnosti dohromady reprezentované jako čtyřrozměrný vektor.
 
 Každá alela nějak přispívá do výsledného fenotypu, tyto příspěvky se sčítají. Příspěvek alely se může lišit, pokud se
-nachází ve dvou kopiích na protilehlých lokusech.
-
-Aby simulace postihla různé procesy, které komplikují to, jak genotyp určuje fenotyp, je na jejím začátku
-vygenerováno množství pravidel, která v závislosti na přítomnosti různých kombinací alel mění výsledný fenotyp.
-Jmenovitě jde o epistatické interakce, pleiotropii a dominanci.
-
-Každé pravidlo se skládá z předpokladů a vlivu na fenotyp. Příkladem složitějšího pravidla, v tomto případě
-epistatického \uv{pokud alespoň jeden z chromosomů obsahuje na lokusu $3$ alelu s danými vlastnostmi (XXX) a alespoň
-jeden z chromosomů obsahuje na lokusu $7$ alelu s jinými vlastnostmi (XXX), tak změň výsledný fenotyp o $[0, 0, 0, -0.431]$} .
-
-Fenotyp jedince je tak určen jako (vektorový) součet příspěvků pravidel,
-jejichž předpokladům geny jedince vyhovují a součtu příspěvků jednotlivých alel.
-Každá složka fenotypu tak může být ovlivněna více geny a naopak každý gen může mít, často jen ve souhře s jinými geny,
-vliv na různé složky fenotypu.
-
-Obr XXX znázornění předpokladů pravidla
-
-Obr XXX znázornění situace, kdy jedinec odpovídá pravidlu
-
-Obr XXX znázornění situace, kdy jedinec neodpovídá pravidlu
-
-Počty jednotlivých pravidel patří mezi parametry simulace.
-\footnote{Seznam všech parametrů simulace je součástí přílohy XXX}
-
-\subsection{Jednoduché příspěvky od alel}
-
-Jednoduché pravidlo zachycuje příspěvek jedné alely k jedné složce fenotypu.
-
-Obr XXX
-
-Na počátku je pro každý lokus vybrána náhodná dimenze, kterou budou alely v ní ovlivňovat. Pro každou alelu pak změna
-fenotypu má jednu nenulovou hodnotu v náhodně vybrané dimenzi. Velikost této změny je vybrána z normálního rozložení,
-vlivy jednotlivých alel ze stejného locusu se tak mohou lišit jak ve směru, tak ve velikosti.
-
-\subsection{Pravidla pro pleiotropii a epistázi}
-
-Společný vliv kombinace více alel -- typicky na různých lokusech -- na fenotyp odlišný od pouhého součtu příspěvků samostatných alel bývá nazýván epistatickou interakcí.
-
-Epistatická pravidla mají, stejně jako jednoduchá pravidla, ve svém vektoru vlivu na fenotyp jen jednu nenulovou hodnotu. Pro každé pravidlo je vybrána náhodná dimenze a velikost vlivu je vybrána z normálního rozložení.
-
-Naopak pleiotropní pravidla popisují situaci, kdy jedna alela ovlivňuje více vlastností. Každé takové pravidlo má podmínku obsahující jedinou alelu a vliv na fenotyp obsahující čtyři čísla, každé vybrané z normálního roložení.
-
-Počet epistatických a počet pleiotropických pravidel jsou parametry simulace.
-
-\subsection{Pravidla pro dominanci}
-
-Pravidla postihující vztah dominance mezi alelami mají podobnou strukturu jako ostatní pravidla. Liší se jejich podmínka -- tou je společný výskyt dvou konkrétních alel na XXX lokusech na obou chromosomech. Pokud je podmínkou výskyt $G_i{2}$ a $G_i{3}$, tak je lhostejné, zda se obeví G2 na \textit{i}-tém lokusu prvního chromosomu a G3 na \textit{i}-tém lokusu druhého chromosomu nebo naopak.
-
-XXX obrazek
-
-Existují dvě zajímavé skupiny dominantních vztahů. Jednou je situace, kdy vliv dvou výskytů téže alely je u homozygototů výrazně větší než u vliv téže osamělé alely u heterozygotů. Druhou je, pokud vliv dvou výskytů téže alely působí u homozygotů v opačném směru, než její osamocený výskyt u heterozygotů.
-
+nachází ve dvou kopiích na protilehlých lokusech - v tom případě se použije její dominantní efekt.
 
 
 \section{Optimum}
@@ -289,7 +279,9 @@ Počet potomků páru je aritmetický průměr fitness jeho členů zaokrouhlen�
 
 \section{Řízení velikosti populace}
 
-Počáteční velikost populace je jedním z parametrů simulace. Následně je velikost populace řízena turbidostatickou
+Počáteční velikost populace je jedním z parametrů simulace.
+\footnote{Seznam všech parametrů simulace je součástí přílohy XXX}
+Následně je velikost populace řízena turbidostatickou
 zpětnou vazbou[XXX]. V každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
 $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
 V přírodě mu odpovídá například regulace parazitem, kterému se lépe daří, pokud se jedinci častěji setkávají.
@@ -299,7 +291,7 @@ možnost (nejen biologické) interpretace.
 \footnote{Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
 simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a
-menší než deset na pár. XXX}
+menší než deset na pár.}
 
 Konstanta $k4$ v předchozím vzorci je vypočítána následově:
 
@@ -361,9 +353,10 @@ k_4  = \frac{\frac{p}{2 + p} -  {k_5} - \frac{1}{a_{max}}}{(n + \frac{n\cdot{}p}
 \end{equation}
 
 
-Vzorec můžeme chápat jako funkc proměnné $p$ (průměrné pravděpodobnosti rozmnožení páru), což nelze použít  pro
+Vzorec můžeme chápat jako funkci proměnné $p$ (průměrné pravděpodobnosti rozmnožení páru), což nelze použít  pro
 počáteční inicializaci simulace, kdy $p$ není známa. Budeme tedy uvažovat rovnováhu populace v jednom konkrétním
-případě - pokud je optimálně přizpůsobena prostředí a pak je $p = 1.0$.
+případě - pokud je optimálně přizpůsobena prostředí a pak je $p = 1.0$. Pokud nebude populace dokonale přizpůsobena
+prostředí, bude ji turbidostat udržovat méně početnou.
 
 Dosazením a úpravou lze získat:
 
@@ -403,9 +396,12 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 %\end{figure}
 
 
-\textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace, které je moźné dále analyzovat a zpracovávat.
+\textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší
+počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace,
+které je moźné dále analyzovat a zpracovávat.
 
-Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů a kompletní historie ve VCS git. Jsou poskytnuty pod trojsložkovou BSD licencí.
+Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
+a kompletní historie ve VCS git. Jsou poskytnuty pod trojsložkovou BSD licencí.
 
 \section{Statistická analýza}
 
