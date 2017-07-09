@@ -230,7 +230,7 @@ params2rules params =
     turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
 
   in
-    EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio pleiotropicRulesRatio expression' ]
+    EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio pleiotropicRulesRatio]
                    , breeding = [ breedingStrategy ]
                    , selection = [ hSelection ]
                    , deaths =

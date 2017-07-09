@@ -118,8 +118,8 @@ pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic (DnaS
     bases <- mapM (pointMutationAllele probabilityNegativeDominance probabilityPleiotropic) s
     return $ DnaString bases
 
-pointMutationIndividual :: Double ->Double -> ExpressionStrategy -> Individual -> RVar Individual
-pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expression i = do
+pointMutationIndividual :: Double -> Double -> Individual -> RVar Individual
+pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic i = do
     let (d1, d2) = chromosomes i
 
     d1' <- pointMutationDnaString probabilityNegativeDominance probabilityPleiotropic d1
@@ -127,8 +127,8 @@ pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expr
 
     return $ Individual (sex i) (birthGeneration i) (d1', d2') (phenotype i)
 
-pointMutation :: Double -> Double -> ExpressionStrategy -> Mutation
-pointMutation probabilityNegativeDominance probabilityPleiotropic expression = mapM (pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic expression)
+pointMutation :: Double -> Double -> Mutation
+pointMutation probabilityNegativeDominance probabilityPleiotropic = mapM (pointMutationIndividual probabilityNegativeDominance probabilityPleiotropic)
 
 panmictic :: ExpressionStrategy -> Phenotype -> Int -> Breeding
 panmictic expression optimum g population = do
