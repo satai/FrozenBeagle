@@ -188,9 +188,9 @@ express baseCount
 collapse :: Int -> RVar a -> a
 collapse seedValue x = fst $ sampleState x (mkStdGen seedValue)
 
-turbidostatCoefficientsForPopulationSize :: Double -> Int -> Double
-turbidostatCoefficientsForPopulationSize accidentDeathProbability' expectedPopulationSize =
-      (1 - 1.5 * accidentDeathProbability') / (27.0 / 8.0) / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
+turbidostatCoefficientsForPopulationSize :: Double -> Int -> Int -> Double
+turbidostatCoefficientsForPopulationSize accidentDeathProbability' maximumAge expectedPopulationSize =
+      (4 - 12 * accidentDeathProbability' - (12.0 / fromIntegral maximumAge)) / 27.0 / fromIntegral expectedPopulationSize / fromIntegral expectedPopulationSize
 
 optimumCalculation :: Phenotype -> Phenotype -> Int -> Phenotype
 optimumCalculation optimum1 optimum2 g =
@@ -227,7 +227,7 @@ params2rules params =
     optimumC = collapse (seed params + 2) $ randomPhenotypeFraction optimumChangeSizeCoefficient
     optimum2 = Phenotype $ zipWithCheck (+) (phenotypeToVector optimum1) (phenotypeToVector optimumC)
 
-    turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability (2 * startPopulationSize)
+    turbidostatCoefficients = turbidostatCoefficientsForPopulationSize accidentDeathProbability maximumAge startPopulationSize
 
   in
     EvolutionRules { mutation = [ pointMutation negativeDominantRulesRatio pleiotropicRulesRatio]
