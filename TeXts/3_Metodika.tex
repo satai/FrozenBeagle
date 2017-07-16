@@ -87,11 +87,6 @@ Postup, jak je vygenerována každá alela v počáteční populaci, tedy vypad�
 \begin{code}[commandchars=\\\{\}]
 
     pocatecni_alela() =
-        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < 0.00)
-            \textbf{pak} Alela(efekt = [0,0,0,0], dominantni_efekt = [0,0,0,0])
-            \textbf{jinak} nenulova_alela()
-
-    nenulova_alela =
         \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < XXXX)
             \textbf{pak}
                 efekt <- nahodny_jednoduchy_efekt()

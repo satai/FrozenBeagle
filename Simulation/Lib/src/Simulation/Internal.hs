@@ -76,7 +76,7 @@ randomDnaString ratioOfNegativeDominance ratioPleiotropic baseCount = DnaString 
 
 randomInitAllele :: Double -> Double -> RVar Allele
 randomInitAllele ratioNegativeDominance ratioPleiotropic  = do
-    isZero <- boolBernoulli (0.99 :: Float)
+    isZero <- boolBernoulli (0.0 :: Float)
 
     if isZero
         then return $ Allele zeroPhenotype zeroPhenotype
