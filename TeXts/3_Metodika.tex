@@ -60,14 +60,14 @@ dobu života. Somatické mutace nejsou modelovány.
 Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 20 lokusů.
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
 vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince, dále nazýván i
-\em{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje na obou protilehlých lokusech
-(opět čtyřrozměrný vektor, dále nazýván i \em{dominantní efekt alely}).
+\textit{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje na obou protilehlých lokusech
+(opět čtyřrozměrný vektor, dále nazýván i \textit{dominantní efekt alely}).
 
 Na počátku simulace jsou vygenerováni náhodní jedinci. Jejich počet je parametrem simulace, zároveň je použit i jako
 rovnovážná velikost populace.
 
 Většina alel těchto jedinců má nulový příspěvek k fenotypu. Náhodně je vybráno zhruba jedno procento alel, které k
-fenotypu přispívají. Jak vypadají je určeno parametry simulace - mezi nimi je, jaká je pravděpodobnost, že bude
+fenotypu přispívají. Jak vypadají, je určeno parametry simulace -- mezi nimi je, jaká je pravděpodobnost, že bude
 nová alela pleiotropická a tedy ovlivňovat více složek fenotypu a jaká je pravděpodobnost,
 že se u alely projeví dominance.
 
@@ -76,19 +76,19 @@ normálního rozdělení. Pokud působí na všechny složky fenotypu, tak jsou 
 rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy $\sqrt{4} = 2$). Důvodem je, že bez tohoto znormování měly
 pleiotropické příspěvky v průměru větší délku.
 
-Teorie zamrzlé plasticity předpokládá podstatný význam dominantích alel, které působí v opačných směrech, pokud se
+Teorie zamrzlé plasticity předpokládá podstatný význam dominantních alel, které působí v opačných směrech, pokud se
 vyskytují jednou nebo dvakrát. Pravděpodobnost, že alela má takovou vlastnost je parametrem simulace.
 
 Ostatní alely mají účinek v obou případech stejný.
 
 
-Postup, jak je vygenerována každá alela v počáteční populaci tedy vypadá takto:
+Postup, jak je vygenerována každá alela v počáteční populaci, tedy vypadá takto:
 
 \begin{code}[commandchars=\\\{\}]
 
     pocatecni_alela() =
-        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < 0.99)
-            \textbf{pak} Alela([0,0,0,0], [0,0,0,0])
+        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < 0.00)
+            \textbf{pak} Alela(efekt = [0,0,0,0], dominantni_efekt = [0,0,0,0])
             \textbf{jinak} nenulova_alela()
 
     nenulova_alela =
@@ -124,12 +124,12 @@ Postup, jak je vygenerována každá alela v počáteční populaci tedy vypadá
 
 \subsection{Mutace}
 
-Jedinou možnou mutací je bodová změna alely za jinou - nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv
+Jedinou možnou mutací je bodová změna alely za jinou -- nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv
 na strukturu DNA.
 
 Nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně.
 V případě, že ano, tak je na lokus dána nová náhodná alela. Ta je vybírána obdobným mechanismem, jako jsou
-generovny nenulové počáteční alely.
+generovány nenulové počáteční alely.
 
 \begin{figure}
   \centering
@@ -167,7 +167,7 @@ generovny nenulové počáteční alely.
 Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny nové páry jedinců opačného
 pohlaví. Jde tedy o panmiktický model populace.
 
-Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromozom je vybrán náhodný lokus.
+Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromosom je vybrán náhodný lokus.
 Lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
 
 Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
@@ -230,17 +230,17 @@ Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě poh
 Fenotyp jedince jsou jeho čtyři kvantitativní vlastnosti dohromady reprezentované jako čtyřrozměrný vektor.
 
 Každá alela nějak přispívá do výsledného fenotypu, tyto příspěvky se sčítají. Příspěvek alely se může lišit, pokud se
-nachází ve dvou kopiích na protilehlých lokusech - v tom případě se použije její dominantní efekt.
+nachází ve dvou kopiích na protilehlých lokusech -- v tom případě se použije její dominantní efekt.
 
 
 \section{Optimum}
 
 Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí.
-Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo 8192 a 16384-- změní.
+Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo 8192 a 16384 -- změní.
 
-Počáteční optimum je nastaveno na dvanáctinásobek XXX výběru z normálního roložení nezávisle pro každou dimenzi.
+Počáteční optimum je nastaveno na dvanáctinásobek XXX výběru z normálního rozložení nezávisle pro každou dimenzi.
 První změna proběhne o dvanáctinásobek XXX  výběru z normálního rozložení nezávisle pro každou dimenzi. Druhá změna
-vrátí fenotyp na půuvodní hodnotu.
+vrátí fenotyp na původní hodnotu.
 
 XXX
 
@@ -264,10 +264,10 @@ E(t) = \left \{
 
 Euklidovská vzdálenost jedince s fenotypem $X = [X_1,\dots{}X_4]$ od aktuálního optima prostředí určuje
 $E = [E_1,\dots{} E_4]$ jeho aktuální fitness, tak jak bylo zavedeno ve Fisherově geometrickém modelu XXX
-\footnote{Konstanta $a$ v tomto vzorci jsou čistě empiricky zvolená tak, aby, měli jedinci v simulacích
+\footnote{Konstanta $a$ v tomto vzorci je čistě empiricky zvolená tak, aby měli jedinci v simulacích
 přiměřené velikosti fitness -- pokud by například místo ní byla výrazně větší konstanta, tak by pro většinu simulací
 neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajímavé a neodpovídá to reálným druhům.
-Dvojka v exponentu je pak ve fisherovkých modelech běžná volba[XXX].
+Dvojka v exponentu je pak ve fisherovských modelech běžná volba[XXX].
 Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
 
 \begin{equation}
@@ -314,7 +314,7 @@ konstantní za předpokladu konstantní průměrné fitness:
 
 kde $m$ je aktualní velikost populace po množení, $a_{max}$ je věk, ve kterém umírají organismy stářím a $n$ je rovnovážná
 velikost populace. Vzorec říká, že pro rovnovážnou velikost by měl být počet úmrtí (což je počet úmrtí daný
-turbidostatem plus počet úmrtí stářím) stejný jako počet čerstv narozených jedinců.
+turbidostatem plus počet úmrtí stářím) stejný jako počet čerstvě narozených jedinců.
 
 \begin{equation}
 m = n + \frac{n\cdot{}p}{2}
@@ -355,7 +355,7 @@ k_4  = \frac{\frac{p}{2 + p} -  {k_5} - \frac{1}{a_{max}}}{(n + \frac{n\cdot{}p}
 
 Vzorec můžeme chápat jako funkci proměnné $p$ (průměrné pravděpodobnosti rozmnožení páru), což nelze použít  pro
 počáteční inicializaci simulace, kdy $p$ není známa. Budeme tedy uvažovat rovnováhu populace v jednom konkrétním
-případě - pokud je optimálně přizpůsobena prostředí a pak je $p = 1.0$. Pokud nebude populace dokonale přizpůsobena
+případě -- pokud je optimálně přizpůsobena prostředí a pak je $p = 1.0$. Pokud nebude populace dokonale přizpůsobena
 prostředí, bude ji turbidostat udržovat méně početnou.
 
 Dosazením a úpravou lze získat:
@@ -392,7 +392,7 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 \begin{figure}
 \centering
 \includegraphics[totalheight=8cm]{img/Screenshot.pdf}
-    \caption{FrozenBeagleSimulation screenshot}
+    \caption{\textit{FrozenBeagleSimulation} screenshot}
 \end{figure}
 
 
