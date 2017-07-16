@@ -25,8 +25,8 @@ import           Schema
 
 import           Control.Monad
 import           Control.Exception.Base
-import           Data.List
-import           Data.MultiSet                    (fromList, toOccurList)
+import           Data.List hiding (union)
+import           Data.MultiSet (MultiSet, fromList, toOccurList, distinctSize, unions, union)
 
 import           Data.Random
 import           Data.Random.Distribution.Bernoulli
@@ -140,6 +140,12 @@ almostPolymorphism population = 1.0 - fromIntegral (length $ filter id same) / f
     genesList = transpose $ map genes $ map fst chs ++ map snd chs
     same :: [Bool]
     same = map almostAllTheSame genesList
+
+aleleCount :: Population -> Double
+aleleCount population = fromIntegral $ distinctSize allAllelas
+    where
+        allAllelas :: MultiSet Allele
+        allAllelas = unions $ map (\(c1, c2) -> union (fromList $ genes c1) (fromList $ genes c2)) $ map chromosomes $ individuals population
 
 average :: [Double] -> Double
 average xs = sum xs / fromIntegral (length xs)
@@ -265,4 +271,5 @@ computeSimulation params =
      , ("% of dominant homozygotes", stats $ dominantHomozygotness $ optimumForGeneration rules)
      , ("% of polymorphic locus", stats $ const polymorphism)
      , ("% of locus with allele with more than 90% appearence", stats $ const almostPolymorphism)
+     , ("# different alalas", stats $ const aleleCount)
      ]
