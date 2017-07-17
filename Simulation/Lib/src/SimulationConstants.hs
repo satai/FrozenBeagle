@@ -43,7 +43,7 @@ fitnessDecreaseCoefficient :: Double
 fitnessDecreaseCoefficient = -0.004
 
 negativeDominanceScale :: Double
-negativeDominanceScale = 1.0
+negativeDominanceScale = 1.5
 
 negativeDominanceShape :: Double
 negativeDominanceShape = 1.5
