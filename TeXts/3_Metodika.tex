@@ -33,9 +33,9 @@ XXX neco trosku obecnejsiho?
 \end{figure}
 
 Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu. Mají rozlišená
-dvě pohlaví. Jejich populace je panmická -- žijí v nestrukturovaném prostředí, kde jejich rozložení v prostoru nemá
-vliv na pravděpodobnost jejich křížení a tvorba párů je náhodná a nezávisí ani na jejich příbuznosti ani na jejich
-fenotypu ani na jiném faktoru.
+dvě pohlaví. Jejich populace je panmiktická -- žijí v nestrukturovaném prostředí, kde jejich rozložení v prostoru nemá
+vliv na pravděpodobnost jejich křížení a tvorba párů je náhodná a nezávisí ani na jejich příbuznosti, ani na jejich
+fenotypu, ani na jiném faktoru.
 
 Fenotyp jedinců je modelován jako čtyři nezávislé kvantitativní vlastnosti a reprezentován jako čtyřrozměrný vektor.
 Prostředí určuje pro modelovaný druh optimální fenotyp. Optimum prostředí, čtyřrozměrný vektor $E(t)$, není stálé,
@@ -50,7 +50,7 @@ Počáteční velikost populace je jedním z parametrů simulace.  V~dalších k
 udržována dvěma mechanismy - turbidostatickou regulací a umíráním příliš starých jedinců.
 
 Čerstvě narození jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
-Pokud není jedinec odstraněn turbidostem tak po 64 krocích umírá stářím.
+Pokud není jedinec odstraněn turbidosatem, tak po 64 krocích umírá stářím.
 
 V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví.
 Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
@@ -76,7 +76,7 @@ Náhodní počáteční jedinci jsou generováni tak, že jsou pro každého z n
 jedno ze dvou pohlaví a na základě toho určen fenotyp.
 
 Jak vypadají náhodně generované alely, je určeno parametry simulace -- mezi nimi je, jaká je pravděpodobnost, že bude
-nová alela ovlivňuje více složek fenotypu (je \uv{pleiotropická}) a jaká je pravděpodobnost, že se u alely projeví
+nová alela ovlivňovat více složek fenotypu (je \uv{pleiotropická}) a jaká je pravděpodobnost, že se u alely projeví
 dominance.
 
 Pokud alela působí jen na jednu vlastnost, tak je tato vlastnost vybrána náhodně a velikost příspěvku je vybrána z
@@ -87,15 +87,15 @@ rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4
 Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
 
 Teorie zamrzlé plasticity předpokládá podstatný význam alel, které působí v opačných směrech, pokud se
-v jednom lokus vyskytnou v jedné nebo ve dvou kopiích (dále jsou tyto alely nazývány pro jednoduchost
+v jednom lokusu vyskytnou v jedné nebo ve dvou kopiích (dále jsou tyto alely nazývány pro jednoduchost
 \uv{negativně dominantní}).\footnote{
 V častém případě je takto ovlivňována přímo fitness jedince. V tomto zjednodušeném modelu předpokládáme, že dané alely
 ovlivňují přímo jednotlivé složky fenotypu.
-} Pravděpodobnost, že alela má takovou vlastnost je parametrem simulace.
+} Pravděpodobnost, že alela má takovou vlastnost, je parametrem simulace.
 
-Ostatní alely mají účinek v stejný, ať již jsou na daném locusu na jednom nebo na obou chromosomech.
+Ostatní alely mají účinek stejný, ať již jsou na daném locusu na jednom nebo na obou chromosomech.
 
-\begin{tcolorbox}[ title={Pseudokód popisující generování náhodně alely}
+\begin{tcolorbox}[ title={Pseudokód popisující generování náhodné alely}
                  , breakable
                  ]
 
@@ -140,12 +140,12 @@ nahodny_opacny_efekt(efekt) =
 \subsection{Křížení}
 
 Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny nové páry jedinců opačného
-pohlaví. Zda pár přivede na svět nového jedince závisí na fitness obou potenciálních rodičů mechanismem, který je
+pohlaví. Zda pár přivede na svět nového jedince, závisí na fitness obou potenciálních rodičů mechanismem, který je
 popsán později.
 
 Každý z potomků vzniká tak, že jsou rekombinovány geny obou rodičů -- z každého jedince je náhodně vybrán jeden
-z chromozomů, je zvolen jeden náhodý locus. Locusy před ním a on jsou naplněny alelami jednoho z rodičů,
-lokusy po něm alelami druhého z rodičů, čímž vznikne první chromozom potomka. Druhý chromosom potomka je vytvořen
+z chromosomů, je zvolen jeden náhodný locus. Locusy před ním a on jsou naplněny alelami jednoho z rodičů,
+lokusy po něm alelami druhého z rodičů, čímž vznikne první chromosom potomka. Druhý chromosom potomka je vytvořen
 analogicky -- locusy před zvoleným locusem a on jsou naplněny alelami druhého z rodičů, zbytek chromosomu alelami
 prvního rodiče.
 
@@ -208,7 +208,7 @@ Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě poh
 Jedinou možnou mutací je bodová změna alely za jinou -- nejsou tedy simulovány rozsáhlejší mutace, které
 by měly větší vliv na strukturu DNA.
 
-Nad každým lokusem v obou chromosomech je náhodě s pravděpodobností $0.0002$ rozhodnuto, zda u~něj dojde ke změně.
+Nad každým lokusem v obou chromosomech je náhodně s pravděpodobností $0.0002$ rozhodnuto, zda u~něj dojde ke změně.
 V~případě, že ano, tak je na lokus dána nově vygenerovaná náhodná alela. Ta je vybírána stejným mechanismem, jako jsou
 generovány počáteční alely.
 
@@ -248,7 +248,7 @@ generovány počáteční alely.
 Fenotyp jedince jsou jeho čtyři kvantitativní vlastnosti dohromady reprezentované jako čtyřrozměrný vektor.
 
 Každá alela nějak přispívá k výslednému fenotypu, tyto příspěvky (resp. terminologií simulace efekty) se sčítají.
-Příspěvek alely se může lišit, pokud se nachází ve dvou kopiích v témže lokusu na obou chromozomech --
+Příspěvek alely se může lišit, pokud se nachází ve dvou kopiích v témže lokusu na obou chromosomech --
 v tom případě se použije její dominantní efekt.
 
 Simulace obsahuje možnost namodelovat pohlavní dimorfismus, kdy fenotyp závisí i na pohlaví, ale tato varianta nebyla
@@ -308,7 +308,7 @@ Počáteční velikost populace je jedním z parametrů simulace.
 \footnote{Seznam všech parametrů simulace je součástí přílohy \ref{sec:parameters}}
 
 Následně je velikost populace řízena turbidostatickou
-zpětnou vazbou jako je například v modelu \citet{Flegr139030}  a umíráním jedinců stářím.
+zpětnou vazbou, jako je například v modelu \citet{Flegr139030}, a umíráním jedinců stářím.
 
 Turbidostatická regulace funguje tak, že každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
 $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
@@ -327,7 +327,7 @@ simulacích postačuje pro postupný pokles k očekávané velikosti populace, p
 zcela jistě menší než deset na pár v každém kole.
 }
 
-Konstanta $k4$ v předchozím vzorci je vypočítána následově:
+Konstanta $k4$ v předchozím vzorci je vypočítána následovně:
 
 \begin{equation}
 k_4 = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}
@@ -440,7 +440,7 @@ které je možné dále analyzovat a zpracovávat.
 Parametry \textit{fbeagle} jsou zdokumentovány v \ref{sec:parameters}.
 
 Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
-a kompletní historie ve VCS git. Jsou poskytnuty pod oteřenou trojsložkovou BSD licencí.
+a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí.
 
 \section{Statistická analýza}
 
