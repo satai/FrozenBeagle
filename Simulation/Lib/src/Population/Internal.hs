@@ -70,14 +70,21 @@ randomOffspring expression currentGeneration (Individual M _ (mdna1, mdna2) _) (
 
     let baseCount = length $ genes mdna1
 
-    crossOverPoint1 <- integralUniform 1 (baseCount - 1)
-    crossOverPoint2 <- integralUniform 1 (baseCount - 1)
+    crossOverPoint <- integralUniform 1 (baseCount - 1)
 
     swapChromosomes <- boolBernoulli (0.5 :: Double)
 
+    chooseFromM <- boolBernoulli (0.5 :: Double)
+    chooseFromF <- boolBernoulli (0.5 :: Double)
+
     let
-        d1 = crossover crossOverPoint1 mdna1 fdna1
-        d2 = crossover crossOverPoint2 mdna2 fdna2
+        -- segregation
+        mdna = if chooseFromM then mdna1 else mdna2
+        fdna = if chooseFromF then fdna1 else fdna2
+
+        -- crossover
+        d1 = crossover crossOverPoint mdna fdna
+        d2 = crossover crossOverPoint fdna mdna
 
         newChromosomes = if swapChromosomes then (d1, d2) else (d2, d1)
         offspringPhenotype = expression s newChromosomes
