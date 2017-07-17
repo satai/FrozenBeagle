@@ -20,7 +20,7 @@ XXX neco trosku obecnejsiho?
 
 \section{Simulace}
 
-\begin{figure}[!b]
+\begin{figure}[h]
     \centering
 
     \begin{tikzpicture}
@@ -32,20 +32,25 @@ XXX neco trosku obecnejsiho?
     \caption{XXX picture: Big picture}
 \end{figure}
 
-Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu s oddělenými pohlavími a
-žijí v nestrukturovaném prostředí. Fenotyp jedinců a tedy i fenotyp optimální pro dané prostředí jsou čtyřrozměrnými
-vektory. Optimum prostředí $E(t)$ není stálé, ale může se měnit v čase.
+Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu. Mají rozlišená
+dvě pohlaví. Jejich populace je panmická -- žijí v nestrukturovaném prostředí, kde jejich rozložení v prostoru nemá
+vliv na pravděpodobnost jejich křížení a tvorba párů je náhodná a nezávisí ani na jejich příbuznosti ani na jejich
+fenotypu ani na jiném faktoru.
+
+Fenotyp jedinců je modelován jako čtyři nezávislé kvantitativní vlastnosti a reprezentován jako čtyřrozměrný vektor.
+Prostředí určuje pro modelovaný druh optimální fenotyp. Optimum prostředí, čtyřrozměrný vektor $E(t)$, není stálé,
+ale může se měnit v čase.
 
 Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
 
 Optimum prostředí je po dobu 8192 kroků simulace konstantní a následně dojde k jeho skokové změně o
 $\Delta{}E$. Po této změně opět zůstane optimum neměnné po dalších 8192 kroků, poté se vrátí na počáteční hodnotu.
 
-Počáteční velikost populace je jedním z parametrů simulace. V~dalších krocích je následně velikost populace udržována
-mechanismem turbidostatu.
+Počáteční velikost populace je jedním z parametrů simulace.  V~dalších krocích je následně velikost populace
+udržována dvěma mechanismy - turbidostatickou regulací a umíráním příliš starých jedinců.
 
-Navíc je každý jedinec limitován maximální délkou života -- po 64 krocích umírá.
 Čerstvě narození jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
+Pokud není jedinec odstraněn turbidostem tak po 64 krocích umírá stářím.
 
 V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví.
 Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
@@ -60,73 +65,154 @@ dobu života. Somatické mutace nejsou modelovány.
 Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 20 lokusů.
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
 vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince, dále nazýván i
-\textit{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje na obou protilehlých lokusech
+\textit{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje ve dvou instancích v témže lokusu
 (opět čtyřrozměrný vektor, dále nazýván i \textit{dominantní efekt alely}).
 
-Na počátku simulace jsou vygenerováni náhodní jedinci. Jejich počet je parametrem simulace, zároveň je použit i jako
-rovnovážná velikost populace.
+Na počátku simulace je vygenerována populace složená z náhodných jedinců.
+Jejich počet je parametrem simulace, zároveň je počáteční velikost populace používána i jako rovnovážná velikost
+populace pro její následnou regulaci.
 
-Většina alel těchto jedinců má nulový příspěvek k fenotypu. Náhodně je vybráno zhruba jedno procento alel, které k
-fenotypu přispívají. Jak vypadají, je určeno parametry simulace -- mezi nimi je, jaká je pravděpodobnost, že bude
-nová alela pleiotropická a tedy ovlivňovat více složek fenotypu a jaká je pravděpodobnost,
-že se u alely projeví dominance.
+Náhodní počáteční jedinci jsou generováni tak, že jsou pro každého z nich vygenerované náhodné alely, vybráno náhodně
+jedno ze dvou pohlaví a na základě toho určen fenotyp.
+
+Jak vypadají náhodně generované alely, je určeno parametry simulace -- mezi nimi je, jaká je pravděpodobnost, že bude
+nová alela ovlivňuje více složek fenotypu (je \uv{pleiotropická}) a jaká je pravděpodobnost, že se u alely projeví
+dominance.
 
 Pokud alela působí jen na jednu vlastnost, tak je tato vlastnost vybrána náhodně a velikost příspěvku je vybrána z
-normálního rozdělení. Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
-rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy $\sqrt{4} = 2$). Důvodem je, že bez tohoto znormování měly
-pleiotropické příspěvky v průměru větší délku.
+normovaného normálního rozdělení.\footnote{Pokud mluvím o normálním rozdělení bez dalšího upřesnění, tak mám na mysli
+právě normované normální rozddělení se střední hodnotou $0$ a rozptylem $1.0$ tedy $N(0, 1)$}
+Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
+rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4} = 2$).
+Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
 
-Teorie zamrzlé plasticity předpokládá podstatný význam dominantních alel, které působí v opačných směrech, pokud se
-vyskytují jednou nebo dvakrát. Pravděpodobnost, že alela má takovou vlastnost je parametrem simulace.
+Teorie zamrzlé plasticity předpokládá podstatný význam alel, které působí v opačných směrech, pokud se
+v jednom lokus vyskytnou v jedné nebo ve dvou kopiích (dále jsou tyto alely nazývány pro jednoduchost
+\uv{negativně dominantní}).\footnote{
+V častém případě je takto ovlivňována přímo fitness jedince. V tomto zjednodušeném modelu předpokládáme, že dané alely
+ovlivňují přímo jednotlivé složky fenotypu.
+} Pravděpodobnost, že alela má takovou vlastnost je parametrem simulace.
 
-Ostatní alely mají účinek v obou případech stejný.
+Ostatní alely mají účinek v stejný, ať již jsou na daném locusu na jednom nebo na obou chromosomech.
 
-
-Postup, jak je vygenerována každá alela v počáteční populaci, tedy vypadá takto:
+\begin{tcolorbox}[ title={Pseudokód popisující generování náhodně alely}
+                 , breakable
+                 ]
 
 \begin{code}[commandchars=\\\{\}]
+nahodna_alela() =
+    \textbf{pokud} (R(0,1) < pomer_pleiotropickych_alel)
+        \textbf{pak}
+            efekt <- nahodny_jednoduchy_efekt()
+            dominantni_efekt <- nahodny_dominantni_efekt(efekt)
+            Alela(efekt, dominantni_efekt)
+        \textbf{jinak}
+            efekt <- nahodny_pleiotropicky_efekt()
+            dominantni_efekt <- nahodny_dominantni_efekt(efekt)
+            Alela(efekt, dominantni_efekt)
 
-    pocatecni_alela() =
-        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < XXXX)
-            \textbf{pak}
-                efekt <- nahodny_jednoduchy_efekt()
-                dominantni_efekt <- nahodny_dominantni_efekt(efekt)
-                Alela(efekt, dominantni_efekt)
-            \textbf{jinak}
-                efekt <- nahodny_pleiotropicky_efekt()
-                dominantni_efekt <- nahodny_dominantni_efekt(efekt)
-                Alela(efekt, dominantni_efekt)
+nahodny_jednoduchy_efekt() =
+    zamichej([0, 0, 0, \textit{N}()])
 
-    nahodny_jednoduchy_efekt =
-        zamichej([0, 0, 0, \textit{N}()])
+nahodny_jednoduchy_efekt() =
+    [\textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2])
 
-    nahodny_jednoduchy_efekt =
-        [\textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2, \textit{N}() / 2])
+nahodny_dominantni_efekt(efekt) =
+    \textbf{pokud} (R(0,1) < pomer_negativne_dominantnich_alel)
+        \textbf{pak} efekt
+        \textbf{jinak} nahodny_opacny_efekt(efekt)
 
-    nahodny_dominantni_efekt(efekt) =
-        \textbf{pokud} (nahodne_cislo_z_intervalu(0,1) < jine XXXX)
-            \textbf{pak} efekt
-            \textbf{jinak} nahodny_opacny_efekt(efekt)
+nahodny_opacny_efekt(efekt) =
+    x <- P(1.5, 1.5)
+    (-x) * efekt \textit{//násobení vektoru (záporným) skalárem}
 
-    nahodny_opacny_efekt(efekt) =
-        x <- XXXX
-        (-x) * efekt \textit{//násobení vektoru (záporným) skalárem}
+\textit{// {R}(0, 1) značí náhodné číslo z rovnoměrného rozdělení}
+\textit{//           na intervalu (0, 1)}
 
-    \textit{// {N}() značí náhodné číslo ze standardizovaného}
-    \textit{//       normálního rozdělení}
-    \textit{// XXXX znaci vyber z XXXX}
+\textit{// {N}() značí náhodné číslo ze standardizovaného}
+\textit{//       normálního rozdělení}
+
+\textit{// {P}(xm, a) značí náhodné číslo z Paretova rozdělení}
+\textit{//            s parametry xm a a}
 \end{code}
+\end{tcolorbox}
+
+\subsection{Křížení}
+
+Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny nové páry jedinců opačného
+pohlaví. Zda pár přivede na svět nového jedince závisí na fitness obou potenciálních rodičů mechanismem, který je
+popsán později.
+
+Každý z potomků vzniká tak, že jsou rekombinovány geny obou rodičů -- z každého jedince je náhodně vybrán jeden
+z chromozomů, je zvolen jeden náhodý locus. Locusy před ním a on jsou naplněny alelami jednoho z rodičů,
+lokusy po něm alelami druhého z rodičů, čímž vznikne první chromozom potomka. Druhý chromosom potomka je vytvořen
+analogicky -- locusy před zvoleným locusem a on jsou naplněny alelami druhého z rodičů, zbytek chromosomu alelami
+prvního rodiče.
+
+Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
+
+\begin{figure}[h]
+  \centering
+
+  \begin{tikzpicture}
+
+    \begin{scope}
+      \DNASequence[Parent1a]{$\blacktriangleright$/yellow!30,$\clubsuit$/yellow!30,$\boxplus$/yellow!30,$\circ$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
+    \end{scope}
+
+    \begin{scope}[yshift=1cm]
+      \DNASequence[Parent1b]{$\triangleright$/yellow!20,$\diamondsuit$/yellow!30,$\boxdot$/yellow!20,$\bullet$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
+    \end{scope}
+
+    \begin{scope}[yshift=3cm]
+      \DNASequence[Parent2a]{$\blacktriangle$/green!30,$\clubsuit$/green!30,$\boxdot$/green!30,$\star$/green!30,$\circledcirc$/green!30,$\flat$/green!30}
+    \end{scope}
+
+    \begin{scope}[yshift=4cm]
+      \DNASequence[Parent2b]{$\triangle$/green!20,$\clubsuit$/green!30,$\Box$/green!20,$\ast$/green!30,$\circledcirc$/green!30,$\sharp$/green!30}
+    \end{scope}
+
+
+    \begin{scope}[xshift=9cm,yshift=2cm]
+      \DNASequence[Donea]{$\blacktriangleright$/yellow!30,$\clubsuit$/yellow!30,$\Box$/green!20,$\ast$/green!30,$\circledcirc$/green!30,$\sharp$/green!30}
+    \end{scope}
+
+    \begin{scope}[xshift=9cm,yshift=3cm]
+      \DNASequence[Doneb]{$\triangle$/green!20,$\clubsuit$/green!30,$\boxplus$/yellow!30,$\circ$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
+     \end{scope}
+
+    \ConnectNodes[out=-90, in=-30]
+        {Donea-1.south west}
+        {Parent1a-1.south west};
+
+    \ConnectNodes[out=-90, in=-60]
+        {Donea-5.south}
+        {Parent2b-5.south east};
+
+    \ConnectNodes[out=90, in=40]
+        {Doneb-0.north east}
+        {Parent2b-0.north east};
+
+    \ConnectNodes[out=120, in=60]
+        {Doneb-5.north}
+        {Parent1a-5.north east};
+
+  \end{tikzpicture}
+
+  \caption{Křížení}
+\end{figure}
+
 
 \subsection{Mutace}
 
-Jedinou možnou mutací je bodová změna alely za jinou -- nejsou tedy simulovány rozsáhlejší mutace, které mají větší vliv
-na strukturu DNA.
+Jedinou možnou mutací je bodová změna alely za jinou -- nejsou tedy simulovány rozsáhlejší mutace, které
+by měly větší vliv na strukturu DNA.
 
-Nad každým lokusem v obou chromosomech určeno s pravděpodobností XXX, zda u něj dojde ke změně.
-V případě, že ano, tak je na lokus dána nová náhodná alela. Ta je vybírána obdobným mechanismem, jako jsou
-generovány nenulové počáteční alely.
+Nad každým lokusem v obou chromosomech je náhodě s pravděpodobností $0.0002$ rozhodnuto, zda u~něj dojde ke změně.
+V~případě, že ano, tak je na lokus dána nově vygenerovaná náhodná alela. Ta je vybírána stejným mechanismem, jako jsou
+generovány počáteční alely.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
 
   \begin{tikzpicture}
@@ -141,7 +227,7 @@ generovány nenulové počáteční alely.
 
 
     \begin{scope}[xshift=9cm]
-      \DNASequence[Done]{$\blacktriangleright$/white!30,$\diamondsuit$/red!30,$\#$/white!30,$\triangleleft$/white!30,$\circ$/white!30,$\flat$/white!30}
+      \DNASequence[Done]{$\blacktriangleright$/white!30,$\diamondsuit$/green!30,$\#$/white!30,$\triangleleft$/white!30,$\circ$/white!30,$\flat$/white!30}
     \end{scope}
 
     \begin{scope}[xshift=9cm,yshift=1cm]
@@ -157,87 +243,28 @@ generovány nenulové počáteční alely.
   \caption{Mutace}
 \end{figure}
 
-\subsection{Křížení}
-
-Každý jedinec má jedno ze dvou pohlaví. V každém kroku simulace jsou náhodně vytvořeny nové páry jedinců opačného
-pohlaví. Jde tedy o panmiktický model populace.
-
-Každý z potomků vzniká tak, že jsou kombinovány geny obou rodičů. Pro každý chromosom je vybrán náhodný lokus.
-Lokusy před ním a on jsou naplněny alelami jednoho z rodičů, lokusy po něm alelami druhého z rodičů.
-
-Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
-
-\begin{figure}
-  \centering
-
-  \begin{tikzpicture}
-
-    \begin{scope}
-      \DNASequence[Parent1a]{$\blacktriangleright$/yellow!30,$\clubsuit$/yellow!30,$\boxplus$/yellow!30,$\circ$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
-    \end{scope}
-
-    \begin{scope}[yshift=1cm]
-      \DNASequence[Parent1b]{$\triangleright$/yellow!20,$\diamondsuit$/yellow!30,$\boxdot$/yellow!20,$\bullet$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
-    \end{scope}
-
-
-    \begin{scope}[yshift=3cm]
-      \DNASequence[Parent2a]{$\blacktriangle$/green!30,$\clubsuit$/green!30,$\boxdot$/green!30,$\star$/green!30,$\circledcirc$/green!30,$\flat$/green!30}
-    \end{scope}
-
-    \begin{scope}[yshift=4cm]
-      \DNASequence[Parent2b]{$\triangle$/green!20,$\clubsuit$/green!30,$\Box$/green!20,$\ast$/green!30,$\circledcirc$/green!30,$\sharp$/green!30}
-    \end{scope}
-
-    \begin{scope}[xshift=9cm,yshift=2cm]
-      \DNASequence[Donea]{$\blacktriangle$/green!30,$\clubsuit$/green!30,$\boxplus$/yellow!30,$\circ$/yellow!30,$\circledcirc$/yellow!30,$\flat$/yellow!30}
-    \end{scope}
-
-    \begin{scope}[xshift=9cm,yshift=3cm]
-      \DNASequence[Doneb]{$\triangle$/green!20,$\clubsuit$/green!30,$\Box$/green!20,$\ast$/green!30,$\circledcirc$/green!30,$\flat$/yellow!30}
-    \end{scope}
-
-    \ConnectNodes[out=-90, in=-30]
-        {Donea-3.south}
-        {Parent1a-3.south};
-
-    \ConnectNodes[out=-90, in=-0]
-        {Donea-0.south east}
-        {Parent2a-0.south east};
-
-    \ConnectNodes[out=90, in=40]
-        {Doneb-2.north}
-        {Parent2b-2.north};
-
-    \ConnectNodes[out=90, in=40]
-        {Doneb-5.north}
-        {Parent1b-5.north};
-
-  \end{tikzpicture}
-
-  \caption{Křížení}
-\end{figure}
-
-
-
 \section{Jedinec a jeho fenotyp}
 
 Fenotyp jedince jsou jeho čtyři kvantitativní vlastnosti dohromady reprezentované jako čtyřrozměrný vektor.
 
-Každá alela nějak přispívá do výsledného fenotypu, tyto příspěvky se sčítají. Příspěvek alely se může lišit, pokud se
-nachází ve dvou kopiích na protilehlých lokusech -- v tom případě se použije její dominantní efekt.
+Každá alela nějak přispívá k výslednému fenotypu, tyto příspěvky (resp. terminologií simulace efekty) se sčítají.
+Příspěvek alely se může lišit, pokud se nachází ve dvou kopiích v témže lokusu na obou chromozomech --
+v tom případě se použije její dominantní efekt.
 
+Simulace obsahuje možnost namodelovat pohlavní dimorfismus, kdy fenotyp závisí i na pohlaví, ale tato varianta nebyla
+v~simulacích studována.
 
 \section{Optimum}
 
 Pro simulovaný druh existuje optimální fenotyp, který nejlépe vyhovuje aktuálnímu stavu prostředí.
-Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo 8192 a 16384 -- změní.
+Tento optimální fenotyp se v průběhu simulace dvakrát skokově -- v jejím kroku číslo 8192 a 16384 -- změní. Délky
+stabilních intervalů jsou zvoleny tak, aby se ve většině simulací populace buď přizpůsobila a jedinci se přiblížili
+optimu, nebo vyhynula.
 
-Počáteční optimum je nastaveno na dvanáctinásobek XXX výběru z normálního rozložení nezávisle pro každou dimenzi.
-První změna proběhne o dvanáctinásobek XXX  výběru z normálního rozložení nezávisle pro každou dimenzi. Druhá změna
+Počáteční optimum je nastaveno na dvanáctinásobek výběru z normálního rozložení nezávisle pro každou dimenzi -- pro
+každou složku vektoru je vybráno náhodné číslo z normovaného normálního rozdělení a vynásobeno dvanácti.
+První změna proběhne také o dvanáctinásobek výběru z normálního rozložení nezávisle pro každou dimenzi. Druhá změna
 vrátí fenotyp na původní hodnotu.
-
-XXX
 
 \begin{equation}
 E(0) =  [12{\cdot}X_1, 12{\cdot}X_2, 12{\cdot}X_3, 12{\cdot}X_4], F(X_i) \sim \phi
@@ -258,35 +285,47 @@ E(t) = \left \{
 \subsection{Fitness}
 
 Euklidovská vzdálenost jedince s fenotypem $X = [X_1,\dots{}X_4]$ od aktuálního optima prostředí určuje
-$E = [E_1,\dots{} E_4]$ jeho aktuální fitness, tak jak bylo zavedeno ve Fisherově geometrickém modelu XXX
-\footnote{Konstanta $a$ v tomto vzorci je čistě empiricky zvolená tak, aby měli jedinci v simulacích
+$E = [E_1,\dots{} E_4]$ jeho aktuální fitness, tak jak bylo zavedeno ve Fisherově geometrickém modelu
+\citep{tenaillon2014utility}.\footnote{
+Konstanta $a$ v tomto vzorci je čistě empiricky zvolená tak, aby měli jedinci v simulacích
 přiměřené velikosti fitness -- pokud by například místo ní byla výrazně větší konstanta, tak by pro většinu simulací
 neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajímavé a neodpovídá to reálným druhům.
-Dvojka v exponentu je pak ve fisherovských modelech běžná volba[XXX].
-Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy XXX.}
+Dvojka v exponentu je pak ve fisherovských modelech podle \citet{tenaillon2014utility} běžná volba.
+Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy \ref{sec:constants}.
+}
 
 \begin{equation}
 fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}
 \end{equation}
 
-Počet potomků páru je aritmetický průměr fitness jeho členů zaokrouhlený dolů.
-
+Aritmetický průměr fitness obou potenciálních rodičů je pravděpodobnost, že spolu v daném kole simulace vyvedou
+mládě.\footnote{Technicky vzato tedy není označení této vlastnosti jako \uv{fitness}, zcela přesné, protože se týká
+jen jednoho kola simulace a ne celé doby života jedince, jak bývá obvykle uvažováno v populační genetice.}
 
 \section{Řízení velikosti populace}
 
 Počáteční velikost populace je jedním z parametrů simulace.
-\footnote{Seznam všech parametrů simulace je součástí přílohy XXX}
+\footnote{Seznam všech parametrů simulace je součástí přílohy \ref{sec:parameters}}
+
 Následně je velikost populace řízena turbidostatickou
-zpětnou vazbou[XXX]. V každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
+zpětnou vazbou jako je například v modelu \citet{Flegr139030}  a umíráním jedinců stářím.
+
+Turbidostatická regulace funguje tak, že každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
 $p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
-V přírodě mu odpovídá například regulace parazitem, kterému se lépe daří, pokud se jedinci častěji setkávají.
-Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace. Pravděpodobnost je z praktických důvodů
-zastropována hodnotou 0.9 -- bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1.0$, kde se ztrácí
-možnost (nejen biologické) interpretace.
-\footnote{Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
+Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
+
+V přírodě turbidostatické regulaci odpovídá například regulace parazitem, kterému se lépe daří,
+pokud se jedinci častěji setkávají -- v takovém případě četnost setkání závisí právě na hustotě populace tedy členu
+$k_4 n^2$.
+
+Pravděpodobnost úmrtí jedince je z praktických důvodů zastropována hodnotou 0.9 --
+bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1.0$,
+kde se ztrácí možnost (nejen biologické) interpretace.\footnote{
+Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
-simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a
-menší než deset na pár.}
+simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je očividně omezený a
+zcela jistě menší než deset na pár v každém kole.
+}
 
 Konstanta $k4$ v předchozím vzorci je vypočítána následově:
 
@@ -300,7 +339,11 @@ kde $n_0$ je rovnovážná velikost populace a $a_{max}$ je maximální věk jed
 Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na
 její hustotě a na deterministické smrti stářím po $a_{max}$ generacích.
 
-Vzorec pro velikost $k_4$ je poněkud neintuitivní, ale dá se odvodit z požadavku, aby velikost populace zůstala
+\begin{tcolorbox}[ title={Odvození vzorce pro $k_4$}
+                 , breakable
+                 ]
+
+Vzorec pro velikost $k_4$ je poněkud neintuitivní, ale dá se snadno odvodit z požadavku, aby velikost populace zůstala
 konstantní za předpokladu konstantní průměrné fitness:
 
 \begin{equation}
@@ -317,7 +360,6 @@ m = n + \frac{n\cdot{}p}{2}
 
 kde $p$ je průměrná pravděpodobnost, že pár vyvede v daném kole mládě. (Párů je v populaci zhruba $\frac{n}{2}$, protože
 obě pohlaví jsou zhruba stejně zastoupena).
-
 
 Odtud:
 
@@ -336,7 +378,7 @@ Odtud:
 
 
 \begin{equation}
-(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}}) - \frac{p}{(2 + p)}
+(k_4\cdot{(n + \frac{n\cdot{}p}{2})^2} + {k_5} + \frac{1}{a_{max}}) = \frac{p}{(2 + p)}
 \end{equation}
 
 \begin{equation}
@@ -371,6 +413,7 @@ k_4  = \frac{\frac{1}{3} -  {k_5} - \frac{1}{a_{max}}}{\frac{9\cdot{}n^2}{4}}
 \begin{equation}
 k_4  = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}{27\cdot{}n^2}
 \end{equation}
+\end{tcolorbox}
 
 \section{Frozen Beagle}
 
@@ -379,15 +422,14 @@ Popsaná simulace byla implementována v silně staticky typovaném čistě funk
 Samotná simulace je zapouzdřena do knihovny, která je užívána dvěma programy -- grafickým
 \textit{FrozenBeagleSimulation} a \textit{fbeagle}, který je spouštěn z příkazové řádky.
 
-Grafický \textit{FrozenBeagleSimulation}, zobrazený na XXX,
+Grafický \textit{FrozenBeagleSimulation}, zobrazený na obrázku \ref{fig:FrozenBeagleScreenshot},
 umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 
-
-
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[totalheight=8cm]{img/Screenshot.pdf}
     \caption{\textit{FrozenBeagleSimulation} screenshot}
+\label{fig:FrozenBeagleScreenshot}
 \end{figure}
 
 
@@ -395,13 +437,23 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace,
 které je možné dále analyzovat a zpracovávat.
 
+Parametry \textit{fbeagle} jsou zdokumentovány v \ref{sec:parameters}.
+
 Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
-a kompletní historie ve VCS git. Jsou poskytnuty pod trojsložkovou BSD licencí.
+a kompletní historie ve VCS git. Jsou poskytnuty pod oteřenou trojsložkovou BSD licencí.
 
 \section{Statistická analýza}
 
 \section{Reprodukovatelnost}
 
-Bla, bla.
+Bla, bla. XXXXX
 
 K sazbě byl použit systém \TeX se sadou maker \LaTeX a za použití fontů Latin Modern.
+
+
+\begin{tcolorbox}[ title={Reprodukovatelnost v počítačových simulacích}
+                 , breakable
+                 ]
+Reprodukovaltenost počítačových simulací by zdánlivě mělo být triviální téma.
+
+\end{tcolorbox}
