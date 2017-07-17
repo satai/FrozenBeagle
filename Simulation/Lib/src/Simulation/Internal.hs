@@ -265,7 +265,7 @@ computeSimulation params =
   in [ ("Avg Fitness", stats $ avgFitness $ optimumForGeneration rules)
      , ("Min Fitness", stats $ minFitness $ optimumForGeneration rules)
      , ("10% percentile Fitness", stats $ percentileFitness 0.1 $ optimumForGeneration rules)
-     , ("Ochylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
+     , ("Odchylka Fitness", stats $ stdDevFitness $ optimumForGeneration rules)
      , ("Population Size", stats $ const $ fromIntegral . length . individuals)
      , ("homozygotness", stats $ homozygotness $ optimumForGeneration rules)
      , ("% of dominant homozygotes", stats $ dominantHomozygotness $ optimumForGeneration rules)
