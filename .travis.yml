@@ -39,7 +39,7 @@ script: |
     stack $ARGS install gtk2hs-buildtools --haddock --no-terminal --install-ghc ;
     stack $ARGS setup --upgrade-cabal --install-ghc --no-terminal ;
     stack $ARGS solver --update-config --no-terminal ;
-    stack $ARGS --no-terminal --install-ghc test --haddock
+    travis_wait 30 stack $ARGS --no-terminal --install-ghc test --haddock
 
 # Caching so the next build will be fast too.
 cache:
