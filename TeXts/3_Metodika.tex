@@ -420,7 +420,8 @@ k_4  = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}{27\cdot{}n^2}
 Popsaná simulace byla implementována v silně staticky typovaném čistě funkcionálním jazyce Haskell \citep{Haskell}.
 
 Samotná simulace je zapouzdřena do knihovny, která je užívána dvěma programy -- grafickým
-\textit{FrozenBeagleSimulation} a \textit{fbeagle}, který je spouštěn z příkazové řádky.
+\textit{FrozenBeagleSimulation} a \textit{fbeagle}, který je spouštěn z příkazové řádky. Oba byly používány v prostředí
+operačního systému Linux, nebyla ověřena jejich funkčnost pod jinými OS.
 
 Grafický \textit{FrozenBeagleSimulation}, zobrazený na obrázku \ref{fig:FrozenBeagleScreenshot},
 umožňuje pohodlně nastavit parametry simulace a jednu spustit.
@@ -440,20 +441,46 @@ které je možné dále analyzovat a zpracovávat.
 Parametry \textit{fbeagle} jsou zdokumentovány v \ref{sec:parameters}.
 
 Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
-a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí.
+a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí. V přiloze XXX jsou
+zdokumenotovány informace, které by měly postačit k přeložení \textit{fbeagle} z těchto zdrojových textů
+a jeho spuštění a reprodukování výsledků.
 
-\section{Statistická analýza}
+\begin{tcolorbox}[ title={Reprodukovatelnost v počítačových simulacích}
+                 , breakable
+                 ]
+Reprodukovaltenost počítačových simulací by zdánlivě mělo být triviální téma. Počítače jsou
+deterministické,\footnote{
+Nebudu se snažit předstírat, že očekávám, že by mi to čtenář, který někdy použil reálný počítač, uvěřil, ale
+taková je všeobecně opakovaná teorie.
+} takže překlad zdrojových textů do spustitelného programu i následný běh tohoto
+programu je deterministický a dá pro stejné parametry stejné výsledky.
 
-\section{Reprodukovatelnost}
+To bohužel naráží na problémy čistě náhodné (například \uv{náhodné} změny hodnot v paměti
+nejsou podle XXX zas tak neobvyklé), ale i systematické.
+
+Praxe ukázala, že zajistit už jen zajistit překlad programu na vždy stejný spustitelný kód není zcela triviální (XXX).
+Vyžaduje to, mimo jiné, že jsou ke každému překladu k dispozici vždy stejné nástroje (překladač, linker,
+knihovny\ldots) a že překlad nezávisí například na aktuálním času, jménu počítače nebo přihlášeného uživatele.
+
+Pro Haskell zajišťuje vždy stejnou verzi nástrojů a knihoven nástroj stack(XXX) a jeho systém
+LTS (Long Time Support) snapshotů - repository zafixovaných verzí závislostí, u kterých je
+otestováno, že jsou vzájemně kompatibilní. Na rozdíl od dříve užívané kabaly (XXX), kde překlady
+závisely na okamžitém stavu počítače, je podstatně pravděpodobnější, že stejný projekt vygeneruje
+stejný (a tedy i stejně se chovající) program na různých počítačích nebo na stejném počítači v různých
+okamžicích.
+
+Obdobné problémy se týkají i následného běhu simulací.
+
+I když stochastická simulace nepoužívá náhodná čísla, ale dělá rozhodnutí pseudonáhodá na základě zadané inicializace
+(\textit{seedu}), je i zde prostor pro nedeterminismus. Naštěstí je \textit{fbeagle} velké části zdrojů
+nedeterminismu (časování, dělení dat v distribuovaném prostředí\ldots) ušetřen, protože funguje jako
+jednoduchý dávkový program bez složitého I/O, threadů, distribuování výpočtu a synchronizací.
+\end{tcolorbox}
+
+
 
 Bla, bla. XXXXX
 
 K sazbě byl použit systém \TeX se sadou maker \LaTeX a za použití fontů Latin Modern.
 
-
-\begin{tcolorbox}[ title={Reprodukovatelnost v počítačových simulacích}
-                 , breakable
-                 ]
-Reprodukovaltenost počítačových simulací by zdánlivě mělo být triviální téma.
-
-\end{tcolorbox}
+\section{Statistická analýza}
