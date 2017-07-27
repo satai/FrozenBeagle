@@ -484,3 +484,33 @@ Bla, bla. XXXXX
 K sazbě byl použit systém \TeX se sadou maker \LaTeX a za použití fontů Latin Modern.
 
 \section{Statistická analýza}
+
+\subsection{Popisná statistika}
+
+Pro každou simulaci a pro každý úsek simulace (první období s prvním optimem,
+období s druhým optimem a závěrečné období s původním optimem) spočte \textit{fbeagle} několik statistik.
+
+Nejjednodušší je zda populace tento úsek přežila a nebo nejpozději v něm vyhynula
+(t.j. velikost populace klesla v průběhu daného úseku nebo některého předchozího úseku na nulu).
+
+Jak úspěšně se populace v dané simulaci přizpůsobila aktuálním podmínkám, tedy jak se jedinci přiblížili k optimu,
+reprezentují dvě statistiky - maximum z průměrné fitness pro dané období (pro populaci je v každém kroku
+spočítána průměrná fitness a z těchto průměrů je vzato maximum - to vyjadřuje, jak nejblíže se v daném období podařilo
+populaci přiblížit k optimu) a maximum z desetiprocentního percentylu fitness pro dané období.
+Maximum desetiprocentního percentylu pro dané období postihuje blízkost optimu pro
+málo přizpůsobené jedince v dané populaci. Percentyl je v dané situaci výstižnější statistika než minimum - to může
+být výrazně ovlivněno náhodou, kdy mutace vytvoří nereprezentativního jedince fenotypem vzdáleným optimu.
+
+Jak rychle populace reaguje na nové podmínky je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
+Úsek má délku 127 kroků simulace. Směrnice je tedy rozdíl průměrné fitness v kroku č. 128 a v prvním kroku daného
+období vydělený 128.
+
+\subsection{Testování hypotéz}
+
+Hypotézy
+
+- rychleji vymiraji, zejmena po zmenach optima
+
+- dosahuji mensich prumeru i percentylu fitness
+
+- maji mensi smernice
