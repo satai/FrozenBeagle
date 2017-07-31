@@ -14,9 +14,83 @@
 XXXXX
 
 
-\section{Název první podkapitoly v druhé kapitole}
+\section{Výsledky a jejich interpretace}
 
-XXX
+\section{Omezení}
 
-\section{Název druhé podkapitoly v druhé kapitole}
+\section{Vhodnost zvolených nástrojů pro simulaci}
 
+Vzhledem k jisté neobvyklosti zvolených nástrojů, které byly vybrány pro implementaci simulace, zejména jazyka Haskell, je na místě stručně
+vyhodnotit jejich adekvátnost.
+
+V literatuře uváděné výhody kombinace funkcionálního programování a silných statických typových systémů (např. \citet{meijer2004static} pro
+statické typování, \citet{hughes1989functional} pro FP a \citet{Chiusano2016} a \citet{ray2014large} pro kombinaci)
+potvrdila i zkušenost při vývoji
+\textit{fbeagle}. Přísná disciplína statického jazyka pomáhala s návrhem i často zabránila tomu, aby byl chybný kód vůbec přeložen\footnote{
+Aby byla přísná pravidla ještě přísnější, tak jsem pro peklad výpočetní části \textit{fbeagle} používal přepínač \texttt{-Wall}, který způsobí,
+že všechna varování pěkladač považuje za chybu a nelze je tedy ignorovat.
+}.
+
+Rozpaky, obzvláště zpočátku, budila kvalita a dostupnost nástrojů. Ta se ale v průběhu implementace zlepšila, nahrazení \textit{cabaly} modernějším
+\textit{stackem} bylo podstatnou úlevou a, obávám se, na některé \uv{neobvyklosti} jsem si zvykl.
+
+\subsection{Kvalita kódu}
+
+Velkou výhodou se stalo i \textit{property based testování}. Je poměrně obvyklé i doporučované \citep{williams2009effectiveness} psát ke kódu i kód, který jej
+automaticky testuje. To, například podle \citet{beck2003test}, snižuje množství chyb i zlepšuje kvalitu návrhu\footnote{
+Přesněji řečeno, Kent Beck to tvrdí o testech, které jsou psány dříve než testovaný kód na základě poměrně jednoduché, ale striktní sady pravidel.
+}. Co je podstatné, je i to,
+že kvalitní a dostatečně rozsáhlé automatické může podpořit i důvěru ve výsledky.
+
+\textit{Property based testování} přináší tuto myšlenku ještě dále. Zatímco obvykle je otestováno, že kód pro pevně dané vstupy vrátí pevně
+očekávané hodnoty, je možné i otestovat, že kód pro vstupy daných vlastností vrátí výsledky daných vlastností\footnote{
+Například pokud mám dva fenotypy, první vzdálenější od aktuálního optima než druhý, tak první znamená nižší fitness. To platí pro všechny takové
+dvojice fenotypů.
+}. Protože konkrétní vstupy nejsou součástí kódu testů, může jich testovací framework vygenerovat mnoho (ať už čistě náhodných nebo \uv{záludných})
+a kód je tak otestován na mnoha různých vstupech.
+
+Výhodou Haskellu a jeho knihovny QuickCheck \citep{Claessen:2000:QLT:351240.351266} je, že díky typovému systému velmi často není třeba předepisovat, jak má generování vstupů vypadat, a tuto práci obstará počítač. To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, jako značnou výhodu.
+
+\subsection{Výkon}
+
+Jako problematický se však ukázal výkon výsledného programu, zejména pak jeho značná paměťová náročnost.
+
+Program je přeložen do nativního kódu, což odstraňuje část potenciálních výkonnostních probémů. Bohužel však jedna ze silných stránek
+Haskellu, líné vyhodnocování, které m.j. umožňuje i snadnou tvorbu potenciálně nekonečných datových struktur, nese i negativum.
+Tím je náročnost úvah o výkonu výsledného programu i tvorba nástrojů pro jeho zkoumání \citep{wadler1998no}.
+
+To se projevilo i u \textit{fbeagle}. Ani základní analýza pomocí profileru nenašla hlavní příčinu množství alokované paměti.
+
+Pokud se podaří tuto svízel odstranit nebo obejít, tak se tím otevře možnost spouštět větší množství simulací s větším množstvím kombinací
+různých parametrů bez nutnosti spoléhat na cloud, a tedy i levněji. Dále to umožní prověřit současné výsledky spuštěním více simulací, což by
+mohlo poskytnout výsledky signifikantní i pro nižší hladinu \textit{alfa.}
+
+\subsection{Reprodukovatelnost}
+
+Výsledný text práce je sázen prostřednictvím typografického systému \LaTeX. Můj původní plán spočíval v dotažení automatizace a
+reprodukovatelnosti do extrému -- jedním příkazem by byl přeložen \textit{fbeagle}, následně spuštěny simulace, výsledky statisticky
+zpracovány a vloženy do výsledného textu, z toho vygenerováno \textit{PDF}.
+
+K tomu nedošlo, protože by kvůli nízkému výkonu \textit{fbeagle} bylo nepraktické čekat.
+
+\section{Další možnosti}
+
+Program \textit{fbeagle} má poměrně široké možnosti, které dosud nebyly využity k vygenerování dat vhodných pro statistickou analýzu.
+
+Jistě má v budoucnu význam srovnat vliv pleiotropie s vlivem epistatických interakcí.
+
+Další potenciálně zajímavá oblast parametrů jsou plynulé periodické změny prostředí a plynulý posun optimálního fenotypu jedním směrem.
+
+\subsection{Měření evolvability}
+
+Závažnější zásah do \textit{fbeagle}, na který bohužel nezbyl čas, je přidání měření toho, jak je populace dále schopna vývoje.
+Jako vhodnější měřítko než použité směrnice aktuálního růstu na začátku zkoumaného období, se nabízí možnost simulovanou populaci
+nechat simulovaně (mimo hlavní simulaci, bez vlivu na její běh, pouze jako měření vlastnosti této populace) adaptovat na
+několik různých optim a u toho změřit směrnici růstu fitness.
+
+Výhoda takovho přístupu je v tom, že neměří rychlost adaptace v jedné situaci, ale je možné změřit aktulní schopnost populace přizpůsobit
+se různým podmínkám.
+
+Dalším argumentem pro takové měření je skutečnost, že nové optimální fenotypy mohou být umístěny ve zvolené vzdálenosti od okamžitého
+průměrného fenotypu populace. To je pro měření schopnosti populace se vyvýjet výhodnější, než nový optimální fenotyp umístit do 
+zvolené vzdálenosti od předchozího optimálního fenotypu.
