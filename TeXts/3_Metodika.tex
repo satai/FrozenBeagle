@@ -47,7 +47,7 @@ Optimum prostředí je po dobu 8192 kroků simulace konstantní a následně doj
 $\Delta{}E$. Po této změně opět zůstane optimum neměnné po dalších 8192 kroků, poté se vrátí na počáteční hodnotu.
 
 Počáteční velikost populace je jedním z parametrů simulace.  V~dalších krocích je následně velikost populace
-udržována dvěma mechanismy - turbidostatickou regulací a umíráním příliš starých jedinců.
+udržována dvěma mechanismy -- turbidostatickou regulací a umíráním příliš starých jedinců.
 
 Čerstvě narození jedinci jsou sexuálně dospělí ihned v následujícím kroku simulace a věk neovliňuje jejich fenotyp.
 Pokud není jedinec odstraněn turbidosatem, tak po 64 krocích umírá stářím.
@@ -80,18 +80,18 @@ nová alela ovlivňovat více složek fenotypu (je \uv{pleiotropická}) a jaká 
 dominance.
 
 Pokud alela působí jen na jednu vlastnost, tak je tato vlastnost vybrána náhodně a velikost příspěvku je vybrána z
-normovaného normálního rozdělení.\footnote{Pokud mluvím o normálním rozdělení bez dalšího upřesnění, tak mám na mysli
-právě normované normální rozddělení se střední hodnotou $0$ a rozptylem $1.0$ tedy $N(0, 1)$}
+normovaného normálního rozdělení\footnote{Pokud mluvím o normálním rozdělení bez dalšího upřesnění, tak mám na mysli
+právě normované normální rozddělení se střední hodnotou $0$ a rozptylem $1.0$ tedy $N(0, 1)$}.
 Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
 rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4} = 2$).
 Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
 
 Teorie zamrzlé plasticity předpokládá podstatný význam alel, které působí v opačných směrech, pokud se
 v jednom lokusu vyskytnou v jedné nebo ve dvou kopiích (dále jsou tyto alely nazývány pro jednoduchost
-\uv{negativně dominantní}).\footnote{
+\uv{negativně dominantní})\footnote{
 V častém případě je takto ovlivňována přímo fitness jedince. V tomto zjednodušeném modelu předpokládáme, že dané alely
 ovlivňují přímo jednotlivé složky fenotypu.
-} Pravděpodobnost, že alela má takovou vlastnost, je parametrem simulace.
+}. Pravděpodobnost, že alela má takovou vlastnost, je parametrem simulace.
 
 Ostatní alely mají účinek stejný, ať již jsou na daném locusu na jednom nebo na obou chromosomech.
 
@@ -286,26 +286,26 @@ E(t) = \left \{
 
 Euklidovská vzdálenost jedince s fenotypem $X = [X_1,\dots{}X_4]$ od aktuálního optima prostředí určuje
 $E = [E_1,\dots{} E_4]$ jeho aktuální fitness, tak jak bylo zavedeno ve Fisherově geometrickém modelu
-\citep{tenaillon2014utility}.\footnote{
+\citep{tenaillon2014utility}\footnote{
 Konstanta $a$ v tomto vzorci je čistě empiricky zvolená tak, aby měli jedinci v simulacích
 přiměřené velikosti fitness -- pokud by například místo ní byla výrazně větší konstanta, tak by pro většinu simulací
 neměla většina párů potomky a druh by v nich brzy vymřel. Což je nezajímavé a neodpovídá to reálným druhům.
 Dvojka v exponentu je pak ve fisherovských modelech podle \citet{tenaillon2014utility} běžná volba.
 Seznam všech konstant, jak byly voleny pro simulace, je součástí přílohy \ref{sec:constants}.
-}
+}.
 
 \begin{equation}
 fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}
 \end{equation}
 
 Aritmetický průměr fitness obou potenciálních rodičů je pravděpodobnost, že spolu v daném kole simulace vyvedou
-mládě.\footnote{Technicky vzato tedy není označení této vlastnosti jako \uv{fitness}, zcela přesné, protože se týká
-jen jednoho kola simulace a ne celé doby života jedince, jak bývá obvykle uvažováno v populační genetice.}
+mládě\footnote{Technicky vzato tedy není označení této vlastnosti jako \uv{fitness}, zcela přesné, protože se týká
+jen jednoho kola simulace a ne celé doby života jedince, jak bývá obvykle uvažováno v populační genetice.}.
 
 \section{Řízení velikosti populace}
 
-Počáteční velikost populace je jedním z parametrů simulace.
-\footnote{Seznam všech parametrů simulace je součástí přílohy \ref{sec:parameters}}
+Počáteční velikost populace je jedním z parametrů simulace
+\footnote{Seznam všech parametrů simulace je součástí přílohy \ref{sec:parameters}}.
 
 Následně je velikost populace řízena turbidostatickou
 zpětnou vazbou, jako je například v modelu \citet{Flegr139030}, a umíráním jedinců stářím.
@@ -320,12 +320,12 @@ $k_4 n^2$.
 
 Pravděpodobnost úmrtí jedince je z praktických důvodů zastropována hodnotou 0.9 --
 bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1.0$,
-kde se ztrácí možnost (nejen biologické) interpretace.\footnote{
+kde se ztrácí možnost (nejen biologické) interpretace\footnote{
 Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
 simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je očividně omezený a
 zcela jistě menší než deset na pár v každém kole.
-}
+}.
 
 Konstanta $k4$ v předchozím vzorci je vypočítána následovně:
 
@@ -417,7 +417,7 @@ k_4  = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}{27\cdot{}n^2}
 
 \section{Frozen Beagle}
 
-Popsaná simulace byla implementována v silně staticky typovaném čistě funkcionálním jazyce Haskell \citep{Haskell}.
+Popsaná simulace byla implementována v silně staticky typovaném čistě funkcionálním jazyce Haskell \citep{marlow2010haskell}.
 
 Samotná simulace je zapouzdřena do knihovny, která je užívána dvěma programy -- grafickým
 \textit{FrozenBeagleSimulation} a \textit{fbeagle}, který je spouštěn z příkazové řádky. Oba byly používány v prostředí
@@ -449,21 +449,21 @@ a jeho spuštění a reprodukování výsledků.
                  , breakable
                  ]
 Reprodukovatenlost počítačových simulací by zdánlivě mělo být triviální téma. Počítače jsou
-deterministické,\footnote{
+deterministické\footnote{
 Nebudu se snažit předstírat, že očekávám, že by mi to čtenář, který někdy použil reálný počítač, uvěřil, ale
 taková je všeobecně opakovaná teorie.
-} takže překlad zdrojových textů do spustitelného programu i následný běh tohoto
+}, takže překlad zdrojových textů do spustitelného programu i následný běh tohoto
 programu je deterministický a dá pro stejné parametry stejné výsledky.
 
 To bohužel naráží na problémy čistě náhodné (například \uv{náhodné} změny hodnot v paměti
-nejsou podle XXX zas tak neobvyklé), ale i systematické.
+nejsou podle \citet{schroeder2011dram} zas tak neobvyklé), ale i systematické.
 
 Praxe ukázala, že zajistit už jen zajistit překlad programu na vždy stejný spustitelný kód není zcela triviální (XXX).
 Vyžaduje to, mimo jiné, že jsou ke každému překladu k dispozici vždy stejné nástroje (překladač, linker,
 knihovny\ldots) a že překlad nezávisí například na aktuálním času, zvoleném jazyce, jménu počítače nebo přihlášeného uživatele.
 
 Pro Haskell zajišťuje vždy stejnou verzi nástrojů a knihoven nástroj stack(XXX) a jeho systém
-LTS (Long Time Support) snapshotů - repository zafixovaných verzí závislostí, u kterých je
+LTS (Long Time Support) snapshotů -- repository zafixovaných verzí závislostí, u kterých je
 otestováno, že jsou vzájemně kompatibilní. Na rozdíl od dříve užívané kabaly (XXX), kde překlady
 závisely na okamžitém stavu počítače, je podstatně pravděpodobnější, že stejný projekt vygeneruje
 stejný (a tedy i stejně se chovající) program na různých počítačích nebo na stejném počítači v různých
@@ -478,11 +478,6 @@ jednoduchý dávkový program bez složitého I/O, threadů, distribuování vý
 \end{tcolorbox}
 
 
-
-Bla, bla. XXXXX
-
-K sazbě byl použit systém \TeX se sadou maker \LaTeX a za použití fontů Latin Modern.
-
 \section{Statistická analýza}
 
 \subsection{Popisná statistika}
@@ -494,11 +489,11 @@ Nejjednodušší je zda populace tento úsek přežila a nebo nejpozději v něm
 (t.j. velikost populace klesla v průběhu daného úseku nebo některého předchozího úseku na nulu).
 
 Jak úspěšně se populace v dané simulaci přizpůsobila aktuálním podmínkám, tedy jak se jedinci přiblížili k optimu,
-reprezentují dvě statistiky - maximum z průměrné fitness pro dané období (pro populaci je v každém kroku
-spočítána průměrná fitness a z těchto průměrů je vzato maximum - to vyjadřuje, jak nejblíže se v daném období podařilo
+reprezentují dvě statistiky -- maximum z průměrné fitness pro dané období (pro populaci je v každém kroku
+spočítána průměrná fitness a z těchto průměrů je vzato maximum -- to vyjadřuje, jak nejblíže se v daném období podařilo
 populaci přiblížit k optimu) a maximum z desetiprocentního percentylu fitness pro dané období.
 Maximum desetiprocentního percentylu pro dané období postihuje blízkost optimu pro
-málo přizpůsobené jedince v dané populaci. Percentyl je v dané situaci výstižnější statistika než minimum - to může
+málo přizpůsobené jedince v dané populaci. Percentyl je v dané situaci výstižnější statistika než minimum -- to může
 být výrazně ovlivněno náhodou, kdy mutace vytvoří nereprezentativního jedince fenotypem vzdáleným optimu.
 
 Jak rychle populace reaguje na nové podmínky je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
@@ -507,10 +502,16 @@ období vydělený 128.
 
 \subsection{Testování hypotéz}
 
-Hypotézy
+K otestování se nabízejí tři hypotézy:
 
-- rychleji vymiraji, zejmena po zmenach optima
+\begin{enumerate}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, častěji vymírají.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentylu fitness (t.j. nedostanou se tak blízko optimu).}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, mají na počátku každého období menší směrnice vyjadřující růst fitness.}
+\end{enumerate}
 
-- dosahuji mensich prumeru i percentylu fitness
+První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro každou sadu parametrů s negativně dominantními alelalami nebo pleiotropií lze srovnat počet přeživších a vyhynulých populací s počtem přeživších a vyhynulých populací, kde se tyto jevy neprojevovaly.
 
-- maji mensi smernice
+K otestování dalších dvou
+
+
