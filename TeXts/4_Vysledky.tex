@@ -27,7 +27,7 @@
 \section{Popisná statistika}
 
 Nejprve uvedu hodnoty popisných statistik. Pro každou zkoumanou hodnotu podílu alel s pleiotrpickým vlivem na fenotyp a
-každou zkoumanou hodnotu podílu alel, které mají opaćný dominantní vliv na fenotyp než pokud se vyskytují v locusu jen jednou
+každou zkoumanou hodnotu podílu alel, které mají opačný dominantní vliv na fenotyp než pokud se vyskytují v locusu jen jednou
 bylo spuštěno XXX simulací. Detaily parametrů jsou popsány v příloze \ref{sec:parameters}.
 
 \begin{table}[h]
@@ -42,8 +42,9 @@ bylo spuštěno XXX simulací. Detaily parametrů jsou popsány v příloze \ref
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        & 87   &    5 &  2 \\
+ 0.05                        &   5  &   43 &  4\\
+ 0.10                        & 87   &    5 &  2 \\
  0.25                        &   5  &   43 &  4\\
- 0.50                        &  7   &   18 & 63 \\
 \hline
 \end{tabularx}
     \caption{Počet simulací končících vyhynutím v prvním úseku (t.j. v prvních 8192 krocích)}
@@ -63,8 +64,9 @@ bylo spuštěno XXX simulací. Detaily parametrů jsou popsány v příloze \ref
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        & 87   &    5 &  2 \\
- 0.25                        &   5  &   43 &  4\\
- 0.50                        &  7   &   18 & 63 \\
+ 0.05                        & 87   &    5 &  2 \\
+ 0.10                        &   5  &   43 &  4\\
+ 0.25                        &  7   &   18 & 63 \\
 \hline
 \end{tabularx}
     \caption{Počet simulací končících vyhynutím nejpozději v druhém úseku (t.j. v prvních 16384 krocích)}
@@ -84,12 +86,35 @@ bylo spuštěno XXX simulací. Detaily parametrů jsou popsány v příloze \ref
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        & 87   &    5 &  2 \\
+ 0.05                        &   5  &   43 &  4\\
+ 0.10                        &   5  &   43 &  4\\
  0.25                        &   5  &   43 &  4\\
- 0.50                        &  7   &   18 & 63 \\
 \hline
 \end{tabularx}
 \caption{Počet simulací končících vyhynutím}
 \end{table}
 
-\section{Název druhé podkapitoly v druhé kapitole}
 
+\begin{table}[h]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl alel s\\neg. dom.} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                        & 87   &    5 &  2 & 87   &    5 &  2 & 87   &    5 &  2 \\
+ 0.05                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
+ 0.10                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
+ 0.25                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
+\hline
+\end{tabularx}
+\caption{Nejvyšší dosažená  průměrná fitness}
+\end{table}
+
+\section{Název druhé podkapitoly v druhé kapitole}
