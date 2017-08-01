@@ -5,7 +5,7 @@ import Data.Semigroup ((<>))
 
 main :: IO ()
 main = do
-    let simCount = 5
+    let simCount = 3
     putStr "["
     runSimWithSeed False 0
     mapM_ (runSimWithSeed True) [1..(simCount - 1)]
@@ -31,4 +31,4 @@ extractParams seedValue = AnalysisParameters
                       <*> option auto (long "ratioOfNegativeDominantRules" <> value 0.0)
                       <*> option auto (long "ratioOfPositiveDominantRules" <> value 0.0)
                       <*> option auto (long "ratioOfPleiotropicRules" <> value 0.0)
-                      <*> option auto (long "dont_use" <> value seedValue)
+                      <*> option auto (long "seed" <> value seedValue)
