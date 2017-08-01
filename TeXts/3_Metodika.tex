@@ -16,21 +16,7 @@
 %Výsledky a případně i Diskuse.
 %Při vší pečlivosti se však snažte být poměrně struční. Materiál a metodika by neměly tvořit většinu DP.
 
-XXX neco trosku obecnejsiho?
-
 \section{Simulace}
-
-\begin{figure}[h]
-    \centering
-
-    \begin{tikzpicture}
-        \draw [blue] (0,0) rectangle (1.5,1);
-        \draw [red, ultra thick] (3,0.5) circle [radius=0.5];;
-        \draw [gray] (6,0) arc [radius=1, start angle=45, end angle= 120];
-    \end{tikzpicture}
-
-    \caption{XXX picture: Big picture}
-\end{figure}
 
 Použil jsem stochastický model postavený na individuích. Individua jsou jedinci jednoho druhu. Mají rozlišená
 dvě pohlaví. Jejich populace je panmiktická -- žijí v nestrukturovaném prostředí, kde jejich rozložení v prostoru nemá
@@ -423,9 +409,6 @@ Samotná simulace je zapouzdřena do knihovny, která je užívána dvěma progr
 \textit{FrozenBeagleSimulation} a \textit{fbeagle}, který je spouštěn z příkazové řádky. Oba byly používány v prostředí
 operačního systému Linux, nebyla ověřena jejich funkčnost pod jinými OS.
 
-Grafický \textit{FrozenBeagleSimulation}, zobrazený na obrázku \ref{fig:FrozenBeagleScreenshot},
-umožňuje pohodlně nastavit parametry simulace a jednu spustit.
-
 \begin{figure}[h]
 \centering
 \includegraphics[totalheight=8cm]{img/Screenshot.pdf}
@@ -433,6 +416,8 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 \label{fig:FrozenBeagleScreenshot}
 \end{figure}
 
+Grafický \textit{FrozenBeagleSimulation}, zobrazený na obrázku \ref{fig:FrozenBeagleScreenshot},
+umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 
 \textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší
 počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace,
@@ -441,7 +426,7 @@ které je možné dále analyzovat a zpracovávat.
 Parametry \textit{fbeagle} jsou zdokumentovány v \ref{sec:parameters}.
 
 Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
-a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí. V přiloze XXX jsou
+a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí. V příloze \ref{sec:reproducing} jsou
 zdokumenotovány informace, které by měly postačit k přeložení \textit{fbeagle} z těchto zdrojových textů
 a jeho spuštění a reprodukování výsledků.
 
@@ -458,13 +443,13 @@ programu je deterministický a dá pro stejné parametry stejné výsledky.
 To bohužel naráží na problémy čistě náhodné (například \uv{náhodné} změny hodnot v paměti
 nejsou podle \citet{schroeder2011dram} zas tak neobvyklé), ale i systematické.
 
-Praxe ukázala, že zajistit už jen zajistit překlad programu na vždy stejný spustitelný kód není zcela triviální (XXX).
+Praxe ukázala, že zajistit už jen zajistit překlad programu na vždy stejný spustitelný kód není zcela triviální \citep{bobbio2014reproducibl}.
 Vyžaduje to, mimo jiné, že jsou ke každému překladu k dispozici vždy stejné nástroje (překladač, linker,
 knihovny\ldots) a že překlad nezávisí například na aktuálním času, zvoleném jazyce, jménu počítače nebo přihlášeného uživatele.
 
-Pro Haskell zajišťuje vždy stejnou verzi nástrojů a knihoven nástroj stack(XXX) a jeho systém
+Pro Haskell zajišťuje vždy stejnou verzi nástrojů a knihoven nástroj stack a jeho systém
 LTS (Long Time Support) snapshotů -- repository zafixovaných verzí závislostí, u kterých je
-otestováno, že jsou vzájemně kompatibilní. Na rozdíl od dříve užívané kabaly (XXX), kde překlady
+otestováno, že jsou vzájemně kompatibilní. Na rozdíl od dříve užívané kabaly, kde překlady
 závisely na okamžitém stavu počítače, je podstatně pravděpodobnější, že stejný projekt vygeneruje
 stejný (a tedy i stejně se chovající) program na různých počítačích nebo na stejném počítači v různých
 okamžicích.

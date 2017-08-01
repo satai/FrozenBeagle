@@ -18,7 +18,10 @@ XXXXX
 
 \section{Omezení}
 
-\section{Vhodnost zvolených nástrojů pro simulaci}
+
+\begin{tcolorbox}[ title={Vhodnost zvolených nástrojů pro simulaci}
+                 , breakable
+                 ]
 
 Vzhledem k jisté neobvyklosti zvolených nástrojů, které byly vybrány pro implementaci simulace, zejména jazyka Haskell, je na místě stručně
 vyhodnotit jejich adekvátnost.
@@ -27,14 +30,14 @@ V literatuře uváděné výhody kombinace funkcionálního programování a sil
 statické typování, \citet{hughes1989functional} pro FP a \citet{Chiusano2016} a \citet{ray2014large} pro kombinaci)
 potvrdila i zkušenost při vývoji
 \textit{fbeagle}. Přísná disciplína statického jazyka pomáhala s návrhem i často zabránila tomu, aby byl chybný kód vůbec přeložen\footnote{
-Aby byla přísná pravidla ještě přísnější, tak jsem pro peklad výpočetní části \textit{fbeagle} používal přepínač \texttt{-Wall}, který způsobí,
+Aby byla přísná pravidla ještě přísnější, tak jsem pro překlad výpočetní části \textit{fbeagle} používal přepínač \texttt{-Wall}, který způsobí,
 že všechna varování pěkladač považuje za chybu a nelze je tedy ignorovat.
 }.
 
 Rozpaky, obzvláště zpočátku, budila kvalita a dostupnost nástrojů. Ta se ale v průběhu implementace zlepšila, nahrazení \textit{cabaly} modernějším
 \textit{stackem} bylo podstatnou úlevou a, obávám se, na některé \uv{neobvyklosti} jsem si zvykl.
 
-\subsection{Kvalita kódu}
+\subsubsection*{Kvalita kódu}
 
 Velkou výhodou se stalo i \textit{property based testování}. Je poměrně obvyklé i doporučované \citep{williams2009effectiveness} psát ke kódu i kód, který jej
 automaticky testuje. To, například podle \citet{beck2003test}, snižuje množství chyb i zlepšuje kvalitu návrhu\footnote{
@@ -51,7 +54,7 @@ a kód je tak otestován na mnoha různých vstupech.
 
 Výhodou Haskellu a jeho knihovny QuickCheck \citep{Claessen:2000:QLT:351240.351266} je, že díky typovému systému velmi často není třeba předepisovat, jak má generování vstupů vypadat, a tuto práci obstará počítač. To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, jako značnou výhodu.
 
-\subsection{Výkon}
+\subsubsection*{Výkon}
 
 Jako problematický se však ukázal výkon výsledného programu, zejména pak jeho značná paměťová náročnost.
 
@@ -65,13 +68,15 @@ Pokud se podaří tuto svízel odstranit nebo obejít, tak se tím otevře možn
 různých parametrů bez nutnosti spoléhat na cloud, a tedy i levněji. Dále to umožní prověřit současné výsledky spuštěním více simulací, což by
 mohlo poskytnout výsledky signifikantní i pro nižší hladinu \textit{alfa.}
 
-\subsection{Reprodukovatelnost}
+\subsubsection*{Reprodukovatelnost}
 
 Výsledný text práce je sázen prostřednictvím typografického systému \LaTeX. Můj původní plán spočíval v dotažení automatizace a
 reprodukovatelnosti do extrému -- jedním příkazem by byl přeložen \textit{fbeagle}, následně spuštěny simulace, výsledky statisticky
 zpracovány a vloženy do výsledného textu, z toho vygenerováno \textit{PDF}.
 
 K tomu nedošlo, protože by kvůli nízkému výkonu \textit{fbeagle} bylo nepraktické čekat.
+
+\end{tcolorbox}
 
 \section{Další možnosti}
 
