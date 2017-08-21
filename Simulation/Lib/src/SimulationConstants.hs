@@ -40,7 +40,7 @@ optimumChangeSizeCoefficient :: Double
 optimumChangeSizeCoefficient = 12.0
 
 fitnessDecreaseCoefficient :: Double
-fitnessDecreaseCoefficient = -0.004
+fitnessDecreaseCoefficient = -0.005
 
 negativeDominanceScale :: Double
 negativeDominanceScale = 1.5
