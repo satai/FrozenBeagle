@@ -12,14 +12,14 @@ main = do
     putStr "]"
 
 runSimWithSeed :: Bool -> Int -> IO ()
-runSimWithSeed prepend seedValue = do
+runSimWithSeed prepend seedOffset = do
     putStr $ if prepend then "," else ""
-    parameters <- execParser (info (extractParams $ 1024 * seedValue) mempty)
-    let simResults = computeSimulation parameters
+    parameters <- execParser (info (extractParams) mempty)
+    let simResults = computeSimulation $ parameters {seed = 1024 * (seed parameters + seedOffset)}
     putStr $ show simResults
 
-extractParams :: Int -> Parser AnalysisParameters
-extractParams seedValue = AnalysisParameters
+extractParams :: Parser AnalysisParameters
+extractParams = AnalysisParameters
                       <$> switch (long "separatedGenerations")
                       <*> option auto (long "hardSelectionThreshold" <> value 0.0)
                       <*> option auto (long "populationSize" <> value 300)
@@ -31,4 +31,4 @@ extractParams seedValue = AnalysisParameters
                       <*> option auto (long "ratioOfNegativeDominantRules" <> value 0.0)
                       <*> option auto (long "ratioOfPositiveDominantRules" <> value 0.0)
                       <*> option auto (long "ratioOfPleiotropicRules" <> value 0.0)
-                      <*> option auto (long "seed" <> value seedValue)
+                      <*> option auto (long "seed" <> value 0)
