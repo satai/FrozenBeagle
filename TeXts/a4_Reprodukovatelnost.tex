@@ -1,13 +1,15 @@
 \section{Reprodukování výsledků}
 \label{sec:reproducing}
 
-Stručný přehled klíčového software a jeho versí, které by mohly ovlivnit překlad a běh \textit{fbeagle}, jak byly užity pro běh simulací.
+Stručný přehled klíčového software a jeho versí, které by mohly ovlivnit překlad a běh \textit{fbeagle},
+jak byly užity pro běh simulací.
 
 \begin{itemize}
   \item \textit{stack} -- Version 1.1.0
   \item \textit{LTS Haskell} -- resolver lts-8.24
   \item pro překlad \textit{linux} -- Ubuntu 16.04 LTS (téměř jistě lze použít i libovolný aktuální OS unixoveho typu, pokud není potřeba použít \textit{FrozenBeagle} s GUI)
-  \item pro běh \textit{linux} -- Amazon Linux (téměř jistě lze použít i libovolný aktuální OS unixoveho typu)
+  \item pro běh \textit{linux} -- Amazon Linux AMI 2017.03.1 (HVM) (téměř jistě lze použít i libovolný aktuální OS unixoveho typu)
 \end{itemize}
 
-Simulace byly spuštěny ve čtyřech bězích po 128 simulacích se \textit{seedy} generátoru nahodných čísel XXX
+Simulace byly pro každou kombidnaci paremtrů spuštěny v jednom běhu po 128 simulacích se
+\textit{seedem} generátoru nahodných čísel 123456.

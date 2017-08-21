@@ -23,15 +23,15 @@ XXXXX
                  , breakable
                  ]
 
-Vzhledem k jisté neobvyklosti zvolených nástrojů, které byly vybrány pro implementaci simulace, zejména jazyka Haskell, je na místě stručně
-vyhodnotit jejich adekvátnost.
+Vzhledem k jisté neobvyklosti zvolených nástrojů, které byly vybrány pro implementaci simulace, zejména jazyka Haskell,
+je na místě stručně vyhodnotit jejich adekvátnost.
 
 V literatuře uváděné výhody kombinace funkcionálního programování a silných statických typových systémů (např. \citet{meijer2004static} pro
 statické typování, \citet{hughes1989functional} pro FP a \citet{Chiusano2016} a \citet{ray2014large} pro kombinaci)
 potvrdila i zkušenost při vývoji
 \textit{fbeagle}. Přísná disciplína statického jazyka pomáhala s návrhem i často zabránila tomu, aby byl chybný kód vůbec přeložen\footnote{
 Aby byla přísná pravidla ještě přísnější, tak jsem pro překlad výpočetní části \textit{fbeagle} používal přepínač \texttt{-Wall}, který způsobí,
-že všechna varování pěkladač považuje za chybu a nelze je tedy ignorovat.
+že všechna varování překladač považuje za chybu a nelze je tedy ignorovat.
 }.
 
 Rozpaky, obzvláště zpočátku, budila kvalita a dostupnost nástrojů. Ta se ale v průběhu implementace zlepšila, nahrazení \textit{cabaly} modernějším
@@ -41,18 +41,20 @@ Rozpaky, obzvláště zpočátku, budila kvalita a dostupnost nástrojů. Ta se 
 
 Velkou výhodou se stalo i \textit{property based testování}. Je poměrně obvyklé i doporučované \citep{williams2009effectiveness} psát ke kódu i kód, který jej
 automaticky testuje. To, například podle \citet{beck2003test}, snižuje množství chyb i zlepšuje kvalitu návrhu\footnote{
-Přesněji řečeno, Kent Beck to tvrdí o testech, které jsou psány dříve než testovaný kód na základě poměrně jednoduché, ale striktní sady pravidel.
-}. Co je podstatné, je i to,
-že kvalitní a dostatečně rozsáhlé automatické může podpořit i důvěru ve výsledky.
+Přesněji řečeno, Kent Beck to tvrdí o testech, které jsou psány dříve než testovaný kód na základě poměrně jednoduché,
+ale striktní sady pravidel.}.
+Co je podstatné, je i to, že kvalitní a dostatečně rozsáhlé automatické testování může podpořit i důvěru ve výsledky.
 
 \textit{Property based testování} přináší tuto myšlenku ještě dále. Zatímco obvykle je otestováno, že kód pro pevně dané vstupy vrátí pevně
 očekávané hodnoty, je možné i otestovat, že kód pro vstupy daných vlastností vrátí výsledky daných vlastností\footnote{
-Například pokud mám dva fenotypy, první vzdálenější od aktuálního optima než druhý, tak první znamená nižší fitness. To platí pro všechny takové
-dvojice fenotypů.
+Například pokud mám dva fenotypy, první vzdálenější od aktuálního optima než druhý, tak první musí mít nižší fitness.
+To platí pro všechny takové dvojice fenotypů.
 }. Protože konkrétní vstupy nejsou součástí kódu testů, může jich testovací framework vygenerovat mnoho (ať už čistě náhodných nebo \uv{záludných})
 a kód je tak otestován na mnoha různých vstupech.
 
-Výhodou Haskellu a jeho knihovny QuickCheck \citep{Claessen:2000:QLT:351240.351266} je, že díky typovému systému velmi často není třeba předepisovat, jak má generování vstupů vypadat, a tuto práci obstará počítač. To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, jako značnou výhodu.
+Výhodou Haskellu a jeho knihovny QuickCheck \citep{Claessen:2000:QLT:351240.351266} je, že díky typovému systému velmi
+často není třeba předepisovat, jak má generování vstupů vypadat, a tuto práci obstará počítač.
+To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, jako značnou výhodu.
 
 \subsubsection*{Výkon}
 
@@ -80,22 +82,28 @@ K tomu nedošlo, protože by kvůli nízkému výkonu \textit{fbeagle} bylo nepr
 
 \section{Další možnosti}
 
-Program \textit{fbeagle} má poměrně široké možnosti, které dosud nebyly využity k vygenerování dat vhodných pro statistickou analýzu.
+Program \textit{fbeagle} má poměrně široké možnosti, které dosud nebyly systematicky využity k
+vygenerování dat vhodných pro statistickou analýzu.
 
-Jistě má v budoucnu význam srovnat vliv pleiotropie s vlivem epistatických interakcí.
+Jistě má v budoucnu význam srovnat v této práci zkoumaný vliv pleiotropie a negativní dominance s případným vlivem
+epistatických interakcí.
 
-Další potenciálně zajímavá oblast parametrů jsou plynulé periodické změny prostředí a plynulý posun optimálního fenotypu jedním směrem.
+Další potenciálně zajímavá skupina parametrů pro navazující práci jsou plynulé periodické změny prostředí
+a plynulý posun optimálního fenotypu jedním směrem, případně jejich kombinace.
+
+Stranou zájmu by neměl zůstat ani možný vliv velikosti populace, tvrdé selekce a dimenzionality prostoru fenotypů.
 
 \subsection{Měření evolvability}
 
-Závažnější zásah do \textit{fbeagle}, na který bohužel nezbyl čas, je přidání měření toho, jak je populace dále schopna vývoje.
-Jako vhodnější měřítko než použité směrnice aktuálního růstu na začátku zkoumaného období, se nabízí možnost simulovanou populaci
-nechat simulovaně (mimo hlavní simulaci, bez vlivu na její běh, pouze jako měření vlastnosti této populace) adaptovat na
-několik různých optim a u toho změřit směrnici růstu fitness.
+Závažnější zásah do \textit{fbeagle}, na který bohužel nezbyl čas, je přidání měření toho, jak je populace
+dále schopna vývoje. Jako vhodnější měřítko než použité směrnice aktuálního růstu na začátku zkoumaného období
+se nabízí možnost simulovanou populaci nechat simulovaně (mimo hlavní simulaci, bez vlivu na její běh,
+pouze jako měření vlastnosti této populace) adaptovat na několik různých optim a u toho změřit směrnici
+růstu fitness.
 
-Výhoda takovho přístupu je v tom, že neměří rychlost adaptace v jedné situaci, ale je možné změřit aktulní schopnost populace přizpůsobit
-se různým podmínkám.
+Výhoda takovho přístupu je v tom, že neměří rychlost adaptace v jedné situaci, ale je možné změřit okamžitou schopnost
+populace přizpůsobit se různým podmínkám.
 
-Dalším argumentem pro takové měření je skutečnost, že nové optimální fenotypy mohou být umístěny ve zvolené vzdálenosti od okamžitého
-průměrného fenotypu populace. To je pro měření schopnosti populace se vyvýjet výhodnější, než nový optimální fenotyp umístit do 
-zvolené vzdálenosti od předchozího optimálního fenotypu.
+Dalším argumentem pro takové měření je skutečnost, že nové optimální fenotypy mohou být umístěny ve zvolené vzdálenosti
+od okamžitého průměrného fenotypu populace. To je pro měření schopnosti populace se vyvíjet výhodnější, než nový
+optimální fenotyp umístit do zvolené vzdálenosti od předchozího optimálního fenotypu.

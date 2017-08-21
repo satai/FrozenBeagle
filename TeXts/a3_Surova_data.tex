@@ -5,9 +5,27 @@ Primární data ze simulací jsou příliš rozsáhlá, aby bylo možné je zař
 
 Zde je stručně popsán jejich formát a jak je v načíst pro případnou další analýzu.
 
-Data jsou uložena v souborech XXX\_XXX\_XXX.XXX, kde XXX vyznam jednotlivych cisel.
+Data jsou uložena v souborech result\_\textit{XXX}\_0.\textit{YY}\_0.\textit{ZZ}, kde
+\textit{XXX} je počáteční velikost populace,
+0.\textit{YY} je poměr alel, u kterých se projevuje negativní dominance
+a 0.\textit{ZZ} je poměr pleiotropních alel.
 
-Každý soubor obsahuje statistiky pro všech XXX 512 běhů \textit{fbeagle} s danými parametry. Ty jsou uloženy jako haskellový literál, ale
-vzhledem k jednoduché textové reprezentaci je možné je připadně naparstovat i v jiném programovacím jazyce.
+Každý soubor obsahuje statistiky pro všech 512 běhů \textit{fbeagle} s danými parametry. Ty jsou uloženy jako
+haskellový literál typu \texttt{[[(String, [(Integer, Double)])]]}, ale vzhledem k jednoduché textové
+reprezentaci je možné je připadně naparsovat i v jiném programovacím jazyce.
 
-\footnote
+Semantika dat je následující -- jde o seznam výsledků pro všechny běhy s danou dvojicí parametrů. Každý výsledek
+je seznam dvojic, prvním členem je jméno měřené veličiny (např. \textit{"avg\_fitness"} pro průměrnou hodnotu
+fitness v populaci v daném kroku) a druhým členem seznam hodnot. Každá hodnota je dvojice, kde první člen je
+číslo kroku simulace a druhý člen je hodnota dané veličiny. Tato hodnota je vždy číslo s plovoucí desetinnou čárkou,
+i pokud by charakter veličiny umožňoval užít celé číslo. Pokud hodnota neexistuje (např. je to průměrná fitness vyhynulé
+populace), je hodnotou \textit{NaN} (Not A Number).
+
+Pro případné načtení dat z \textit{REPLu Haskellu} lze užít napřiklad tento kód:
+
+\begin{code}[commandchars=\\\{\}]
+handle <- openFile (fileName) ReadMode
+contents <- hGetContents handle
+\textbf{let}
+        datas = read contents :: [[(String, [(Integer, Double)])]]
+\end{code}

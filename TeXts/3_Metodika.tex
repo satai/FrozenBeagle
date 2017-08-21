@@ -39,7 +39,7 @@ udržována dvěma mechanismy -- turbidostatickou regulací a umíráním příl
 Pokud není jedinec odstraněn turbidosatem, tak po 64 krocích umírá stářím.
 
 V každém kroku jsou z populace náhodně vybrány páry opačného pohlaví.
-Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak je jsou určeny počty potomků, jejich geny a
+Kolik pár vyvede potomků, je určeno průměrnou fitness páru. Způsob, jak jsou určeny počty potomků, jejich geny a
 jak následně geny určují jejich fenotyp, je popsán později.
 
 Při každém kroku simulace také velmi malou část jedinců postihne mutace jednoho nebo více genů. Tyto mutace mají
@@ -67,7 +67,7 @@ dominance.
 
 Pokud alela působí jen na jednu vlastnost, tak je tato vlastnost vybrána náhodně a velikost příspěvku je vybrána z
 normovaného normálního rozdělení\footnote{Pokud mluvím o normálním rozdělení bez dalšího upřesnění, tak mám na mysli
-právě normované normální rozddělení se střední hodnotou $0$ a rozptylem $1.0$ tedy $N(0, 1)$}.
+právě normované normální rozdělení se střední hodnotou $0.0$ a rozptylem $1.0$, tedy $N(0, 1)$}.
 Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
 rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4} = 2$).
 Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
@@ -79,7 +79,7 @@ V častém případě je takto ovlivňována přímo fitness jedince. V tomto zj
 ovlivňují přímo jednotlivé složky fenotypu.
 }. Pravděpodobnost, že alela má takovou vlastnost, je parametrem simulace.
 
-Ostatní alely mají účinek stejný, ať již jsou na daném locusu na jednom nebo na obou chromosomech.
+Ostatní alely mají účinek stejný, ať již jsou na daném lokusu na jednom nebo na obou chromosomech.
 
 \begin{tcolorbox}[ title={Pseudokód popisující generování náhodné alely}
                  , breakable
@@ -130,9 +130,9 @@ pohlaví. Zda pár přivede na svět nového jedince, závisí na fitness obou p
 popsán později.
 
 Každý z potomků vzniká tak, že jsou rekombinovány geny obou rodičů -- z každého jedince je náhodně vybrán jeden
-z chromosomů, je zvolen jeden náhodný locus. Locusy před ním a on jsou naplněny alelami jednoho z rodičů,
+z chromosomů, je zvolen jeden náhodný lokus. Lokusy před ním a on jsou naplněny alelami jednoho z rodičů,
 lokusy po něm alelami druhého z rodičů, čímž vznikne první chromosom potomka. Druhý chromosom potomka je vytvořen
-analogicky -- locusy před zvoleným locusem a on jsou naplněny alelami druhého z rodičů, zbytek chromosomu alelami
+analogicky -- lokusy před zvoleným lokusem a on jsou naplněny alelami druhého z rodičů, zbytek chromosomu alelami
 prvního rodiče.
 
 Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
@@ -297,8 +297,8 @@ Následně je velikost populace řízena turbidostatickou
 zpětnou vazbou, jako je například v modelu \citet{Flegr139030}, a umíráním jedinců stářím.
 
 Turbidostatická regulace funguje tak, že každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
-$p = min(0.9, k_4 n^2 + k5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
-Člen $k5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
+$p = min(0.9, k_4 n^2 + k_5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
+Člen $k_5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
 
 V přírodě turbidostatické regulaci odpovídá například regulace parazitem, kterému se lépe daří,
 pokud se jedinci častěji setkávají -- v takovém případě četnost setkání závisí právě na hustotě populace tedy členu
@@ -313,7 +313,7 @@ simulacích postačuje pro postupný pokles k očekávané velikosti populace, p
 zcela jistě menší než deset na pár v každém kole.
 }.
 
-Konstanta $k4$ v předchozím vzorci je vypočítána následovně:
+Konstanta $k_4$ v předchozím vzorci je vypočítána následovně:
 
 \begin{equation}
 k_4 = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}
@@ -322,7 +322,7 @@ k_4 = \frac{4 - 12\cdot{}{k_5} - \frac{12}{a_{max}}}
 
 
 kde $n_0$ je rovnovážná velikost populace a $a_{max}$ je maximální věk jedince.
-Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k5$ a řízení velikosti populace tedy záviselo jen na
+Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k_5$ a řízení velikosti populace tedy záviselo jen na
 její hustotě a na deterministické smrti stářím po $a_{max}$ generacích.
 
 \begin{tcolorbox}[ title={Odvození vzorce pro $k_4$}
@@ -456,7 +456,7 @@ okamžicích.
 
 Obdobné problémy se týkají i následného běhu simulací.
 
-I když stochastická simulace nepoužívá náhodná čísla, ale dělá rozhodnutí pseudonáhodá na základě zadané inicializace
+I když stochastická simulace nepoužívá náhodná čísla, ale dělá rozhodnutí pseudonáhodná na základě zadané inicializace
 (\textit{seedu}), je i zde prostor pro nedeterminismus. Naštěstí je \textit{fbeagle} velké části zdrojů
 nedeterminismu (časování, dělení dat v distribuovaném prostředí\ldots) ušetřen, protože funguje jako
 jednoduchý dávkový program bez složitého I/O, threadů, distribuování výpočtu a synchronizací.
@@ -470,15 +470,15 @@ jednoduchý dávkový program bez složitého I/O, threadů, distribuování vý
 Pro každou simulaci a pro každý úsek simulace (první období s prvním optimem,
 období s druhým optimem a závěrečné období s původním optimem) spočte \textit{fbeagle} několik statistik.
 
-Nejjednodušší je zda populace tento úsek přežila a nebo nejpozději v něm vyhynula
+Nejjednodušší je, zda populace tento úsek přežila, a nebo nejpozději v něm vyhynula
 (t.j. velikost populace klesla v průběhu daného úseku nebo některého předchozího úseku na nulu).
 
 Jak úspěšně se populace v dané simulaci přizpůsobila aktuálním podmínkám, tedy jak se jedinci přiblížili k optimu,
 reprezentují dvě statistiky -- maximum z průměrné fitness pro dané období (pro populaci je v každém kroku
 spočítána průměrná fitness a z těchto průměrů je vzato maximum -- to vyjadřuje, jak nejblíže se v daném období podařilo
-populaci přiblížit k optimu) a maximum z desetiprocentního percentylu fitness pro dané období.
-Maximum desetiprocentního percentylu pro dané období postihuje blízkost optimu pro
-málo přizpůsobené jedince v dané populaci. Percentyl je v dané situaci výstižnější statistika než minimum -- to může
+populaci přiblížit k optimu) a maximum z desetiprocentního percentilu fitness pro dané období.
+Maximum desetiprocentního percentilu pro dané období postihuje blízkost optimu pro
+málo přizpůsobené jedince v dané populaci. Percentil je v dané situaci výstižnější statistika než minimum -- to může
 být výrazně ovlivněno náhodou, kdy mutace vytvoří nereprezentativního jedince fenotypem vzdáleným optimu.
 
 Jak rychle populace reaguje na nové podmínky je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
@@ -490,13 +490,18 @@ období vydělený 128.
 K otestování se nabízejí tři hypotézy:
 
 \begin{enumerate}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, častěji vymírají.}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentylu fitness (t.j. nedostanou se tak blízko optimu).}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu, mají na počátku každého období menší směrnice vyjadřující růst fitness.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
+          častěji vymírají.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
+          dosahují menších průměrů i percentilu fitness (t.j. nedostanou se tak blízko optimu).}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
+          mají na počátku každého období menší směrnice vyjadřující růst fitness.}
 \end{enumerate}
 
-První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro každou sadu parametrů s negativně dominantními alelalami nebo pleiotropií lze srovnat počet přeživších a vyhynulých populací s počtem přeživších a vyhynulých populací, kde se tyto jevy neprojevovaly.
+První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro každou sadu parametrů s negativně dominantními
+alelalami nebo pleiotropií lze srovnat počet přeživších a vyhynulých populací s počtem přeživších a vyhynulých populací,
+kde se tyto jevy neprojevovaly.
 
-K otestování dalších dvou
-
-
+K otestování dalších dvou hypotéz bude použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
+projevuje negativní dominance, jako nezávislými proměnými. Modely budou spočítány v prostředí statistického jazyka R
+\citep{rlanguage}.
