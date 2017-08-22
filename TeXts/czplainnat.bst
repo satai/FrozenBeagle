@@ -527,8 +527,8 @@ FUNCTION {format.edition}
 { edition empty$
     { "" }
     { output.state mid.sentence =
-        { edition "l" change.case$ " edition" * }
-        { edition "t" change.case$ " edition" * }
+        { edition "l" change.case$ ". vyd" * }
+        { edition "t" change.case$ ". vyd" * }
       if$
     }
   if$
@@ -560,8 +560,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-        { "pages" pages n.dashify tie.or.space.connect }
-        { "page" pages tie.or.space.connect }
+        { "str." pages n.dashify tie.or.space.connect }
+        { "str." pages tie.or.space.connect }
       if$
     }
   if$

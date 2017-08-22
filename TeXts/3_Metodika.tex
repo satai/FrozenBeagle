@@ -29,8 +29,14 @@ ale může se měnit v čase.
 
 Euklidovská vzdálenost fenotypu jedince od aktuálního optima prostředí určuje jeho fitness.
 
-Optimum prostředí je po dobu 8192 kroků simulace konstantní a následně dojde k jeho skokové změně o
-$\Delta{}E$. Po této změně opět zůstane optimum neměnné po dalších 8192 kroků, poté se vrátí na počáteční hodnotu.
+Optimum prostředí je po dobu 8192\footnote{
+Číslo 8192 vypadá na první pohled podivně, ale jde o mocninu dvou. Velká část konstant pro simulace vznikala tak, že
+bylo spuštěno několik simulací a podle jejich chování (v případě této konstanty šlo o to, aby se populace mezi změnami
+měly dostatek času přizpůsobit -- růst fitness v nich se téměř zastavil) byla konstanta zvětšena nebo zmenšena
+dvojnásobně v požadovaném směru.
+}
+kroků simulace konstantní a následně dojde k jeho skokové změně o $\Delta{}E$. Po této změně opět
+zůstane optimum neměnné po dalších 8192 kroků, poté se vrátí na počáteční hodnotu.
 
 Počáteční velikost populace je jedním z parametrů simulace.  V~dalších krocích je následně velikost populace
 udržována dvěma mechanismy -- turbidostatickou regulací a umíráním příliš starých jedinců.
@@ -72,9 +78,10 @@ Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nez�
 rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4} = 2$).
 Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
 
-Teorie zamrzlé plasticity předpokládá podstatný význam alel, které působí v opačných směrech, pokud se
+Teorie zamrzlé plasticity předpokládá podstatný význam alel, které potenciálně mají frekvenčně závislý vliv na fitness.
+Mezi takové alely patří ty, které působí v opačných směrech, pokud se
 v jednom lokusu vyskytnou v jedné nebo ve dvou kopiích (dále jsou tyto alely nazývány pro jednoduchost
-\uv{negativně dominantní})\footnote{
+technickým označením \uv{negativně dominantní}, protože zavedený termín, pokud vím, v literatuře neexistuje)\footnote{
 V častém případě je takto ovlivňována přímo fitness jedince. V tomto zjednodušeném modelu předpokládáme, že dané alely
 ovlivňují přímo jednotlivé složky fenotypu.
 }. Pravděpodobnost, že alela má takovou vlastnost, je parametrem simulace.
@@ -286,7 +293,7 @@ fitness = e^{-a |E-X|^2} = e^{-a\cdot{\sum{(E_i - X_i)^2}}}
 
 Aritmetický průměr fitness obou potenciálních rodičů je pravděpodobnost, že spolu v daném kole simulace vyvedou
 mládě\footnote{Technicky vzato tedy není označení této vlastnosti jako \uv{fitness}, zcela přesné, protože se týká
-jen jednoho kola simulace a ne celé doby života jedince, jak bývá obvykle uvažováno v populační genetice.}.
+jen jednoho kola simulace a ne celé doby života jedince, jak bývá implicitně uvažováno v populační genetice.}.
 
 \section{Řízení velikosti populace}
 
@@ -307,9 +314,9 @@ $k_4 n^2$.
 Pravděpodobnost úmrtí jedince je z praktických důvodů zastropována hodnotou 0.9 --
 bez tohoto omezení by mohla s $n$ růst nade všechny meze a tedy i nad $1.0$,
 kde se ztrácí možnost (nejen biologické) interpretace\footnote{
-Vzorec pro turbidostatickou regulaci očividně odpovídá realitě jenom pro aktuální velikosti populace,
+Vzorec pro turbidostatickou regulaci odpovídá realitě jenom pro aktuální velikosti populace,
 které řádově nepřekračují rovnovážnou velikost populace. Omezení pravděpodobnosti pod $0.9$ v představovaných
-simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je očividně omezený a
+simulacích postačuje pro postupný pokles k očekávané velikosti populace, protože počet potomků je omezený a
 zcela jistě menší než deset na pár v každém kole.
 }.
 
@@ -423,7 +430,7 @@ umožňuje pohodlně nastavit parametry simulace a jednu spustit.
 počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace,
 které je možné dále analyzovat a zpracovávat.
 
-Parametry \textit{fbeagle} jsou zdokumentovány v \ref{sec:parameters}.
+Parametry \textit{fbeagle} jsou zdokumentovány v příloze \ref{sec:parameters}.
 
 Na adrese \url {https://github.com/satai/FrozenBeagle} jsou volně k dispozici zdrojové texty včetně jednotkových testů
 a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou BSD licencí. V příloze \ref{sec:reproducing} jsou
@@ -502,6 +509,6 @@ První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro ka�
 alelalami nebo pleiotropií lze srovnat počet přeživších a vyhynulých populací s počtem přeživších a vyhynulých populací,
 kde se tyto jevy neprojevovaly.
 
-K otestování dalších dvou hypotéz bude použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
-projevuje negativní dominance, jako nezávislými proměnými. Modely budou spočítány v prostředí statistického jazyka R
-\citep{rlanguage}.
+K otestování dalších dvou hypotéz byly použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
+projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Modely byly
+spočítány v prostředí statistického jazyka R \citep{rlanguage}.
