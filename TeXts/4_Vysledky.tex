@@ -26,14 +26,17 @@
 
 \section{Popisná statistika}
 
-Nejprve uvedu hodnoty popisných statistik. Pro každou zkoumanou hodnotu podílu alel s pleiotrpickým vlivem na fenotyp a
-každou zkoumanou hodnotu podílu alel, které mají opačný dominantní vliv na fenotyp než pokud se vyskytují v lokusu jen
+Nejprve uvedu hodnoty popisných statistik. Pro každou zkoumanou hodnotu podílu alel s pleiotropickým vlivem na fenotyp a
+každou zkoumanou hodnotu podílu alel, které mají opačný dominantní vliv na fenotyp, než pokud se vyskytují v lokusu jen
 jednou, bylo spuštěno 512 simulací. Detaily parametrů jsou popsány v příloze \ref{sec:parameters}.
 
-\begin{table}[h]
+V tabulkách \ref{table:vyhynuti1} až \ref{table:vyhynuti3} jsou zaznamenány počty simulací, které skončily vyhynutím
+v každém úseku a nejpozději v každém úseku simulace.
+
+\begin{table}[H]
 \catcode`\-=12
 \centering
-    \begin{tabularx}{0.75\textwidth}{|c|Y|Y|Y|}
+    \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
@@ -41,21 +44,22 @@ jednou, bylo spuštěno 512 simulací. Detaily parametrů jsou popsány v příl
 \hline
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
- 0.00                        & 87   &    5 &  2 \\
- 0.05                        &   5  &   43 &  4\\
- 0.10                        & 87   &    5 &  2 \\
- 0.25                        &   5  &   43 &  4\\
+ 0.00                        &  89  &   86 &  92 \\
+ 0.05                        &  91  &   87 &  93 \\
+ 0.10                        &  90  &   88 &  89 \\
+ 0.25                        &  91  &   89 &  96 \\
 \hline
 \end{tabularx}
     \caption{Počet simulací končících vyhynutím v prvním úseku (t.j. v prvních 8192 krocích)}
+\label{table:vyhynuti1}
 \end{table}
 
 
 
-\begin{table}[h]
+\begin{table}[H]
 \catcode`\-=12
 \centering
-    \begin{tabularx}{0.75\textwidth}{|c|Y|Y|Y|}
+    \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
@@ -63,21 +67,22 @@ jednou, bylo spuštěno 512 simulací. Detaily parametrů jsou popsány v příl
 \hline
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
- 0.00                        & 87   &    5 &  2 \\
- 0.05                        & 87   &    5 &  2 \\
- 0.10                        &   5  &   43 &  4\\
- 0.25                        &  7   &   18 & 63 \\
+ 0.00                        & 210 (121) &  215 (129) & 220 (128) \\
+ 0.05                        & 218 (127) &  213 (126) & 223 (130) \\
+ 0.10                        & 217 (127) &  220 (132) & 219 (130) \\
+ 0.25                        & 222 (131) &  213 (124) & 225 (129) \\
 \hline
 \end{tabularx}
-    \caption{Počet simulací končících vyhynutím nejpozději v druhém úseku (t.j. v prvních 16384 krocích)}
+    \caption{Počet simulací končících vyhynutím nejpozději v druhém úseku (t.j. v prvních 16384 krocích), v závorce
+    počet simulací končících vyhynutím v druhém úseku}
+\label{table:vyhynuti2}
 \end{table}
 
 
-
-\begin{table}[h]
+\begin{table}[H]
 \catcode`\-=12
 \centering
-    \begin{tabularx}{0.75\textwidth}{|c|Y|Y|Y|}
+    \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
@@ -85,16 +90,24 @@ jednou, bylo spuštěno 512 simulací. Detaily parametrů jsou popsány v příl
 \hline
  Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
- 0.00                        & 87   &    5 &  2 \\
- 0.05                        &   5  &   43 &  4\\
- 0.10                        &   5  &   43 &  4\\
- 0.25                        &   5  &   43 &  4\\
+ 0.00                        &  213 (3) &  216 (1) & 222 (2) \\
+ 0.05                        &  223 (5) &  215 (2) & 225 (2) \\
+ 0.10                        &  220 (3) &  226 (6) & 222 (3) \\
+ 0.25                        &  225 (3) &  216 (3) & 227 (2)\\
 \hline
 \end{tabularx}
-\caption{Počet simulací končících vyhynutím}
+\caption{Počet simulací končících vyhynutím, v závorce  počet simulací končících vyhynutím v třetím úseku}
+\label{table:vyhynuti3}
 \end{table}
 
-\begin{table}[h]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Základní popisné statistiky pro dosažená maxima fitness v jednotlivých úsecích simulace
+jsou zapsány v tabulkách \ref{table:max1} až \ref{table:max3}. Pro každou je uveden aritmetický průměr, medián a
+směrodatná odchylka.
+
+\begin{table}[H]
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
@@ -103,17 +116,287 @@ jednou, bylo spuštěno 512 simulací. Detaily parametrů jsou popsány v příl
 \multicolumn{1}{c|}{}
  & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
 \hline
-\multirowcell{2}{Podíl alel s\\neg. dom.} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
         & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
 \hline
- 0.00                        & 87   &    5 &  2 & 87   &    5 &  2 & 87   &    5 &  2 \\
- 0.05                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
- 0.10                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
- 0.25                        &   5  &   43 &  4 & 87   &    5 &  2 & 87   &    5 &  2 \\
+ 0.00                        & 0.792 & 0.961 & 0.357 & 0.800 & 0.962 & 0.353 & 0.789 & 0.961 & 0.362 \\
+ 0.05                        & 0.789 & 0.960 & 0.360 & 0.796 & 0.961 & 0.359 & 0.787 & 0.961 & 0.363 \\
+ 0.10                        & 0.790 & 0.960 & 0.358 & 0.796 & 0.962 & 0.356 & 0.786 & 0.958 & 0.359 \\
+ 0.25                        & 0.786 & 0.958 & 0.359 & 0.791 & 0.958 & 0.356 & 0.780 & 0.959 & 0.366 \\
 \hline
 \end{tabularx}
-\caption{Nejvyšší dosažená  průměrná fitness}
+\caption{Nejvyšší dosažená  průměrná fitness v prvním úseku (t.j. v prvních 8192 krocích)}
+\label{table:max1}
+\end{table}
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                        & 0.631 & 0.864 & 0.404 & 0.615 & 0.852 & 0.410 & 0.616 & 0.858 & 0.410 \\
+ 0.05                        & 0.612 & 0.848 & 0.408 & 0.620 & 0.849 & 0.407 & 0.612 & 0.859 & 0.413 \\
+ 0.10                        & 0.611 & 0.841 & 0.407 & 0.607 & 0.846 & 0.412 & 0.598 & 0.820 & 0.409 \\
+ 0.25                        & 0.598 & 0.820 & 0.409 & 0.613 & 0.830 & 0.402 & 0.603 & 0.843 & 0.410 \\
+\hline
+\end{tabularx}
+\caption{Nejvyšší dosažená  průměrná fitness v druhém úseku (t.j. v krocích 8193--16384)}
+\label{table:max2}
+\end{table}
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                        & 0.956 & 0.972 & 0.094 & 0.962 & 0.972 & 0.058 & 0.959 & 0.971 & 0.080 \\
+ 0.05                        & 0.948 & 0.971 & 0.120 & 0.958 & 0.971 & 0.079 & 0.958 & 0.979 & 0.081 \\
+ 0.10                        & 0.954 & 0.971 & 0.133 & 0.945 & 0.970 & 0.133 & 0.952 & 0.970 & 0.097 \\
+ 0.25                        & 0.952 & 0.970 & 0.097 & 0.953 & 0.969 & 0.095 & 0.957 & 0.970 & 0.080 \\
+\hline
+\end{tabularx}
+\caption{Nejvyšší dosažená  průměrná fitness v třetím úseku (t.j. v kroku 16385 a následujících)}
+\label{table:max3}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Základní popisné statistiky pro směrnice růstu průměrné fitness na počátcích a koncích jednotlivých úseků simulace
+jsou zaznamenány v tabulkách \ref{table:sm1} až \ref{table:sem3}. Pro každou je uveden aritmetický průměr, medián a
+směrodatná odchylka.
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+                              & avg   & med   & s.d.  & avg   & med   & s.d.  & avg   & med   & s.d. \\
+\hline
+  0.00                        & 2.770 & 2.586 & 1.253 & 2.804 & 2.740 & 1.022 & 2.773 & 2.715 & 1.050 \\
+  0.05                        & 2.684 & 2.575 & 1.015 & 2.717 & 2.654 & 0.963 & 2.717 & 2.632 & 1.023 \\
+  0.10                        & 2.633 & 2.549 & 0.962 & 2.655 & 2.583 & 0.920 & 2.660 & 2.591 & 0.944 \\
+  0.25                        & 2.550 & 2.444 & 0.905 & 2.611 & 2.500 & 0.948 & 2.578 & 2.502 & 0.911 \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na počátku prvního úseku}
+\label{table:sm1}
+\end{table}
+
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+                              & avg   & med   & s.d.  & avg   & med   & s.d.  & avg   & med   & s.d. \\
+\hline
+  0.00                        & 1.173 & 1.143 & 0.219 & 1.161 & 1.143 & 0.180 & 1.117 & 1.138 & 0.197 \\
+  0.05                        & 1.168 & 1.137 & 0.181 & 1.176 & 1.131 & 0.653 & 1.165 & 1.136 & 0.206 \\
+  0.10                        & 1.164 & 1.135 & 0.193 & 1.162 & 1.271 & 0.320 & 1.161 & 1.128 & 0.237 \\
+  0.25                        & 1.165 & 1.121 & 0.227 & 1.170 & 1.130 & 0.266 & 1.180 & 1.131 & 0.336 \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na počátku druhého úseku}
+\label{table:sm2}
+\end{table}
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+  0.00                        & 1.373 & 1.302 & 0.306 & 1.368 & 1.281 & 0.297 & 1.323 & 1.281 & 0.211 \\
+  0.05                        & 1.363 & 1.286 & 0.321 & 1.351 & 1.290 & 0.286 & 1.332 & 1.279 & 0.288 \\
+  0.10                        & 1.358 & 1.287 & 0.272 & 1.347 & 1.286 & 0.288 & 1.327 & 1.267 & 0.302 \\
+  0.25                        & 1.359 & 1.263 & 0.385 & 1.356 & 1.307 & 0.306 & 1.355 & 1.265 & 0.541 \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na počátku třetího úseku}
+\label{table:sm3}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+  0.00                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.05                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.10                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.25                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na konci prvního úseku}
+\label{table:sem1}
+\end{table}
+
+
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+  0.00                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.05                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.10                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.25                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na konci druhého úseku}
+\label{table:sem2}
+\end{table}
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+  0.00                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.05                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.10                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+  0.25                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Směrnice růstu průměrné fitness na konci třetího úseku}
+\label{table:sem3}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.05                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.10                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.25                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Desetiprocentní percentil průměrné fitness v prvním úseku (t.j. v prvních 8192 krocích)}
+\end{table}
+
+
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                       & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.05                       & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.10                       & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.25                       & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Desetiprocentní percentil průměrné fitness v druhém úseku (t.j. v krocích 8193--16384)}
+\end{table}
+
+\begin{table}[H]
+\catcode`\-=12
+\centering
+    \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+
+\cline{2-10}
+\multicolumn{1}{c|}{}
+ & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+\hline
+\multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
+\cline{2-10}
+        & avg & med & s.d. & avg & med & s.d. & avg & med & s.d. \\
+\hline
+ 0.00                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.05                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.10                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+ 0.25                        & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. & 0. \\
+\hline
+\end{tabularx}
+\caption{Desetiprocentní percentil průměrné fitness v třetím úseku (t.j. v kroku 16385 a následujících)}
 \end{table}
 
 \section{Název druhé podkapitoly v druhé kapitole}
+
+lore ipsum XXXX

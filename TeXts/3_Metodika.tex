@@ -76,7 +76,13 @@ normovaného normálního rozdělení\footnote{Pokud mluvím o normálním rozd�
 právě normované normální rozdělení se střední hodnotou $0.0$ a rozptylem $1.0$, tedy $N(0, 1)$}.
 Pokud působí na všechny složky fenotypu, tak jsou příspěvky vybrány nezávisle na sobě z normálního
 rozdělení a vyděleny odmocninou z dimenze fenotypu (tedy konkrétně $\sqrt{4} = 2$).
-Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku. XXXX vysvetlit
+Důvodem je, že bez tohoto znormování měly pleiotropické příspěvky v průměru větší délku.\footnote{
+    Pokud vyberu z nějakého rozdělení jedno číslo $x$ a průměrná absolutní hodnota takového výběru je $q$, pak i
+    průměrná délka vektorů $[x, 0, 0, 0], [0, x, 0, 0]\ldots$ je $\sqrt{x^2 + 0^2+ 0^2+ 0^2} = q$.
+    Pokud ze stejného rozdělení čtyři čísla $x_1, x_2, x_3, x_4$, tak je z Pythagorovy věty délka takového vektoru
+    $\sqrt{x_1^2 + x_2^2+ x_3^2+ x_4^2}$ a tedy v průměru $\sqrt{4 \cdot q^2} = 2 \cdot q$. Delší vektory vlivu na
+    fitness by umožnily situaci, kdy v průměru stačí méně alel na dosažení vzdálenost k optimálnímu fenotypu.
+}
 
 Teorie zamrzlé plasticity předpokládá podstatný význam alel, které potenciálně mají frekvenčně závislý vliv na fitness.
 Mezi takové alely patří ty, které působí v opačných směrech, pokud se
@@ -305,7 +311,10 @@ zpětnou vazbou, jako je například v modelu \citet{Flegr139030}, a umíráním
 
 Turbidostatická regulace funguje tak, že každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
 $p = min(0.9, k_4 n^2 + k_5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
-Člen $k_5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
+Člen $k_5$\footnote{
+Parametry $k_4$ a $k_5$ jsou jediná $k$, která se v této práci vyskytují, $k_1$ by tu čtenář hledal marně. Důvodem je
+snaha o konzistenci s předchozí prací \citet{Flegr139030}.
+}je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
 
 V přírodě turbidostatické regulaci odpovídá například regulace parazitem, kterému se lépe daří,
 pokud se jedinci častěji setkávají -- v takovém případě četnost setkání závisí právě na hustotě populace tedy členu
@@ -418,17 +427,16 @@ operačního systému Linux, nebyla ověřena jejich funkčnost pod jinými OS.
 
 \begin{figure}[h]
 \centering
-\includegraphics[totalheight=8cm]{img/Screenshot.pdf}
+\includegraphics[width=\textwidth]{img/Screenshot.pdf}
     \caption{\textit{FrozenBeagleSimulation} screenshot}
 \label{fig:FrozenBeagleScreenshot}
 \end{figure}
 
 Grafický \textit{FrozenBeagleSimulation}, zobrazený na obrázku \ref{fig:FrozenBeagleScreenshot},
-umožňuje pohodlně nastavit parametry simulace a jednu spustit.
-
-\textit{fbeagle} je vhodný pro dávkové zpracování, které spouští mnoho simulací se stejnými parametry, které se liší
-počátečním \textit{seedem} generátoru pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace,
-které je možné dále analyzovat a zpracovávat.
+umožňuje pohodlně nastavit parametry simulace a jednu spustit. \textit{fbeagle} je vhodný pro dávkové zpracování,
+které spouští mnoho simulací se stejnými parametry, které se liší počátečním \textit{seedem} generátoru
+pseudonáhodných čísel. Jeho výstupem je sada statistik pro jednotlivé simulace, které je možné dále analyzovat
+a zpracovávat.
 
 Parametry \textit{fbeagle} jsou zdokumentovány v příloze \ref{sec:parameters}.
 
@@ -490,19 +498,27 @@ být výrazně ovlivněno náhodou, kdy mutace vytvoří nereprezentativního je
 
 Jak rychle populace reaguje na nové podmínky je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
 Úsek má délku 127 kroků simulace. Směrnice je tedy rozdíl průměrné fitness v kroku č. 128 a v prvním kroku daného
-období vydělený 128.
+období vydělený 128. Obdobně je měřena směrnice na konci daného období.
 
 \subsection{Testování hypotéz}
 
-K otestování se nabízejí tři hypotézy:
+K otestování se nabízejí následující hypotézy:
 
 \begin{enumerate}
     \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
           častěji vymírají.}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
-          dosahují menších průměrů i percentilu fitness (t.j. nedostanou se tak blízko optimu).}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
-          mají na počátku každého období menší směrnice vyjadřující růst fitness.}
+    \item{Efekty obou typů alel se vzájemně multiplikují.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
+          alel ovlivňujících více složek fenotypu dosahují menších průměrů i percentilu fitness (t.j.
+          nedostanou se tak blízko optimu).}
+    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+    \item{Populace, kde je nenulové zastoupení alel ovlivňujících alel více složek fenotypu nebo negativně
+          dominantních alel se blízko k optimu (na hodnotu fitness $0.95$) dostávají pomaleji.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
+          více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
+          na konci období menší směrnici růstu fitness.}
+    \item{Tento efekt je nastává i po druhé změně optima a je silnější.}
+    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
 První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro každou sadu parametrů s negativně dominantními
