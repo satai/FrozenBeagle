@@ -509,11 +509,9 @@ K otestování se nabízejí následující hypotézy:
           častěji vymírají.}
     \item{Efekty obou typů alel se vzájemně multiplikují.}
     \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
-          alel ovlivňujících více složek fenotypu dosahují menších průměrů i percentilu fitness (t.j.
+          alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentilu fitness (t.j.
           nedostanou se tak blízko optimu).}
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
-    \item{Populace, kde je nenulové zastoupení alel ovlivňujících alel více složek fenotypu nebo negativně
-          dominantních alel se blízko k optimu (na hodnotu fitness $0.95$) dostávají pomaleji.}
     \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
           více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
           na konci období menší směrnici růstu fitness.}
@@ -521,10 +519,10 @@ K otestování se nabízejí následující hypotézy:
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
-První hypotéza může být otestována Pearsonovým $\chi^2$ testem -- pro každou sadu parametrů s negativně dominantními
-alelalami nebo pleiotropií lze srovnat počet přeživších a vyhynulých populací s počtem přeživších a vyhynulých populací,
-kde se tyto jevy neprojevovaly.
+První hypotéza může být otestována XXX
 
-K otestování dalších dvou hypotéz byly použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
-projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Modely byly
-spočítány v prostředí statistického jazyka R \citep{rlanguage}.
+K otestování dalších hypotéz byly použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
+projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Pro každou z 6144
+simulací byla jako závislá proměnná vzata příslušné proměnné, o které byla formulována hypotéza.
+
+Jako hladina $\alpha$ byla pro všechny hodnoty zvolena hodnota $ p = 0.05 $.
