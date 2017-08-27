@@ -1,8 +1,41 @@
 \chapter{Cíle}
 
-Cvicna citace: jak je psano v~\citet{Lamport1994}
+%Přehledným způsobem se  uvede seznam  cílů DP a stručně se zdůvodní pracovní postupy navrhované k jejich řešení
 
-\section{Název první podkapitoly v druhé kapitole}
+Cíle této práce jsou:
 
-\section{Název druhé podkapitoly v druhé kapitole}
 
+\begin{enumerate}
+    \item{Navrhnout a vyvinout program nebo programy, které mohou simulovat některé evoluční procesy, zejména přizpůsobení
+    se populací změnám podmínek prostředí v závislosti na podílu pleiotropních alel a na podílu alel s frekvenčně
+    závislou selekcí, konkrétně těch, u~kterých je opačný směr působení na fenotyp, pokud jsou v lokusu v jedné nebo
+    dvou instancích (dále jen negativně dominantní alely).
+    \item{Použít tento program nebo programy k otestování hypotézy, že populace se studovanými typy alel  pro zvolenou
+         sadu parametrů častěji vymírají.}
+        \begin{itemize}
+            \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více
+                  složek fenotypu, častěji vymírají.}
+            \item{Efekty obou typů alel se vzájemně multiplikují.}
+        \end{itemize}
+    }
+    \item{Použít tento program nebo programy k otestování hypotézy, že se populace se studovanými typy alel pro zvolenou
+         sadu parametrů hůře přizpůsobují změnám podmínek.
+        \begin{itemize}
+            \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
+                       alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentilu fitness (t.j.
+                       nedostanou se tak blízko optimu).}
+            \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+        \end{itemize}
+    }
+    \item{Použít tento program nebo programy k otestování hypotézy, že se populace se studovanými typy alel pro zvolenou
+         sadu parametrů při změnách podmínek pomaleji přizpůsobují a naopak rychleji rostou za stabilních podmínek.
+
+        \begin{itemize}
+        \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
+              více složek fenotypu, mají po změně prostředí větší směrnici vyjadřující růst fitness,
+              na konci období s novým stavem prostředí pak menší směrnici růstu fitness.}
+        \item{Tento efekt je nastává i po návratu prosředí do původního stavu a je silnější.}
+        \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+        \end{itemize}
+    }
+\end{enumerate}

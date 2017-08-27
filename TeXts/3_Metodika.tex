@@ -131,7 +131,11 @@ nahodny_opacny_efekt(efekt) =
 \textit{// {N}() značí náhodné číslo ze standardizovaného}
 \textit{//       normálního rozdělení}
 
-\textit{// {P}(xm, a) značí náhodné číslo z Paretova rozdělení}
+\textit{// {P}(xm, a) značí náhodné číslo z Paretova rozdělení \footnote{Paretovo rozdělení bylo vybráno, protože jde o rozdělení, kde pravděpodobnost nejvyšších hodnot pomalu konverguje k nule neboli \uv{má dlouhý chvost}. Tím  dobře postihuje situaci, kdy se mohou objevit i odlehlé hodnoty. To odpovídá biologické situaci, kdy je fenotypový projev alely u homozygota podstatně odlišný od projevu u heterozygota.
+
+    Se zvolenými parametry má rozdělení modus 1.5 a medián 2.381.
+    }
+}
 \textit{//            s parametry xm a a}
 \end{code}
 \end{tcolorbox}
@@ -151,6 +155,8 @@ prvního rodiče.
 Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě pohlaví.
 
 \begin{figure}[h]
+  \caption{Křížení}
+
   \centering
 
   \begin{tikzpicture}
@@ -197,8 +203,6 @@ Pohlaví potomka je určeno náhodně se stejnou pravděpodobností pro obě poh
         {Parent1a-5.north east};
 
   \end{tikzpicture}
-
-  \caption{Křížení}
 \end{figure}
 
 
@@ -352,7 +356,7 @@ konstantní za předpokladu konstantní průměrné fitness:
 (k_4\cdot{m^2} + {k_5} + \frac{1}{a_{max}})\cdot{m} = m - n
 \end{equation}
 
-kde $m$ je aktualní velikost populace po množení, $a_{max}$ je věk, ve kterém umírají organismy stářím a $n$ je rovnovážná
+kde $m$ je aktuální velikost populace po množení, $a_{max}$ je věk, ve kterém umírají organismy stářím, a $n$ je rovnovážná
 velikost populace. Vzorec říká, že pro rovnovážnou velikost by měl být počet úmrtí (což je počet úmrtí daný
 turbidostatem plus počet úmrtí stářím) stejný jako počet čerstvě narozených jedinců.
 
@@ -426,9 +430,9 @@ Samotná simulace je zapouzdřena do knihovny, která je užívána dvěma progr
 operačního systému Linux, nebyla ověřena jejich funkčnost pod jinými OS.
 
 \begin{figure}[h]
+\caption{\textit{FrozenBeagleSimulation} screenshot}
 \centering
 \includegraphics[width=\textwidth]{img/Screenshot.pdf}
-    \caption{\textit{FrozenBeagleSimulation} screenshot}
 \label{fig:FrozenBeagleScreenshot}
 \end{figure}
 
@@ -521,8 +525,8 @@ K otestování se nabízejí následující hypotézy:
 
 První hypotéza může být otestována XXX
 
-K otestování dalších hypotéz byly použity lineární modely s poměrem pleiotropních alel a poměrem alel, u kterých se
+K otestování dalších hypotéz byly použity lineární modely s podílem pleiotropních alel a podílem alel, u kterých se
 projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Pro každou z 6144
 simulací byla jako závislá proměnná vzata příslušné proměnné, o které byla formulována hypotéza.
 
-Jako hladina $\alpha$ byla pro všechny hodnoty zvolena hodnota $ p = 0.05 $.
+Jako hladina $\alpha$ byla pro všechny testy zvolena hodnota $ p = 0.05 $.

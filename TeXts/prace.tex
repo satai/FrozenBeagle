@@ -79,6 +79,10 @@
 \usepackage{float}
 \usepackage{perpage}
 
+\usepackage{caption}
+\captionsetup{belowskip=4pt,aboveskip=8pt}
+\usepackage[font={bf}]{caption}
+
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 %%% Údaje o práci
 
@@ -107,8 +111,8 @@
 \def\Vedouci{prof. RNDr. Jaroslav Flegr, CSc.}
 
 % Pracoviště vedoucího (opět dle Organizační struktury MFF)
-\def\KatedraVedouciho{katedra}
-\def\KatedraVedoucihoEN{department}
+\def\KatedraVedouciho{Katedra filosofie a dějin přírodních věd}
+\def\KatedraVedoucihoEN{Department of Philosophy and History of Science}
 
 % Studijní program a obor
 \def\StudijniProgram{Biologie}
@@ -117,23 +121,58 @@
 % Nepovinné poděkování (vedoucímu práce, konzultantovi, tomu, kdo
 % zapůjčil software, literaturu apod.)
 \def\Podekovani{%
-Děkuji rodičům a Julii za trpělivost a profesoru Flegrovi za vedení práce i způsob, jakým se mne ujal.
+Děkuji rodičům a Julii za trpělivost a profesoru Flegrovi za vedení práce, podporu i způsob, jakým se mne ujal.
+Poděkování si zaslouží i magistr Petr Tureček za ochotu při konzultaci statistických metod.
 }
 
 % Abstrakt (doporučený rozsah cca 80-200 slov; nejedná se o zadání práce)
 \def\Abstrakt{%
-Abstrakt. XXXX
+Otázka tempa evoluce patří k nejstarším v evoluční biologii a dosud nebyla uspokojivě vyřešena. Jedním z pokusů
+je teorie zamrzlé plasticity, podle které je pohlavně se rozmnožující druh schopný vývoje jen v krátkých
+obdobích, kdy dojde k poklesu genetického polymorfismu například při peripatrické speciaci. V delších obdobích
+evoluční stáze je vývoj druhu omezen frekvenčně závislou selekcí a pleiotropií.
+
+V rámci této práce byl vyvinut volně dostupný program simulující chování populací pohlavně se rozmnožujících
+jedinců v proměnných podmínkách prostředí. V tomto programu byly simulovány vývoje populací s různou pravděpodobností
+vzniku alel působících na více složek fenotypu a s různou pravděpodobností vzniku frekvenčně selektovaných
+alel, které působí na fenotyp v opačném směru, pokud jsou v lokusu jednou nebo dvakrát.
+
+Byly pozorovány trendy předpovězené teorií zamrzlé plasticity -- pomalejší přizpůsobení
+skokovým změnám prostředí, menší dosažené fitness a častější vymírání populací s většími podíly zkoumaných druhů alel,
+ale pouze s velmi malou silou efektu a bez statistické významnosti.
+
+Pro budoucí výzkum je vhodné rozšířit prostor zkoumaných parametrů a zejména se zaměřit na větší populace, u kterých je
+účinnější působení selekce.
 }
 \def\AbstraktEN{%
-Abstract. XXXX
+The question of the tempo of evolution is amongst the oldest conundrums in evolutionary biology and has not been
+satisfactorily answered yet. One of the attempts to do so is the frozen plasticity theory,
+which postulates that a sexually reproducing species is only capable of evolution within short periods of
+time after its genetic polymorphism decreases e.g. as a consequence of peripatric speciation.
+In the longer periods of evolutionary stasis, its evolution is limited by frequency-dependent selection
+and pleiotropy.
+
+In this work, I have produced a open source software simulating the responses of populations of sexually
+reproducing individuals to varying environmental conditions. Using this software, I simulated evolution of
+populations with different probabilities of arising of alelles affecting more phenotypic traits and
+frequency-dependent selected alleles that have opposing phenotypic effects when present at the locus
+in one copy, respectively two copies.
+
+I observed trends predicted by the theory of frozen plasticity: slower adaptation to instant environmental
+changes, lower achieved fitness and more frequent extinctions of populations with higher portions of
+investigated types of alleles, but only with low effect sizes and without statistical significance.
+
+For future research, it would be desirable to expand the investigated parameter space and focus especially
+on larger populations where selection is more efficient.
+
 }
 
 % 3 až 5 klíčových slov (doporučeno), každé uzavřeno ve složených závorkách
 \def\KlicovaSlova{%
-{evoluce}, {zamrzlá plasticita}, {simulace}, {modelování}
+{evoluce}, {mikroevoluce},{zamrzlá plasticita}, {frekvenčně závislá selekce}, {simulace}, {modelování}
 }
 \def\KlicovaSlovaEN{%
-{evolution}, {frozen plasticity}, {simulation}, {model}
+{evolution}, {microevolution}, {frozen plasticity}, {frequency-dependent selection}, {simulation}, {model}
 }
 
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
@@ -243,6 +282,7 @@ Abstract. XXXX
 \include{a2_Constants}
 \include{a3_Surova_data}
 \include{a4_Reprodukovatelnost}
+\include{a5_Grafy}
 
 \openright
 \end{document}

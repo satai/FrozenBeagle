@@ -20,17 +20,84 @@
 % Čtenář DP by měl být na Diskusi připraven Úvodem. Nemělo by se tedy stát, že se v Diskusi zjeví překvapivá
 % fakta z prací jiných autorů, o nichž není v Úvodu ani zmínky.
 
-XXXXX
+\section{Shrnutí výsledků}
 
+V konfirmační části práce jsme se pokusili formálně otestovat sedm hypotéz, které jsme na začátku formuluvali
+na základě predikcí vyplývajících z teorie zamrzlé plasticity.
+Hypotézy se týkaly vztahu množství pleiotropických alel a alel s opačným působením na fenotyp s dosaženou průměrnou
+hodnotou fitness a jejím desetiprocentním percentilem, s rychlostí růstu fitness po změnách prostředí, s rychlostí
+růstu fitness po dlouhém období stabilního prostředí a s četností vymírání populací.
 
-\section{Výsledky a jejich interpretace}
+Výsledky simulací ve zkoumané části prostoru možných parametrů simulace se v podstatě kvalitativně shodovaly s
+našimi počátečními predikcemi, efekty však byly velmi malé a ani zdaleka nedosahovaly hranice statistické signifikance.
+Formálně jsme tedy žádnou z našich hypotéz založených na teorii zamrzlé plasticity nepotvrdili.
 
-\subsection{Shrnutí výsledků}
+Ukázala se pouze negativní závislost směrnice růstu fitness na počátku třetího období na podílu pleiotropních alel s
+relativně malou silou efektu, která nepatřila k původně formulovaným hypotézám.
+
+\section{Interpretace výsledků pro vymírání}
+
+XXX
+
+\section{Interpretace výsledků pro dosažené fitness}
+
+V datech je, zejména v druhém úseku, jak u průměrů, tak i u desetiprocentního percentilu fitness pozorovatelný trend
+očekávaným směrem, ale je slabý a není statisticky signifikantní.
+
+Možná vysvětlení se nacházejí v části Omezení.
+
+\section{Interpretace výsledků pro růsty fitness po změnách optima}
+
+Zde se ukázala pouze negativní závislost směrnice růstu fitness na počátku třetího období na podílu pleiotropních alel
+s relativně malou silou efektu.
+
+Přestože je výsledek signifikantní pro zvolenou hladinu $\alpha = 0.05$, tak je na místě
+opatrnost, protože bylo testováno mnoho hypotéz a jejich částí a je proto možné, že jde o náhodnou chybu prvního
+druhu -- artefakt vícečetých testů. \footnote{Povaha testů zde vylučuje užití běžných korekcí pro vícečetné
+testy. XXX je to tak? XXX}
+Tato závislost si ale jistě zaslouží být dále zkoumána a testována v navazujícím výzkumu.
+
+\section{Interpretace výsledků pro růsty fitness na konci stabilních období}
+
+Pro růsty fitness na koncích stabilních období nebyla nalezena závislost na parametrech.
+
+Hlavním důvodem je nevhodně zvolená veličina. Na koncích období bývají již simulované populace vcelku stabilní a
+změny fitness jsou obvykle jen drobným náhodným kolísáním. Pro budoucí měření je tedy nutné najít jinou veličinu,
+která bude měřit, jak rychle se v populaci optimalizují fenotypy po počátečním rychlém růstu fitness. Vhodnou veličinou
+by byl například čas nutný pro růst z fitnes 0.80 na fitness 0.95.
 
 \section{Omezení}
 
+Zvolená velikost rovnovážná velikost populace je pravděpodobně příliš malá. Šlo o důsledek technických, časových a
+částečně finančních omezení, který by měl být v budoucí práci odstraněn, aby ve zkoumaných populacích hrála
+větší roli selekce i pro alely s malými vlivy na fenotyp a aby se omezil vliv driftu.
 
-\begin{tcolorbox}[ title={Vhodnost zvolených nástrojů pro simulaci}
+Jako u každého, nejen počítačového, modelu se zde setkáme s nutností vyvážit jeho realističnost a jednoduchost. V
+tomto případě bylo nutné omezit již zmíněnou velikost populací, dimenzionalitu prostoru fenotypů a počet lokusů.
+To samozřejmě značně omezuje možnost zobecnit negativní výsledek na reálné situace. Je například možné, že očekávané
+efekty by se projevily, pokud by se vztahy týkaly většího počtu alel -- pak by stačilo, aby některé z nich přispěly
+velmi malým dílem k projevům elasticity, ale součet jejich vlivů už by byl měřitelný.
+
+Pravděpodobně druhým nejdůležitějším omezením provedených simulací je to, že z časových a technických důvodů
+pokryly pouze malou část prostoru možných parametrů -- čtyři hodnoty od 0.0 po 0.25 pro podíl negativně dominantních
+alel a tři hodnoty od 0.0 do 0.5 pro podíl pleiotropních alel.
+
+Podstatným omezením je také to, že byl simulován jen jeden způsob změn prostředí -- skoková změna optima a jeho
+pozdější skokový návrat na původní hodnotu.
+
+Dále není jisté, že podíl vznikajících alel s některou vlastností dále odpovídal jejich následnému zastoupení v
+populaci. Je jasné, že některé druhy alel selekce udržovala v populaci více než jiné, a některé potenciálně užitečné
+alely zase neměly šanci se rozšířit na významnější část populace (recesivní výhodné alely).
+
+V dalších simulacích by mělo být sledováno chování jednotlivých typů alel a především je třeba sledovat zastoupení
+negativně dominantních a pleiotropních alel v rovnovážné populaci.
+Bude patrně třeba před vlastním zahájením simulačního pokusu (před první změnou  optima) nechat systém \uv{zahořet}
+dlouhým stabilním obdobím, tj. nechat zde ustálit rovnovážné zastoupení jednotlivých typů alel,
+a právě tyto rovnovážné podíly zanést do tabulek a použít v následných statistických testech jako nezávislé proměnné.
+
+\vspace*{1em}
+
+\begin{tcolorbox}[title={Vhodnost zvolených nástrojů pro simulaci}
                  , breakable
                  ]
 
@@ -71,7 +138,7 @@ To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, j
 
 Jako problematický se však ukázal výkon výsledného programu, zejména pak jeho značná paměťová náročnost.
 
-Program je přeložen do nativního kódu, což odstraňuje část potenciálních výkonnostních probémů. Bohužel však jedna ze silných stránek
+Program je přeložen do nativního kódu, což odstraňuje část potenciálních výkonnostních problémů. Bohužel však jedna ze silných stránek
 Haskellu, líné vyhodnocování, které m.j. umožňuje i snadnou tvorbu potenciálně nekonečných datových struktur, nese i negativum.
 Tím je náročnost úvah o výkonu výsledného programu i tvorba nástrojů pro jeho zkoumání \citep{wadler1998no}.
 
@@ -111,7 +178,7 @@ funkcionálního programování} pro rozmnožování asexuálních druhů.
 
 Výpočetně náročnější, ale potenciálně zajímavé by byly simulace s podstatně vyším počtem kroků. Během nich by se, lze
 předpokládat, samovolně hromadily frekvenčně závislé alely a tedy postupně stoupala elasticita.
-Opakované změny prostředí by prověřily, že na ně populace reaguje stále více elasticky.
+Pomocí opakovaných změn prostředí bychom prověřili, zda na ně populace reaguje stále více elasticky.
 
 \subsection{Měření evolvability}
 

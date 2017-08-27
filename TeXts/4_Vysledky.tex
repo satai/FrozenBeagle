@@ -23,8 +23,12 @@
 %
 %Samozřejmě můžete použít barevné grafy či tabulky. Je ale dobré si uvědomit, že se hodnotí obsah, nikoliv barevnost. Klidně tedy vystačíte i jen s černou a bílou barvou (to samozřejmě nemusí platit pro fotografie nebo obrázky). Pokud použijete barevné grafy, měly by být (pokud možno) rozlišitelné i v černobílém provedení.
 
-Pro lepší představu o fungování modelu jsou v příloze XXX reprezentativní grafy pro průběhy některých veličin,
-včetně těch, které nebyly součástí hypotéz, ale mohou pomoci s porozuměním.
+V této kapitole postupně představím výsledky týkající se vymirání populací, dosažených fitness a jejich růstu
+na počátku a konci každého období. U každé z těchto oblastí uvádím popisné statistiky a testy příslušných
+hypotéz nebo jejich částí.
+
+Pro lepší představu o fungování modelu jsou v příloze \ref{sec:graphs} reprezentativní grafy pro průběhy některých
+veličin, včetně těch, které nebyly součástí hypotéz, ale mohou pomoci s porozuměním chování modelu.
 
 \section{Vymírání populací}
 
@@ -39,15 +43,17 @@ V tabulkách \ref{table:vyhynuti1} až \ref{table:vyhynuti3} jsou zaznamenány p
 v daném úseku a nejpozději v daném úseku simulace.
 
 \begin{table}[H]
+\caption{Počet simulací končících vyhynutím v prvním úseku (t.j. v prvních 8192 krocích)}
+
 \catcode`\-=12
 \centering
     \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
- & \multicolumn{3}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{3}{c|}{Podíl pleiotropických alel} \\
 \hline
- Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
+ Podíl alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        &  89  &   86 &  92 \\
  0.05                        &  91  &   87 &  93 \\
@@ -55,22 +61,31 @@ v daném úseku a nejpozději v daném úseku simulace.
  0.25                        &  91  &   89 &  96 \\
 \hline
 \end{tabularx}
-    \caption{Počet simulací končících vyhynutím v prvním úseku (t.j. v prvních 8192 krocích)}
+
+\vspace*{4px}
+
+\footnotesize{\textit{Podíl alel s negativní dominancí je pravděpodobnost, že nově vzniklá alela bude ovlivňovat fenotyp v opačných
+směrech, pokud bude v lokusu jednou nebo dvakrát. Podíl pleiotropických alel je pravděpodobnost, že nově vzniklá alela
+bude ovlivňovat více složek fenotypu. Rovnovážná velikost populace byla 256 jedinců, proběhlo 512 simulací
+pro každou kombinaci parametrů.}}
+
 \label{table:vyhynuti1}
 \end{table}
 
 Je patrné, že po první změně optima vymírá více populací, než na počátku simulace:
 
 \begin{table}[H]
+\caption{Počet simulací končících vyhynutím nejpozději v druhém úseku (t.j. v prvních 16384 krocích), v závorce
+    počet simulací končících vyhynutím v druhém úseku}
 \catcode`\-=12
 \centering
     \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
- & \multicolumn{3}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{3}{c|}{Podíl pleiotropických alel} \\
 \hline
- Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
+ Podíl alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        & 210 (121) &  215 (129) & 220 (128) \\
  0.05                        & 218 (127) &  213 (126) & 223 (130) \\
@@ -78,23 +93,27 @@ Je patrné, že po první změně optima vymírá více populací, než na poč�
  0.25                        & 222 (131) &  213 (124) & 225 (129) \\
 \hline
 \end{tabularx}
-    \caption{Počet simulací končících vyhynutím nejpozději v druhém úseku (t.j. v prvních 16384 krocích), v závorce
-    počet simulací končících vyhynutím v druhém úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:vyhynuti2}
+
 \end{table}
 
 Z populací, které přežily první změnu optimálního fenotypu, již po návratu optima vyhyne poměrně málo:
 
 \begin{table}[H]
+\caption{Počet simulací končících vyhynutím, v závorce  počet simulací končících vyhynutím v třetím úseku}
 \catcode`\-=12
 \centering
     \begin{tabularx}{0.9\textwidth}{|c|Y|Y|Y|}
 
 \cline{2-4}
 \multicolumn{1}{c|}{}
- & \multicolumn{3}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{3}{c|}{Podíl pleiotropických alel} \\
 \hline
- Poměr alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
+ Podíl alel s neg. dominancí & 0.00 & 0.25 & 0.50 \\
 \hline
  0.00                        &  213 (3) &  216 (1) & 222 (2) \\
  0.05                        &  223 (5) &  215 (2) & 225 (2) \\
@@ -102,8 +121,11 @@ Z populací, které přežily první změnu optimálního fenotypu, již po náv
  0.25                        &  225 (3) &  216 (3) & 227 (2)\\
 \hline
 \end{tabularx}
-\caption{Počet simulací končících vyhynutím, v závorce  počet simulací končících vyhynutím v třetím úseku}
 \label{table:vyhynuti3}
+
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
 \end{table}
 
 \subsection{Otestování hypotéz}
@@ -129,13 +151,14 @@ přizpůsobit aktuálním podmínkám, v jednotlivých úsecích simulace jsou z
 až \ref{table:max3}. Pro každou je uveden aritmetický průměr, medián a směrodatná odchylka.
 
 \begin{table}[H]
+\caption{Nejvyšší dosažená  průměrná fitness v prvním úseku (t.j. v prvních 8192 krocích)}
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -147,20 +170,26 @@ až \ref{table:max3}. Pro každou je uveden aritmetický průměr, medián a sm�
  0.25                        & 0.786 & 0.958 & 0.359 & 0.791 & 0.958 & 0.356 & 0.780 & 0.959 & 0.366 \\
 \hline
 \end{tabularx}
-\caption{Nejvyšší dosažená  průměrná fitness v prvním úseku (t.j. v prvních 8192 krocích)}
+
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:max1}
 \end{table}
 
 Průměry jsou po změně optima viditelně menší:
 
 \begin{table}[H]
+\caption{Nejvyšší dosažená  průměrná fitness v druhém úseku (t.j. v krocích 8193--16384)}
+
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -172,20 +201,24 @@ Průměry jsou po změně optima viditelně menší:
  0.25                        & 0.598 & 0.820 & 0.409 & 0.613 & 0.830 & 0.402 & 0.603 & 0.843 & 0.410 \\
 \hline
 \end{tabularx}
-\caption{Nejvyšší dosažená  průměrná fitness v druhém úseku (t.j. v krocích 8193--16384)}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:max2}
 \end{table}
 
 Ve třetím období jsou populace nejlépe přizpůsobené. Navíc je rozptyl těchto hodnot nejmenší.
 
 \begin{table}[H]
+\caption{Nejvyšší dosažená průměrná fitness v třetím úseku (t.j. v kroku 16385 a následujících)}
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -197,7 +230,10 @@ Ve třetím období jsou populace nejlépe přizpůsobené. Navíc je rozptyl t�
  0.25                        & 0.952 & 0.970 & 0.097 & 0.953 & 0.969 & 0.095 & 0.957 & 0.970 & 0.080 \\
 \hline
 \end{tabularx}
-\caption{Nejvyšší dosažená průměrná fitness v třetím úseku (t.j. v kroku 16385 a následujících)}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:max3}
 \end{table}
 
@@ -213,9 +249,10 @@ Průměry fitness figurují v prvních částech následujících hypotéz:
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
-Část třetí hypotézy týkající se průměrů fitness výsledky lineárního modelu (p hodnota pro vliv dominance je 0.744 pro první úsek,
-0.346 pro druhý úsek a 0.571 pro třetí; p hodnota pro vliv pleiotropie 0.956 pro první, 0.648 pro druhý a
-0.442 pro třetí úsek; p hodnoty pro interakci dominance a pleiotropie jsou 0.920, 0.676 a 0.976) nepotvrdily.
+Část třetí hypotézy týkající se průměrů fitness výsledky lineárního modelu nepotvrdily (p hodnota pro vliv dominance
+je 0.744 pro první úsek,  0.346 pro druhý úsek a 0.571 pro třetí; p hodnota pro vliv pleiotropie 0.956 pro první,
+0.648 pro druhý a
+0.442 pro třetí úsek; p hodnoty pro interakci dominance a pleiotropie jsou 0.920, 0.676 a 0.976).
 To automaticky znamená i zamítnutí té části čtvrté hypotézy, která se týká průměrů fitness.
 
 %%%%%%%%%%%%%%%%%%%%%%
@@ -226,16 +263,20 @@ Základní popisné statistiky pro desetiprocentní percentil fitness v jednotli
 jsou zaznamenány v tabulkách \ref{table:per1} až \ref{table:per3}. Pro každou je uveden aritmetický průměr, medián a
 směrodatná odchylka.
 
-Desetiprocentní percentil fitness XXX
+Desetiprocentní percentil fitness reprezentuje fitness nejhůře přizpůsobených jedinců populace, protože na rozdíl
+od minima není citlivý na vznik náhodných jedinců s velmi nízkou fitness. Takové může zejména mutace vytvořit,
+nejsou však pro populaci reprezentativní.
 
 \begin{table}[H]
+\caption{Desetiprocentní percentil průměrné fitness v prvním úseku (t.j. v prvních 8192 krocích)}
+
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -247,20 +288,24 @@ Desetiprocentní percentil fitness XXX
  0.25                        & 0.764 & 0.926 & 0.348 & 0.762 & 0.926 & 0.327 & 0.750 & 0.926 & 0.357 \\
 \hline
 \end{tabularx}
-\caption{Desetiprocentní percentil průměrné fitness v prvním úseku (t.j. v prvních 8192 krocích)}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:per1}
 \end{table}
 
 Podobně jako u průměrů i desetiprocentní percentily jsou nejmenší po první změně optima:
 
 \begin{table}[H]
+\caption{{Desetiprocentní percentil průměrné fitness v druhém úseku (t.j. v krocích 8193--16384)}}
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -272,7 +317,10 @@ Podobně jako u průměrů i desetiprocentní percentily jsou nejmenší po prvn
  0.25                       & 0.549 & 0.718 & 0.390 & 0.561 & 0.727 & 0.383 & 0.554 & 0.749 & 0.391 \\
 \hline
 \end{tabularx}
-\caption{Desetiprocentní percentil průměrné fitness v druhém úseku (t.j. v krocích 8193--16384)}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:per2}
 \end{table}
 
@@ -280,13 +328,14 @@ Tak jako průměry, tak i desetiprocentní percentily dosáhnou nejvyšší hodn
 patrné jejich nejmenší rozptyly:
 
 \begin{table}[H]
+\caption{{Desetiprocentní percentil průměrné fitness v třetím úseku (t.j. v kroku 16385 a následujících)}}
 \catcode`\-=12
 \centering
     \begin{tabularx}{1.0\textwidth}{|c|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -298,9 +347,28 @@ patrné jejich nejmenší rozptyly:
  0.25                        & 0.923 & 0.944 & 0.100 & 0.923 & 0.944 & 0.098 & 0.928 & 0.947 & 0.083 \\
 \hline
 \end{tabularx}
-\caption{Desetiprocentní percentil průměrné fitness v třetím úseku (t.j. v kroku 16385 a následujících)}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:per3}
 \end{table}
+
+Desetiprocentních percentilů fitness se týkaly druhé části následujících hypotéz:
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
+          alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentilu fitness (t.j.
+          nedostanou se tak blízko optimu).}
+    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+\end{enumerate}
+
+Část třetí hypotézy týkající se percentilu fitness výsledky lineárního modelu nepotvrdily (p hodnota pro vliv
+dominance je 0.703 pro první úsek, 0.316 pro druhý úsek a 0.448 pro třetí; p hodnota pro vliv pleiotropie 0.917 pro
+první, 0.623 pro druhý a 0.639 pro třetí úsek; p hodnoty pro interakci dominance a pleiotropie jsou 0.922,
+0.668 a 0.962). To automaticky znamená i zamítnutí té části čtvrté hypotézy, která se
+týká percentilů fitness.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -313,6 +381,7 @@ jsou zaznamenány v tabulkách \ref{table:sm1} až \ref{table:sm3}. Pro každou 
 směrodatná odchylka.
 
 \begin{table}[H]
+\caption{{Směrnice růstu průměrné fitness na počátku prvního úseku}}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -320,7 +389,7 @@ směrodatná odchylka.
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -332,13 +401,17 @@ směrodatná odchylka.
   0.25                        & 0.01992 & 0.01909 & 0.00707 & 0.02040 & 0.01951 & 0.00740 & 0.02014 & 0.01955 & 0.00712 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na počátku prvního úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sm1}
 \end{table}
 
 Po změně optima rostou fitness v populaci dříve adaptované na jiné podmínky pomaleji:
 
 \begin{table}[H]
+\caption{{Směrnice růstu průměrné fitness na počátku druhého úseku}}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -346,7 +419,7 @@ Po změně optima rostou fitness v populaci dříve adaptované na jiné podmín
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -358,13 +431,17 @@ Po změně optima rostou fitness v populaci dříve adaptované na jiné podmín
   0.25                        & 0.00910 & 0.00876 & 0.00177 & 0.00914 & 0.00883 & 0.00207 & 0.01059 & 0.00989 & 0.00262 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na počátku druhého úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sm2}
 \end{table}
 
 Po změně optima na původní rostou fitness také pomaleji než v prvním období:
 
 \begin{table}[H]
+\caption{{Směrnice růstu průměrné fitness na počátku třetího úseku \\ }}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -372,7 +449,7 @@ Po změně optima na původní rostou fitness také pomaleji než v prvním obdo
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -384,7 +461,10 @@ Po změně optima na původní rostou fitness také pomaleji než v prvním obdo
   0.25                        & 0.00910 & 0.00876 & 0.00301 & 0.01060 & 0.01003 & 0.00239 & 0.01059 & 0.00989 & 0.00423 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na počátku třetího úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sm3}
 \end{table}
 
@@ -399,6 +479,19 @@ K růstu fitness na počátku druhého a třetího úseku simulace se vztahovaly
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
+Pátá hypotéza a sedmá hypotéza musejí být odmítnuty v části  týkající se počátku druhého období --
+p hodnota závislosti růstu fitness na počátku druhého období je pro negativní dominanci 0.668,
+pro pleiotropii 0.820 a pro jejich interakci 0.523.
+
+Při testování šesté a sedmé hypotézy se ukázalo, že existuje signifikantní závislost směrnice růstu fitness na počátku
+třetího období na podílu pleiotropních alel s $p = 0.0203$. Síla efektu je relativně malá ($-0.00071$ s možnou
+chybou $0.0003$). Závislost na podílu negativně dominantních alel a na interakci podílu pleiotropních a negativně
+dominantních alel se však neprojevila (p hodnot 0.4709 a 0.2449). Omezení tohoto výsledku budou podrobněji rozebrána
+dále v diskusi.\footnote{
+Zajímavá je závislost směrnice růstu fitness na počátku prvního období na množství negativně dominantních alel s
+$p=0.00381$ (síla efektu -0.0062 a možná chyba 0.0017).
+Tato závislost ovšem nepatřila mezi testované hypotézy.
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%5
 
@@ -413,6 +506,7 @@ Z pohledu na průměry a rozptyly je zřejmé, že u některých populací musel
 zpracování dat potvrdila i zde neuvedená minima):
 
 \begin{table}[H]
+\caption{Směrnice růstu průměrné fitness na konci prvního úseku}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -420,7 +514,7 @@ zpracování dat potvrdila i zde neuvedená minima):
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -432,13 +526,17 @@ zpracování dat potvrdila i zde neuvedená minima):
   0.25                        & 0.00001 & 0.00001 & 0.00010 & 0.00000 & 0.00000 & 0.00010 & 0.00000 & 0.00000 & 0.00010 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na konci prvního úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sem1}
 \end{table}
 
 
 
 \begin{table}[H]
+\caption{Směrnice růstu průměrné fitness na konci druhého úseku}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -446,7 +544,7 @@ zpracování dat potvrdila i zde neuvedená minima):
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -458,11 +556,15 @@ zpracování dat potvrdila i zde neuvedená minima):
   0.25                        & -1e-5    &  -1e-5   & 0.00018 & 0.00001 & 0.00001 & 0.00019 & 0.00002 & 0.00001 & 0.00018 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na konci druhého úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sem2}
 \end{table}
 
 \begin{table}[H]
+\caption{Směrnice růstu průměrné fitness na konci třetího úseku}
 \scriptsize
 \catcode`\-=12
 \centering
@@ -470,7 +572,7 @@ zpracování dat potvrdila i zde neuvedená minima):
 
 \cline{2-10}
 \multicolumn{1}{c|}{}
- & \multicolumn{9}{c|}{Poměr pleiotropických alel} \\
+ & \multicolumn{9}{c|}{Podíl pleiotropických alel} \\
 \hline
 \multirowcell{2}{Podíl neg. \\ dom. alel} & \multicolumn{3}{c|}{0.00} & \multicolumn{3}{c|}{0.25} & \multicolumn{3}{c|}{0.50} \\
 \cline{2-10}
@@ -482,7 +584,29 @@ zpracování dat potvrdila i zde neuvedená minima):
   0.25                        & 0.00000 & 0.00000 & 0.00011 & 0.00000 & 0.00000 & 0.00009 &  -1e-5   &   -1e-5  & 0.00010 \\
 \hline
 \end{tabularx}
-\caption{Směrnice růstu průměrné fitness na konci třetího úseku}
+
+\vspace*{4px}
+\footnotesize{\textit{Legenda viz legenda k tabulce \ref{table:vyhynuti1}}}
+
 \label{table:sem3}
 \end{table}
 
+K růstu fitness na konci druhého a třetího úseku simulace se vztahovaly následující hypotézy:
+
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
+          více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
+          na konci období menší směrnici růstu fitness.}
+    \item{Tento efekt je nastává i po druhé změně optima a je silnější.}
+    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+\end{enumerate}
+
+
+Pátá hypotéza musí být odmítnuta i v části týkající se konce druhého období --  p hodnota závislosti růstu fitness na
+konci druhého období je pro negativní dominanci 0.092, pro pleiotropii 0.898 a pro jejich interakci 0.204.
+
+Stejně tak i pro třetí období a tedy pro šestou hypotézu -- p hodnota závislosti růstu fitness na konci třetího období
+je pro negativní dominanci 0.723, pro pleiotropii 0.343 a pro jejich interakci 0.684.
+
+To vede i k odmítnutí sedmé hypotézy.
