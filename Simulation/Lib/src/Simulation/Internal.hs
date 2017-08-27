@@ -142,7 +142,7 @@ almostPolymorphism population = 1.0 - fromIntegral (length $ filter id same) / f
     same = map almostAllTheSame genesList
 
 aleleCount :: Population -> Double
-aleleCount population = fromIntegral $ distinctSize allAllelas
+aleleCount population = fromIntegral $ distinctSize allAllelas
     where
         allAllelas :: MultiSet Allele
         allAllelas = unions $ map (\(c1, c2) -> union (fromList $ genes c1) (fromList $ genes c2)) $ map chromosomes $ individuals population
