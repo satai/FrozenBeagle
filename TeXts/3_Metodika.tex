@@ -94,6 +94,8 @@ ovlivňují přímo jednotlivé složky fenotypu.
 
 Ostatní alely mají účinek stejný, ať již jsou na daném lokusu na jednom nebo na obou chromosomech.
 
+\vspace{1em}
+
 \begin{tcolorbox}[ title={Pseudokód popisující generování náhodné alely}
                  , breakable
                  ]
@@ -345,6 +347,8 @@ kde $n_0$ je rovnovážná velikost populace a $a_{max}$ je maximální věk jed
 Pro simulace byla zvolena nulová pravděpodobnost náhodného úmrtí $k_5$ a řízení velikosti populace tedy záviselo jen na
 její hustotě a na deterministické smrti stářím po $a_{max}$ generacích.
 
+\vspace{1em}
+
 \begin{tcolorbox}[ title={Odvození vzorce pro $k_4$}
                  , breakable
                  ]
@@ -449,6 +453,8 @@ a kompletní historie ve VCS git. Jsou poskytnuty pod otevřenou trojsložkovou 
 zdokumenotovány informace, které by měly postačit k přeložení \textit{fbeagle} z těchto zdrojových textů
 a jeho spuštění a reprodukování výsledků.
 
+\vspace{1em}
+
 \begin{tcolorbox}[ title={Reprodukovatelnost v počítačových simulacích}
                  , breakable
                  ]
@@ -511,7 +517,7 @@ K otestování se nabízejí následující hypotézy:
 \begin{enumerate}
     \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
           častěji vymírají.}
-    \item{Efekty obou typů alel se vzájemně multiplikují.}
+    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
     \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
           alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentilu fitness (t.j.
           nedostanou se tak blízko optimu).}
@@ -523,10 +529,13 @@ K otestování se nabízejí následující hypotézy:
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
-První hypotéza může být otestována XXX
+První hypotéza byla  otestována po jednotlivých obdobích prostřednictvím logistické regrese, kde nezávislými
+proměnnými byly pro každý pokus to, zda populace vyhynula, a s podílem vznikajících pleiotropických a negativně
+dominantních alel a jejich interakcí jako nezávislými proměnnými.
 
 K otestování dalších hypotéz byly použity lineární modely s podílem pleiotropních alel a podílem alel, u kterých se
 projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Pro každou z 6144
 simulací byla jako závislá proměnná vzata příslušné proměnné, o které byla formulována hypotéza.
 
-Jako hladina $\alpha$ byla pro všechny testy zvolena hodnota $ p = 0.05 $.
+Jako hladina $\alpha$ byla pro všechny testy zvolena hodnota $ p = 0.05 $. Pro zpracování byl použit script v jazyce
+R \citep{rlanguage}, který je součástí elektronických příloh v SISu.
