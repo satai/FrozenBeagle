@@ -116,6 +116,7 @@
 @ARTICLE{Tange2011a,
   author  = {O. Tange},
   title   = {{GNU} {P}arallel - {T}he {C}ommand-{L}ine {P}ower {T}ool},
+  note    = {citováno: 2017-04-11},
   journal = {;login: The USENIX Magazine},
   year    = {2011},
   volume  = {36},
@@ -124,7 +125,6 @@
   month   = {Feb},
   address = {Frederiksberg, Denmark},
   url     = {http://www.gnu.org/s/parallel},
-  note    = {citováno: 2017-04-11},
 }
 
 @inproceedings{flegr2002lysenko,
@@ -199,13 +199,15 @@
     isbn={978-80-200-2528-9}
 }
 
-@article{toman2013,
+@book{toman2013,
   title={Role ekologick{ý}ch faktor{ů} p{ř}i udr{ž}ov{á}n{í} sexuality},
   author={Toman, Jan},
-  year={2013}
+  publisher={Př{F} {UK}, {K}atedra filosofie a dějin přírodních věd, {P}raha},
+  year={2013},
+  note={dipl. práce},
 }
 
-@book {toman2015,
+@book{toman2015,
     title={Pohlavní rozmnožování optikou evoluce},
     author={Toman, Jan},
     publisher={Academia, Praha},
@@ -260,18 +262,34 @@
   journal={Genetics},
   number={16},
   pages={97--158},
-  year={2014},
+  year={1931},
   publisher={Annual Reviews}
 }
 
 
 @inproceedings{wright1932,
   author={Wright, Sewall},
+  year={1932},
   title={The roles of mutation, inbreeding, crossbreeding and selection in evolution},
   booktitle={Proceedings of the Sixth International Congress on Genetics},
   number={1}
   pages={356–-366},
-  year={1932},
+}
+
+@book{simpson1944tempo,
+  title={Tempo and mode in evolution},
+  author={Simpson, George Gaylord},
+  number={15},
+  year={1944},
+  publisher={Columbia University Press}
+}
+
+@book{gould2002structure,
+  title={The structure of evolutionary theory},
+  author={Gould, Stephen Jay},
+  year={2002},
+  publisher={Harvard University Press},
+  isbn = {0674006135}
 }
 
 %
@@ -294,20 +312,47 @@
 @manual{Haskell,
   title        = {{H}askell {L}anguage},
   year         = {2017},
-  howpublished = {\url{https://www.haskell.org}},
   note         = {citováno: 2017-04-11},
   url          = {https://www.haskell.org},
+  howpublished = {\url{https://www.haskell.org}},
 }
 
 @article{marlow2010haskell,
   title        = {{H}askell 2010 language report},
   author       = {Marlow, Simon and others},
-  howpublished = {\url{https://www.haskell.org/definition/haskell2010.pdf}},
-  URL          = {https://www.haskell.org/definition/haskell2010.pdf}
   note         = {citováno: 2017-04-14},
+  URL          = {https://www.haskell.org/definition/haskell2010.pdf}
   year         = {2010}
 }
 
+@manual{stackintro,
+  title = {ANNOUNCING: first public beta of stack},
+  author = {Done, Chris},
+  note = {citováno: 2017-03-11},
+  organization = {{FP} Complete},
+  year = {2015},
+  url = {https://www.fpcomplete.com/blog/2015/06/announcing-first-public-beta-stack/},
+},
+
+@manual{stackdesign,
+  title = {Stackage design choices: making Haskell curated package sets},
+  author = {Snoyman, Michael},
+  note = {citováno: 2017-02-10},
+  organization = {{FP} Complete},
+  year = {2017},
+  url = {https://www.snoyman.com/blog/2017/01/stackage-design-choices/},
+},
+
+
+@manual{rlanguage,
+  title = {{R}: A Language and Environment for Statistical Computing},
+  author = {{{R} {C}ore {T}eam}},
+  note = {citováno: 2017-08-28},
+  organization = {R Foundation for Statistical Computing},
+  address = {Vienna, Austria},
+  year = {2015},
+  url = {https://www.R-project.org/},
+}
 
 @inproceedings{meijer2004static,
   title={Static typing where possible, dynamic typing when needed: {T}he end of the cold war between programming languages},
@@ -330,6 +375,7 @@
 @misc{Chiusano2016,
   author = {Paul Chiusano},
   journal = {Functional programming, {UX}, tech, econ},
+  note = {citováno: 2017-08-29},
   title = {The advantages of static typing, simply stated},
   year = {2016},
   URL = {https://pchiusano.github.io/2016-09-15/static-vs-dynamic.html},
@@ -360,6 +406,7 @@
   publisher={Addison-Wesley Professional, Boston},
   isbn = {978-0321146533}
 }
+
 @book{GammaHelmEtAl95,
   address = {Reading, MA},
   author = {Gamma, Erich and Helm, Richard and Johnson, Ralph E. and Vlissides, John},
@@ -412,18 +459,6 @@
   organization={ACM}
 }
 
-
-@manual{rlanguage,
-  title = {{R}: A Language and Environment for Statistical Computing},
-  author = {{{R} {C}ore {T}eam}},
-  organization = {R Foundation for Statistical Computing},
-  address = {Vienna, Austria},
-  year = {2015},
-  url = {https://www.R-project.org/},
-}
-
-
-
 @conference{bobbio2014reproducibl,
   title = {Reproducible builds for {D}ebian},
   author = {Bobbio, J{\'e}r{\'e}my},
@@ -434,8 +469,9 @@
   howpublished = {\url{https://archive.fosdem.org/2014/schedule/event/reproducibledebian/}},
 }
 
-@article{mikulavs2008,
-  title={The principle of frozen evolution and its manifestation in the fossil record: the brachiopod genus {A}egiromena {H}avl{\'\i}{\v{c}}ek, 1961 (Upper Ordovician, Czech Republic)},
+@inproceedings{mikulavs2008,
+  title={The principle of frozen evolution and its manifestation in the fossil record: the brachiopod genus \textit{{A}egiromena} {H}avl{\'\i}{\v{c}}ek, 1961 ({U}pper {O}rdovician, {C}zech {R}epublic)},
   author={Mikul{\'a}{\v{s}}, Radek},
-  year={2008}
+  booktitle={Proceedings of Paleontological Workshop Held in Honour of {D}oc. {RND}r. {J}aroslav {K}raft, {CS}c. {P}lzen},
+  year={2008},
 }

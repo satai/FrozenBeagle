@@ -22,7 +22,7 @@
 
 \section{Shrnutí výsledků}
 
-V konfirmační části práce jsme se pokusili formálně otestovat sedm hypotéz, které jsme na začátku formuluvali
+V konfirmační části práce jsme se pokusili formálně otestovat sedm hypotéz, které jsme na začátku formulovali
 na základě predikcí vyplývajících z teorie zamrzlé plasticity.
 Hypotézy se týkaly vztahu množství pleiotropických alel a alel s opačným působením na fenotyp s dosaženou průměrnou
 hodnotou fitness a jejím desetiprocentním percentilem, s rychlostí růstu fitness po změnách prostředí, s rychlostí
@@ -33,7 +33,7 @@ našimi počátečními predikcemi, efekty však byly velmi malé a ani zdaleka 
 Formálně jsme tedy žádnou z našich hypotéz založených na teorii zamrzlé plasticity nepotvrdili.
 
 Ukázala se pouze negativní závislost směrnice růstu fitness na počátku třetího období na podílu pleiotropních alel s
-relativně malou silou efektu, která nepatřila k původně formulovaným hypotézám.
+relativně malou silou efektu, která je jen dílčí součástí formulovaných hypotéz.
 
 \section{Interpretace výsledků pro vymírání}
 
@@ -56,8 +56,7 @@ s relativně malou silou efektu.
 
 Přestože je výsledek signifikantní pro zvolenou hladinu $\alpha = 0.05$, tak je na místě
 opatrnost, protože bylo testováno mnoho hypotéz a jejich částí a je proto možné, že jde o náhodnou chybu prvního
-druhu -- artefakt vícečetých testů. \footnote{Povaha testů zde vylučuje užití běžných korekcí pro vícečetné
-testy. XXX je to tak? XXX}
+druhu -- artefakt vícečetných testů.
 Tato závislost si ale jistě zaslouží být dále zkoumána a testována v navazujícím výzkumu.
 
 \section{Interpretace výsledků pro růsty fitness na konci stabilních období}
@@ -83,7 +82,18 @@ velmi malým dílem k projevům elasticity, ale součet jejich vlivů už by byl
 
 Pravděpodobně druhým nejdůležitějším omezením provedených simulací je to, že z časových a technických důvodů
 pokryly pouze malou část prostoru možných parametrů -- čtyři hodnoty od 0.0 po 0.25 pro podíl negativně dominantních
-alel a tři hodnoty od 0.0 do 0.5 pro podíl pleiotropních alel.
+alel a tři hodnoty od 0.0 do 0.5 pro podíl pleiotropních alel.\footnote{
+   Předběžné výsledky navazujících simulací, které bohužel doběhly až dva dny před termínem odevzdání této práce, takže
+   nebylo možné je zapracovat do jejích výsledků,
+   skutečně naznačují, že takové rozšíření má smysl. Pokud byl spuštěn menší
+   počet simulací i pro podíly vznikajících negativně dominantních alel 0.35 a 0.5, tak se objevilo několik
+   signifikantních nebo hraničních závislostí, například silně signifikantní závislost dosažených fitness v druhém
+   úseku na množství negativně dominantních alel. Jak vyplývá z další části diskuse, není sice realistické očekávat
+   takové zastoupení negativně dominantních alel v populaci, ale podíl takových vznikajících alel se pravděpodobně
+   nerovná jejich následnému podílu v populaci.
+
+   To samozřejmě nemůže být bez dalšího ověření a rozboru definitivní závěr, ale považuji to za důvod k mírnému optimismu.
+}
 
 Podstatným omezením je také to, že byl simulován jen jeden způsob změn prostředí -- skoková změna optima a jeho
 pozdější skokový návrat na původní hodnotu.
@@ -114,7 +124,7 @@ Aby byla přísná pravidla ještě přísnější, tak jsem pro překlad výpo�
 Rozpaky, obzvláště zpočátku, budila kvalita a dostupnost nástrojů. Ta se ale v průběhu implementace zlepšila, nahrazení \textit{cabaly} modernějším
 \textit{stackem} bylo podstatnou úlevou a, obávám se, na některé \uv{neobvyklosti} jsem si zvykl.
 
-\subsubsection{Kvalita kódu}
+\subsection{Kvalita kódu}
 
 Velkou výhodou se stalo i \textit{property based testování}. Je poměrně obvyklé i doporučované \citep{williams2009effectiveness} psát ke kódu i kód, který jej
 automaticky testuje. To, například podle \citet{beck2003test}, snižuje množství chyb i zlepšuje kvalitu návrhu\footnote{
@@ -133,7 +143,7 @@ Výhodou Haskellu a jeho knihovny QuickCheck \citep{Claessen:2000:QLT:351240.351
 často není třeba předepisovat, jak má generování vstupů vypadat, a tuto práci obstará počítač.
 To hodnotím, ve srovnání s jinými obdobnými systémy, co jsem používal, jako značnou výhodu.
 
-\subsubsection{Výkon}
+\subsection{Výkon}
 
 Jako problematický se však ukázal výkon výsledného programu, zejména pak jeho značná paměťová náročnost.
 
@@ -147,7 +157,7 @@ Pokud se podaří tuto svízel odstranit nebo obejít, tak se tím otevře možn
 různých parametrů bez nutnosti spoléhat na cloud, a tedy i levněji. Dále to umožní prověřit současné výsledky spuštěním více simulací, což by
 mohlo poskytnout výsledky signifikantní i pro nižší hladinu \textit{alfa.}
 
-\subsubsection{Reprodukovatelnost}
+\subsection{Reprodukovatelnost}
 
 Výsledný text práce je sázen prostřednictvím typografického systému \LaTeX. Můj původní plán spočíval v dotažení
 automatizace a reprodukovatelnosti do extrému -- jedním příkazem by byl přeložen \textit{fbeagle}, následně
@@ -177,6 +187,9 @@ funkcionálního programování} pro rozmnožování asexuálních druhů.
 Výpočetně náročnější, ale potenciálně zajímavé by byly simulace s podstatně vyším počtem kroků. Během nich by se, lze
 předpokládat, samovolně hromadily frekvenčně závislé alely a tedy postupně stoupala elasticita.
 Pomocí opakovaných změn prostředí bychom prověřili, zda na ně populace reaguje stále více elasticky.
+
+Zajímavé by bylo i srovnání, ve kterém mimo kvantitativních vlastností organismů figurují i vlastnosti kvalitativní,
+struktura programu \textit{fbeagle} však obdobným úpravám příliš nepřeje.
 
 \subsection{Měření evolvability}
 

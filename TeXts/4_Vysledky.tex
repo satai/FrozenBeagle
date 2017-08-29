@@ -23,7 +23,7 @@
 %
 %Samozřejmě můžete použít barevné grafy či tabulky. Je ale dobré si uvědomit, že se hodnotí obsah, nikoliv barevnost. Klidně tedy vystačíte i jen s černou a bílou barvou (to samozřejmě nemusí platit pro fotografie nebo obrázky). Pokud použijete barevné grafy, měly by být (pokud možno) rozlišitelné i v černobílém provedení.
 
-V této kapitole postupně představím výsledky týkající se vymirání populací, dosažených fitness a jejich růstu
+V této kapitole postupně představím výsledky týkající se vymírání populací, dosažených fitness a jejich růstu
 na počátku a konci každého období. U každé z těchto oblastí uvádím popisné statistiky a testy příslušných
 hypotéz nebo jejich částí.
 
@@ -133,8 +133,10 @@ Z populací, které přežily první změnu optimálního fenotypu, již po náv
 Vyhynutí populace se týkaly následující hypotézy:
 
 \begin{enumerate}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
-          častěji vymírají.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo
+        alel ovlivňujících více složek fenotypu, častěji vymírají ve stabilním
+        prostředí a když se prostředí změní; vymírají méně často, když se prostředí
+        po přechodné změně vrátí do původního stavu.}
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
@@ -476,10 +478,11 @@ K růstu fitness na počátku druhého a třetího úseku simulace se vztahovaly
 \begin{enumerate}
     \setcounter{enumi}{4}
     \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
-          více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
-          na konci období menší směrnici růstu fitness.}
-    \item{Tento efekt je nastává i po druhé změně optima a je silnější.}
-    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+                  více složek fenotypu, mají po změně prostředí větší směrnici vyjadřující růst fitness,
+                  na konci období s novým stavem prostředí pak menší směrnici růstu fitness.}
+    \item{Při návratu podmínek do původního stavu odpovídá populace na začátku velmi rychle, před dosažením konečné
+                  zdatnosti se odpověď zpomalí.}
+    \item{Tyto efekty negativně dominantních alel rostou s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
 Pátá hypotéza a sedmá hypotéza musejí být odmítnuty v části  týkající se počátku druhého období --
@@ -599,12 +602,11 @@ K růstu fitness na konci druhého a třetího úseku simulace se vztahovaly ná
 \begin{enumerate}
     \setcounter{enumi}{4}
     \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
-          více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
-          na konci období menší směrnici růstu fitness.}
+          více složek fenotypu, mají na počátku druhého období menší směrnici vyjadřující růst fitness,
+          na konci období větší směrnici růstu fitness.}
     \item{Tento efekt je nastává i po druhé změně optima a je silnější.}
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
-
 
 Pátá hypotéza musí být odmítnuta i v části týkající se konce druhého období --  p hodnota závislosti růstu fitness na
 konci druhého období je pro negativní dominanci 0.092, pro pleiotropii 0.898 a pro jejich interakci 0.204.

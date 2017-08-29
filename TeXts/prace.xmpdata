@@ -2,6 +2,19 @@
 
 \Author{Ondřej Nekola}
 \Title{Simulace dějů predikovaných teorií zamrzlé plasticity}
-\Keywords{XXXX klíčová slova\sep další taková\sep ještě jiná}
-\Subject{XXXX Abstrakt práce}
+\Keywords{evoluce \sep mikroevoluce \sep zamrzlá plasticita \sep frekvenčně závislá selekce \sep simulace \sep modelování}
+\Subject{Otázka tempa evoluce patří k nejstarším v evoluční biologii a dosud nebyla uspokojivě vyřešena. Jedním z pokusů
+         je teorie zamrzlé plasticity, podle které je pohlavně se rozmnožující druh schopný vývoje jen v krátkých
+         obdobích, kdy dojde k poklesu genetického polymorfismu například při peripatrické speciaci. V delších obdobích
+         evoluční stáze je vývoj druhu omezen frekvenčně závislou selekcí a pleiotropií.
+         V rámci této práce byl vyvinut volně dostupný program simulující chování populací pohlavně se rozmnožujících
+         jedinců v proměnných podmínkách prostředí. V tomto programu byly simulovány vývoje populací s různou pravděpodobností
+         vzniku alel působících na více složek fenotypu a s různou pravděpodobností vzniku frekvenčně selektovaných
+         alel, které působí na fenotyp v opačném směru, pokud jsou v lokusu jednou nebo dvakrát.
+         Byly pozorovány trendy předpovězené teorií zamrzlé plasticity -- pomalejší přizpůsobení
+         skokovým změnám prostředí, menší dosažené fitness a častější vymírání populací s většími podíly zkoumaných druhů alel,
+         ale pouze s velmi malou silou efektu a bez statistické významnosti.
+         Pro budoucí výzkum je vhodné rozšířit prostor zkoumaných parametrů a zejména se zaměřit na větší populace, u kterých je
+         účinnější působení selekce.
+}
 \Publisher{Univerzita Karlova}

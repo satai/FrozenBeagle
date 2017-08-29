@@ -53,11 +53,12 @@ vliv na geny, které mohou zdědit potomci jedince, jeho fenotyp však již neov
 dobu života. Somatické mutace nejsou modelovány.
 
 \section{Jedinec a jeho geny}
+\label{sec:individual_genes}
 
 Geny každého jedince jsou uloženy v dvou homologních chromosomech. Každý z těchto chromosomů má 20 lokusů.
 Na každém z lokusů je alela, která má vliv na fenotyp jedince. Alela je určena svým příspěvkem k fenotypu (čtyřrozměrný
 vektor, typicky s jednou nenulovou hodnotou, tedy gen ovlivňuje jednu vlastnost jedince, dále nazýván i
-\textit{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje ve dvou instancích v témže lokusu
+\textit{efekt alely}) a svým příspěvkem k fenotypu, pokud se vyskytuje ve dvou kopiích v témže lokusu
 (opět čtyřrozměrný vektor, dále nazýván i \textit{dominantní efekt alely}).
 
 Na počátku simulace je vygenerována populace složená z náhodných jedinců.
@@ -317,10 +318,10 @@ zpětnou vazbou, jako je například v modelu \citet{Flegr139030}, a umíráním
 
 Turbidostatická regulace funguje tak, že každém kroku má v populaci s $n$ jedinci každý jedinec pravděpodobnost
 $p = min(0.9, k_4 n^2 + k_5)$, že zahyne. Člen $k_4 n^2$ závisí na čtverci velikosti populace, a tedy její hustotě.
-Člen $k_5$\footnote{
-Parametry $k_4$ a $k_5$ jsou jediná $k$, která se v této práci vyskytují, $k_1$ by tu čtenář hledal marně. Důvodem je
-snaha o konzistenci s předchozí prací \citet{Flegr139030}.
-}je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace.
+Člen $k_5$ je pravděpodobnost náhodného úmrtí nezávislého na velikosti populace\footnote{
+   Parametry $k_4$ a $k_5$ jsou jediná $k$, která se v této práci vyskytují, $k_1$ by tu čtenář hledal marně. Důvodem je
+   snaha o konzistenci s předchozí prací \citet{Flegr139030}.
+}.
 
 V přírodě turbidostatické regulaci odpovídá například regulace parazitem, kterému se lépe daří,
 pokud se jedinci častěji setkávají -- v takovém případě četnost setkání závisí právě na hustotě populace tedy členu
@@ -458,7 +459,7 @@ a jeho spuštění a reprodukování výsledků.
 \begin{tcolorbox}[ title={Reprodukovatelnost v počítačových simulacích}
                  , breakable
                  ]
-Reprodukovatenlost počítačových simulací by zdánlivě mělo být triviální téma. Počítače jsou
+Reprodukovatelnost počítačových simulací by zdánlivě mělo být triviální téma. Počítače jsou
 deterministické\footnote{
 Nebudu se snažit předstírat, že očekávám, že by mi to čtenář, který někdy použil reálný počítač, uvěřil, ale
 taková je všeobecně opakovaná teorie.
@@ -474,10 +475,10 @@ knihovny\ldots) a že překlad nezávisí například na aktuálním času, zvol
 
 Pro Haskell zajišťuje vždy stejnou verzi nástrojů a knihoven nástroj stack a jeho systém
 LTS (Long Time Support) snapshotů -- repository zafixovaných verzí závislostí, u kterých je
-otestováno, že jsou vzájemně kompatibilní. Na rozdíl od dříve užívané kabaly, kde překlady
+otestováno, že jsou vzájemně kompatibilní \citep{stackdesign}. Na rozdíl od dříve užívané kabaly, kde překlady
 závisely na okamžitém stavu počítače, je podstatně pravděpodobnější, že stejný projekt vygeneruje
 stejný (a tedy i stejně se chovající) program na různých počítačích nebo na stejném počítači v různých
-okamžicích.
+okamžicích\citep{stackintro}.
 
 Obdobné problémy se týkají i následného běhu simulací.
 
@@ -506,7 +507,7 @@ Maximum desetiprocentního percentilu pro dané období postihuje blízkost opti
 málo přizpůsobené jedince v dané populaci. Percentil je v dané situaci výstižnější statistika než minimum -- to může
 být výrazně ovlivněno náhodou, kdy mutace vytvoří nereprezentativního jedince fenotypem vzdáleným optimu.
 
-Jak rychle populace reaguje na nové podmínky je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
+Jak rychle populace reaguje na nové podmínky, je měřeno směrnicí průměrné fitness v počátečním úseku daného období.
 Úsek má délku 127 kroků simulace. Směrnice je tedy rozdíl průměrné fitness v kroku č. 128 a v prvním kroku daného
 období vydělený 128. Obdobně je měřena směrnice na konci daného období.
 
@@ -515,27 +516,31 @@ období vydělený 128. Obdobně je měřena směrnice na konci daného období.
 K otestování se nabízejí následující hypotézy:
 
 \begin{enumerate}
-    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo alel ovlivňujících více složek fenotypu,
-          častěji vymírají.}
+    \item{Populace, kde je nenulové zastoupení negativně dominantních alel nebo
+        alel ovlivňujících více složek fenotypu, častěji vymírají ve stabilním
+        prostředí a když se prostředí změní; vymírají méně často, když se prostředí
+        po přechodné změně vrátí do původního stavu.}
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
     \item{Populace, kde je nenulové zastoupení negativně dominantních alel a zároveň dostatečné množství
           alel ovlivňujících více složek fenotypu, dosahují menších průměrů i percentilu fitness (t.j.
           nedostanou se tak blízko optimu).}
     \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
     \item{Populace, kde je nenulové zastoupení negativně dominantních a zároveň dostatečné množství alel ovlivňujících
-          více složek fenotypu, mají na počátku druhého období větší směrnici vyjadřující růst fitness,
-          na konci období menší směrnici růstu fitness.}
-    \item{Tento efekt je nastává i po druhé změně optima a je silnější.}
-    \item{Tento efekt negativně dominantních alel roste s množstvím alel ovlivňujících více složek fenotypu.}
+                  více složek fenotypu, mají po změně prostředí větší směrnici vyjadřující růst fitness,
+                  na konci období s novým stavem prostředí pak menší směrnici růstu fitness.}
+    \item{Při návratu podmínek do původního stavu odpovídá populace na začátku velmi rychle, před dosažením konečné
+                  zdatnosti se odpověď zpomalí.}
+    \item{Tyto efekty negativně dominantních alel rostou s množstvím alel ovlivňujících více složek fenotypu.}
 \end{enumerate}
 
-První hypotéza byla  otestována po jednotlivých obdobích prostřednictvím logistické regrese, kde nezávislými
-proměnnými byly pro každý pokus to, zda populace vyhynula, a s podílem vznikajících pleiotropických a negativně
-dominantních alel a jejich interakcí jako nezávislými proměnnými.
+První hypotéza byla  otestována po jednotlivých obdobích prostřednictvím logistické regrese, kde závislými
+proměnnými byly pro každý pokus to, zda populace v jednotlivých obdobích vyhynula, a
+s podílem vznikajících pleiotropických a negativně dominantních alel a jejich interakcí jako nezávislými proměnnými.
 
 K otestování dalších hypotéz byly použity lineární modely s podílem pleiotropních alel a podílem alel, u kterých se
-projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnými. Pro každou z 6144
-simulací byla jako závislá proměnná vzata příslušné proměnné, o které byla formulována hypotéza.
+projevuje negativní dominance, a interakcí mezi těmito dvěma hodnotami jako nezávislými proměnnými. Pro každou z 6144
+simulací byla jako závislá proměnná vzata příslušná proměnná (pro jednotlivá období vždy průměrná fitness,
+desetiprocentní percentil fitness a směrnice růstu fitness na začátku a konci období), které se týkala daná hypotéza.
 
 Jako hladina $\alpha$ byla pro všechny testy zvolena hodnota $ p = 0.05 $. Pro zpracování byl použit script v jazyce
 R \citep{rlanguage}, který je součástí elektronických příloh v SISu.
